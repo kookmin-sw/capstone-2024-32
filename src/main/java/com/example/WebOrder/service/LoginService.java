@@ -1,6 +1,7 @@
 package com.example.WebOrder.service;
 
 import com.example.WebOrder.dto.LoginDto;
+import com.example.WebOrder.dto.RegisterDto;
 import com.example.WebOrder.entity.User;
 import com.example.WebOrder.repository.UserRepository;
 import org.apache.tomcat.websocket.AuthenticationException;
@@ -40,5 +41,17 @@ public class LoginService implements UserDetailsService {
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) throw new RuntimeException("비밀번호가 일치하지 않습니다.");
 
         return true;
+    }
+
+    public User createUser(RegisterDto dto){
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        return userRepository.save(user);
+    }
+
+    public Boolean usernameExists(String username){
+        return userRepository.existsByUsername(username);
     }
 }
