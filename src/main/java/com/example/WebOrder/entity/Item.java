@@ -19,10 +19,11 @@ public class Item {
 
     @Column(nullable = false)
     private String name;
-
+/*
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+ */
 
     private String description;
 
@@ -30,7 +31,7 @@ public class Item {
 
     private int price;
 
-
+    private Long ownerId;
 
 
 }
