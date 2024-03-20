@@ -17,7 +17,7 @@ public class Seat {
 
     private String name;
 
-    @OneToMany(mappedBy = "seat")
+    @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
 }

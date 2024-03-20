@@ -5,12 +5,15 @@ import com.example.WebOrder.dto.RegisterDto;
 import com.example.WebOrder.entity.User;
 import com.example.WebOrder.repository.UserRepository;
 import org.apache.tomcat.websocket.AuthenticationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -53,5 +56,14 @@ public class LoginService implements UserDetailsService {
 
     public Boolean usernameExists(String username){
         return userRepository.existsByUsername(username);
+    }
+
+    public Boolean isCurrentUserAuthenticated(Long userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.isAuthenticated() && authentication.getPrincipal() instanceof User user){
+            return Objects.equals(user.getId(), userId);
+        }
+        return false;
     }
 }
