@@ -19,11 +19,13 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
+    private Long userId;//가게 주인 Id
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDateTime;

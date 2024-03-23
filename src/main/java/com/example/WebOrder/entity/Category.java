@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
 @Entity
 @Getter @Setter
 public class Category {
@@ -22,3 +23,5 @@ public class Category {
     private List<Item> items = new ArrayList<>();
 
 }
+
+ */

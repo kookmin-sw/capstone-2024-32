@@ -1,6 +1,9 @@
 package com.example.WebOrder.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +22,11 @@ public class Item {
 
     @Column(nullable = false)
     private String name;
-
+/*
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+ */
 
     private String description;
 
@@ -30,7 +34,16 @@ public class Item {
 
     private int price;
 
+    private Long ownerId;
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
+    @Max(value = 5)
+    @Min(value = 0)
+    private Integer avgRate;
+
+    private Long orderedCount;
 
 
 }
