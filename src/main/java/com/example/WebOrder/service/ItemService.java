@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Slf4j
@@ -38,6 +39,9 @@ public class ItemService {
         item.setItemImageUrl(dto.getItemImageUrl());
         item.setDescription(dto.getDescription());
         item.setOwnerId(ownerId);
+        item.setReviews(new ArrayList<>());
+        item.setAvgRate(0);
+        item.setOrderedCount(0L);
 
         Item savedItem = itemRepository.save(item);
 
