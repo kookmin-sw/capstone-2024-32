@@ -1,0 +1,103 @@
+.body {
+	overflow:hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width:100vw;
+	height:100vh;
+}
+.register-form {
+	width:320px;
+	height:auto;
+	position:relative;
+	margin-top: 20px;
+}
+.header {
+	width:320px;
+	height: auto;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.form-header-icon {
+	width: 23px;
+	height: 23px;
+	position: relative;
+	background-image: url(../images/previous.png);
+	background-color:transparent;
+	background-repeat: no-repeat;
+	background-size: cover;
+	border:0;
+	margin-right:auto;
+}
+
+.form-header-title {
+	color: rgba(64, 64, 64, 1);
+	width: 104px;
+	height: 37px;
+	position: relative;
+	font-family: Noto Sans KR, sans-serif;
+	text-align: left;
+	font-size: 28px;
+	letter-spacing: 0;
+	margin-right:auto;
+}
+
+.form-group {
+	width:320px;
+	height:79px;
+	position: relative;
+	margin-top:15px;
+}
+
+.form-label {
+	color: rgba(64, 64, 64, 1);
+	position: relative;
+	font-family: Noto Sans KR, sans-serif;
+	text-align: left;
+	font-size: 16px;
+	letter-spacing: 0;
+}
+
+.form-input-text {
+	color: rgba(189, 189, 189, 1);
+	width: 320px;
+	height: 50px;
+	position: relative;
+	font-family: Noto Sans KR, sans-serif;
+	text-align: left;
+	font-size: 14px;
+	letter-spacing: 0;
+	border-radius: 5px;
+	border:1px solid rgba(174.00000482797623, 174.00000482797623, 174.00000482797623, 1);
+}
+
+.submit-button {
+	background-color:rgba(91.46796986460686, 96.86175003647804, 226.31249696016312, 1);
+	width:320px;
+	height:55px;
+	color:rgba(255, 255, 255, 1);
+	font-family:Noto Sans KR, sans-serif;
+	text-align:center;
+	font-size:16px;
+	letter-spacing:0;
+	position:relative;
+	margin-top: 20%;
+}
+.field-error {
+	border-color: #dc3545;
+	color: #dc3545;
+	font-family:Noto Sans KR, sans-serif;
+	font-size:12px;
+	letter-spacing:0;
+}
