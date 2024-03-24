@@ -1,0 +1,82 @@
+.body {
+    overflow:hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width:100vw;
+    height:100vh;
+}
+.logo {
+    background-color:rgba(157.25000202655792, 157.25000202655792, 157.25000202655792, 1);
+    width:130px;
+    height:130px;
+    margin-bottom: 20px;
+}
+.login-form {
+    width:320px;
+    height:auto;
+    position:relative;
+    margin-top: 20px;
+}
+.form-group {
+    width:320px;
+    height:79px;
+    position:relative;
+    margin-top:15px;
+}
+.form-label {
+    color:rgba(64.00000378489494, 64.00000378489494, 64.00000378489494, 1);
+    position:relative;
+    font-family:Noto Sans KR, sans-serif;
+    text-align:left;
+    font-size:16px;
+    letter-spacing:0;
+}
+.form-input-text {
+    background-color: rgba(255, 255, 255, 1);
+    width: 320px;
+    height: 50px;
+    position: relative;
+    font-family: Noto Sans KR, sans-serif;
+    text-align: left;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid rgba(174.00000482797623, 174.00000482797623, 174.00000482797623, 1);
+}
+
+.login-button {
+    background-color:rgba(91.46796986460686, 96.86175003647804, 226.31249696016312, 1);
+    width:320px;
+    height:55px;
+    color:rgba(255, 255, 255, 1);
+    font-family:Noto Sans KR, sans-serif;
+    text-align:center;
+    font-size:16px;
+    letter-spacing:0;
+    position:relative;
+    margin-top: 20%;
+}
+.global-error {
+    border-color: #dc3545;
+    color: #dc3545;
+    font-family:Noto Sans KR, sans-serif;
+    font-size:12px;
+    letter-spacing:0;
+}
+.ask-register {
+    color:rgba(102.00000151991844, 102.00000151991844, 102.00000151991844, 1);
+    font-family:Noto Sans KR, sans-serif;
+    font-size:16px;
+    letter-spacing:0;
+    display: flex;
+    align-items: center;
+    position:relative;
+    margin-top: 10%;
+}

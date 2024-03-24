@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
+@ToString(of = {"id", "username"})
 @EqualsAndHashCode
 public class User implements UserDetails {
     @Id
@@ -25,6 +25,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String name;
 
     @OneToMany(mappedBy = "user")
     private List<Seat> seats = new ArrayList<>();

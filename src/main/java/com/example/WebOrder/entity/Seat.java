@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Getter @Setter
 public class Seat {
@@ -16,6 +18,10 @@ public class Seat {
     private Long id;
 
     private String name;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
