@@ -4,33 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no,
   maximum-scale=1.0, minimum-scale=1.0"/>
-    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <title>로그인</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" >
     <link rel="stylesheet" href="/css/loginForm.css">
+    <script src="/js/jquery-3.7.1.min.js"></script>
+
 </head>
 <body>
-<div class="container">
-    <div class="logo"></div>
+<section class="login-form">
+    <h1>로고</h1>
 
-    <form class="login-form" method="post">
-        <div class="form-group">
-            <label for="loginId" class="form-label">아이디 *</label>
-            <input class="form-input-text" id="loginId" type="text" name="username" placeholder="아이디를 입력해주세요." required>
+    <form action="" th:object="${loginFormDto}" method="post">
+        <div class="int-area">
+            <input type="text" name="username" id="username" autocomplete="off" required>
+            <label for="username">아이디 *</label>
         </div>
-        <div class="form-group">
-            <label for="password" class="form-label">비밀번호 *</label>
-            <input class="form-input-text" id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요." required>
+        <div class="int-area">
+            <input type="password" name="password" id="password" autocomplete="off" required>
+            <label for="password">비밀번호 *</label>
         </div>
         <div th:if="${param.error}">
             <p class="global-error" >로그인에 실패하였습니다.</p>
         </div>
-        <button class="login-button" type="submit">로그인</button>
+        <div class="btn-area">
+            <button id="btn" type="submit">로그인</button>
+        </div>
+
     </form>
 
-    <div class="ask-register">
+    <div class="caption">
         <span>계정이 없으신가요?&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <a href="/register" style="color: blue">회원가입</a>
     </div>
 
-</div>
+</section>
+
+<script>
+    let username = $('#username');
+    let pw = $('#password');
+    let btn = $('#btn');
+
+    $(btn).on('click', function() {
+        if($(username).val() === "") {
+            $(username).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+        }
+        else if($(pw).val() === "") {
+            $(pw).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+        }
+    })
+
+</script>
 </body>
 </html>
