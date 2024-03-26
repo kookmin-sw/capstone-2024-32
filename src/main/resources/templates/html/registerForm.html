@@ -34,7 +34,7 @@
             <label for="name">이름 *</label>
         </div>
         <div class="btn-area">
-            <button id="btn" type="submit" disabled>다음</button>
+            <button id="btn" type="submit">다음</button>
         </div>
     </form>
 </section>
@@ -52,67 +52,37 @@
             setTimeout(function() {
                 $('label').removeClass('warning');
             }, 1500);
+            event.preventDefault();
         }
         else if($(pw).val() === "") {
             $(pw).next('label').addClass('warning');
             setTimeout(function() {
                 $('label').removeClass('warning');
             }, 1500);
+            event.preventDefault();
         }
         else if($(pwCheck).val() === "") {
             $(pwCheck).next('label').addClass('warning');
             setTimeout(function() {
                 $('label').removeClass('warning');
             }, 1500);
+            event.preventDefault();
         }
         else if($(name).val() === "") {
             $(name).next('label').addClass('warning');
             setTimeout(function() {
                 $('label').removeClass('warning');
             }, 1500);
+            event.preventDefault();
         }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        // form 요소와 각 input 요소, submit 버튼 가져오기
-        const form = document.querySelector('form');
-        const usernameInput = form.querySelector('input[name="username"]');
-        const passwordInput = form.querySelector('input[name="password"]');
-        const passwordCheckInput = form.querySelector('input[name="passwordCheck"]');
-        const nameInput = form.querySelector('input[name="name"]');
-        const submitButton = form.querySelector('#btn');
-
-        // 입력 필드가 비어있는지 확인하는 함수
-        function fieldsEmpty() {
-            return usernameInput.value === '' || passwordInput.value === '' || passwordCheckInput.value === '' || nameInput.value === '';
+        else if ($(pw).val() !== $(pwCheck).val()) {
+            $(pw).next('label').addClass('warning');
+            $(pwCheck).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+            event.preventDefault();
         }
-
-        // 비밀번호와 비밀번호 확인이 일치하는지 확인하는 함수
-        function passwordsMatch() {
-            return passwordInput.value === passwordCheckInput.value;
-        }
-
-        // form submit 이벤트를 감지하여 유효성 검사 수행
-        form.addEventListener('submit', function (event) {
-            // 필수 입력 필드가 비어있거나, 비밀번호가 일치하지 않으면 submit을 막음
-            if (fieldsEmpty() || !passwordsMatch()) {
-                event.preventDefault();
-                return false;
-            }
-            return true;
-        });
-
-        // 입력 필드나 비밀번호, 비밀번호 확인 input 요소가 변경될 때마다 버튼 상태를 갱신
-        [usernameInput, passwordInput, passwordCheckInput, nameInput].forEach(function (input) {
-            input.addEventListener('input', function () {
-                // 필수 입력 필드가 비어있거나, 비밀번호가 일치하지 않으면 버튼 비활성화
-                if (fieldsEmpty() || !passwordsMatch()) {
-                    submitButton.disabled = true;
-                } else {
-                    submitButton.disabled = false;
-                }
-            });
-        });
     });
 
 </script>
