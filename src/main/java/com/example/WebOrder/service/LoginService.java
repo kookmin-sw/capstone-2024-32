@@ -4,6 +4,7 @@ import com.example.WebOrder.dto.LoginFormDto;
 import com.example.WebOrder.dto.UserFormDto;
 import com.example.WebOrder.entity.User;
 import com.example.WebOrder.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class LoginService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -27,6 +30,7 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("username " + username);
         return userRepository.findByUsername(username).get();
     }
 
@@ -55,16 +59,17 @@ public class LoginService implements UserDetailsService {
         return false;
     }
 
-    /**
-     * 회원가입
-     */
-    public Long join(User user) {
-        userRepository.save(user);
-        return user.getId();
+
+    public User createUser(UserFormDto dto){
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setName(dto.getName());
+        user.setSeats(new ArrayList<>());
+
+        return userRepository.save(user);
     }
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+
 }
 
