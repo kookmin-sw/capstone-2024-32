@@ -1,87 +1,123 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회원가입</title>
-  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/registerForm.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/registerForm.css">
+    <script src="/js/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-  <div class="container">
+<section class="register-form">
     <div class="header">
-        <input type="button" onclick="history.back()" class="form-header-icon"></input>
-        <span class="form-header-title">회원가입</span>
+        <input type="button" onclick="history.back()">
+        <h1>회원가입</h1>
     </div>
-    <form class="register-form" th:object="${userFormDto}" method="post">
-        <div class="form-group">
-            <label th:for="username" class="form-label">아이디 *</label>
-            <input class="form-input-text" th:field="*{username}" name="username" placeholder="사용하실 아이디를 입력해주세요." required>
+    <form action="" th:object="${userFormDto}" method="post">
+        <div class="int-area">
+            <input type="text" name="username" id="username" autocomplete="off" required>
+            <label for="username">아이디 *</label>
         </div>
-        <p class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}" ></p>
-        <div class="form-group">
-            <label th:for="password" class="form-label">비밀번호 *</label>
-            <input class="form-input-text" th:field="*{password}" type="password" name="password" placeholder="영문, 숫자 조합 8~16자" required>
+        <div class="int-area">
+            <input type="password" name="password" id="password" autocomplete="off" required>
+            <label for="password">비밀번호 *</label>
         </div>
-        <p class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-        <div class="form-group">
-            <label th:for="passwordCheck" class="form-label">비밀번호 확인 *</label>
-            <input class="form-input-text" type="password" name="passwordcheck" placeholder="비밀번호를 한 번 더 입력해주세요." required>
+        <div class="int-area">
+            <input type="password" name="passwordCheck" id="passwordCheck" autocomplete="off" required>
+            <label for="passwordCheck">비밀번호 확인 *</label>
         </div>
-        <div class="form-group">
-            <label th:for="name" class="form-label">이름 *</label>
-            <input class="form-input-text" th:field="*{name}" name="name" placeholder="예) 홍길동" required>
+        <div class="int-area">
+            <input type="text" name="name" id="name" autocomplete="off" required>
+            <label for="name">이름 *</label>
         </div>
-        <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
-        <button class="submit-button" type="submit">다음</button>
+        <div class="btn-area">
+            <button id="btn" type="submit">다음</button>
+        </div>
     </form>
+</section>
 
-    </div>
-  <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          const form = document.querySelector('.register-form');
-          const usernameInput = form.querySelector('input[name="username"]');
-          const passwordInput = form.querySelector('input[name="password"]');
-          const passwordCheckInput = form.querySelector('input[name="passwordcheck"]');
-          const nameInput = form.querySelector('input[name="name"]');
-          const submitButton = form.querySelector('.submit-button');
+<script>
+    let username = $('#username');
+    let pw = $('#password');
+    let pwCheck = $('#passwordCheck');
+    let name = $('#name');
+    let btn = $('#btn');
 
-          function fieldsEmpty() {
-              return passwordInput.value === '' || passwordCheckInput.value === '' || usernameInput.value === '' || nameInput.value === '';
-          }
+    $(btn).on('click', function() {
+        if($(username).val() === "") {
+            $(username).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+        }
+        else if($(pw).val() === "") {
+            $(pw).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+        }
+        else if($(pwCheck).val() === "") {
+            $(pwCheck).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+        }
+        else if($(name).val() === "") {
+            $(name).next('label').addClass('warning');
+            setTimeout(function() {
+                $('label').removeClass('warning');
+            }, 1500);
+        }
+    });
 
-          // 비밀번호와 비밀번호 확인이 일치하는지 확인하는 함수
-          function passwordsMatch() {
-              return passwordInput.value === passwordCheckInput.value;
-          }
+    // 위 코드는 비었는지 확인 하는 부분임
 
-          // 비밀번호의 길이가 8자 이상인지 확인하는 함수
-          function passwordLengthValid() {
-              return passwordInput.value.length >= 8;
-          }
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector('.register-form');
+        const usernameInput = form.querySelector('input[name="username"]');
+        const passwordInput = form.querySelector('input[name="password"]');
+        const passwordCheckInput = form.querySelector('input[name="passwordcheck"]');
+        const nameInput = form.querySelector('input[name="name"]');
+        const submitButton = form.querySelector('.submit-button');
 
-          // form submit 이벤트를 감지하여 유효성 검사 수행
-          form.addEventListener('submit', function (event) {
-              // 비밀번호가 일치하지 않거나, 비밀번호의 길이가 8자 미만이면 submit을 막음
-              if (!passwordsMatch() || !passwordLengthValid()) {
-                  event.preventDefault();
-                  return false;
-              }
-              return true;
-          });
+        function fieldsEmpty() {
+            return passwordInput.value === '' || passwordCheckInput.value === '' || usernameInput.value === '' || nameInput.value === '';
+        }
 
-          // input 요소가 변경될 때마다 버튼 상태를 갱신
-          [passwordInput, passwordCheckInput, usernameInput, nameInput].forEach(function (input) {
-              input.addEventListener('input', function () {
-                  // 비밀번호가 일치하지 않거나, 비밀번호의 길이가 8자 미만이면 버튼 비활성화
-                  if (!passwordsMatch() || !passwordLengthValid() || fieldsEmpty()) {
-                      submitButton.disabled = true;
-                  } else {
-                      submitButton.disabled = false;
-                  }
-              });
-          });
-      });
-  </script>
+        // 비밀번호와 비밀번호 확인이 일치하는지 확인하는 함수
+        function passwordsMatch() {
+            return passwordInput.value === passwordCheckInput.value;
+        }
+
+        // 비밀번호의 길이가 8자 이상인지 확인하는 함수
+        function passwordLengthValid() {
+            return passwordInput.value.length >= 8;
+        }
+
+        // form submit 이벤트를 감지하여 유효성 검사 수행
+        form.addEventListener('submit', function (event) {
+            // 비밀번호가 일치하지 않거나, 비밀번호의 길이가 8자 미만이면 submit을 막음
+            if (!passwordsMatch() || !passwordLengthValid()) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        });
+
+        // input 요소가 변경될 때마다 버튼 상태를 갱신
+        [passwordInput, passwordCheckInput, usernameInput, nameInput].forEach(function (input) {
+            input.addEventListener('input', function () {
+                // 비밀번호가 일치하지 않거나, 비밀번호의 길이가 8자 미만이면 버튼 비활성화
+                if (!passwordsMatch() || !passwordLengthValid() || fieldsEmpty()) {
+                    submitButton.disabled = true;
+                } else {
+                    submitButton.disabled = false;
+                }
+            });
+        });
+    });
+
+</script>
 </body>
 </html>
