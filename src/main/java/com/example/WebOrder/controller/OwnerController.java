@@ -1,14 +1,31 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.entity.User;
+import com.example.WebOrder.service.LoginService;
+import com.example.WebOrder.service.OrderPasswordService;
+import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.io.IOException;
 
 @Controller
 @Slf4j
 public class OwnerController {
+    private final OrderPasswordService orderPasswordService;
+    private final LoginService loginService;
+
+    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService) {
+        this.orderPasswordService = orderPasswordService;
+        this.loginService = loginService;
+    }
+
 
     //마이페이지 (가게 관리 페이지) 보기
     @GetMapping("/owner/shoppage")
@@ -72,10 +89,12 @@ public class OwnerController {
         return null;
     }
 
-    //QR코드 가져오기
+    //QR코드 생성하기
     @GetMapping("/owner/code/qr/{seatId}")
-    public String getQRCodeOfSeatByOnwer(){
-        return null;
+    public String getQRCodeOfSeatByOnwer(@PathVariable Long seatId, Model model) throws IOException, WriterException {
+        String img = orderPasswordService.generateQRCode(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(), seatId);
+        model.addAttribute("img", img);
+        return "html/qrcode";
     }
 
     //주문 비밀번호 페이지 보기

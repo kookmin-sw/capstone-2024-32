@@ -23,3 +23,6 @@ spring:
         enabled: true
 jwt:
   secret: xIjvWyzFNiIL16uC7Z4vtoY6nkCKk+wjN/ruzg8lkX6t09fC+qHWMRG+4RtoYakCOQWq1bmyYH34oab36pf8Tw==
+
+qrcode:
+  url: localhost:8080
