@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원정보</title>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <script src="/js/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div>유저이름</div>
+<div th:text="${profile.username}"></div>
+
+<div>이름</div>
+<div th:text="${profile.name}"></div>
+
+<a href="/myprofile/edit" th:if="${isMine}">수정하기</a>
+
+</body>
+</html>
