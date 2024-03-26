@@ -91,3 +91,7 @@ body {
 	cursor: pointer;
 }
 
+.btn-area button:disabled{
+	background: #6c4e3a;
+}
+
