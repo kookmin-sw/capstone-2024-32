@@ -1,38 +1,21 @@
-.body {
-	overflow:hidden;
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap');
+
+* {margin: 0; padding: 0; box-sizing: border-box;}
+body {
+	font-family: 'Noto Sans KR', sans-serif;
 	display: flex;
-	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-}
-.container {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width:100vw;
-	height:100vh;
-}
-.register-form {
-	width:320px;
-	height:auto;
-	position:relative;
-	margin-top: 20px;
-}
-.header {
-	width:320px;
-	height: auto;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	height: 100vh;
 }
 
-.form-header-icon {
+.register-form {
+	position: relative; z-index: 2;
+}
+
+.header input {
 	width: 23px;
 	height: 23px;
-	position: relative;
 	background-image: url(../images/previous.png);
 	background-color:transparent;
 	background-repeat: no-repeat;
@@ -40,70 +23,71 @@
 	border:0;
 	margin-right:auto;
 }
-
-.form-header-title {
-	color: rgba(64, 64, 64, 1);
-	width: 104px;
-	height: 37px;
-	position: relative;
-	font-family: Noto Sans KR, sans-serif;
+.header h1 {
+	font-size: 28px; color: black;
 	text-align: left;
-	font-size: 28px;
-	letter-spacing: 0;
-	margin-right:auto;
+	margin-bottom: 60px;
 }
 
-.form-group {
-	width:320px;
-	height:79px;
-	position: relative;
-	margin-top:15px;
-}
-
-.form-label {
-	color: rgba(64, 64, 64, 1);
-	position: relative;
-	font-family: Noto Sans KR, sans-serif;
-	text-align: left;
-	font-size: 16px;
-	letter-spacing: 0;
-}
-
-.form-input-text {
-	color: rgba(189, 189, 189, 1);
+.int-area {
 	width: 320px;
-	height: 50px;
 	position: relative;
-	font-family: Noto Sans KR, sans-serif;
-	text-align: left;
-	font-size: 14px;
-	letter-spacing: 0;
-	border-radius: 5px;
-	border:1px solid rgba(174.00000482797623, 174.00000482797623, 174.00000482797623, 1);
+	margin-top:20px;
 }
-
-.submit-button {
-	background-color:rgba(91.46796986460686, 96.86175003647804, 226.31249696016312, 1);
-	width:320px;
-	height:55px;
-	color:rgba(255, 255, 255, 1);
-	font-family:Noto Sans KR, sans-serif;
-	text-align:center;
+.int-area:first-child {
+	margin-top: 0;
+}
+.int-area input {
+	width: 100%;
+	padding: 20px 10px 10px;
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid #999;
 	font-size:16px;
-	letter-spacing:0;
-	position:relative;
-	margin-top: 20%;
+	outline: none;
 }
-.field-error {
-	border-color: #dc3545;
-	color: #dc3545;
-	font-family:Noto Sans KR, sans-serif;
-	font-size:12px;
-	letter-spacing:0;
+.int-area label {
+	position: absolute; left: 10px; top: 15px;
+	font-size: 16px;
+	color:rgba(64.00000378489494, 64.00000378489494, 64.00000378489494, 1);
+	transition: all .5s ease;
+}
+.int-area label.warning {
+	color: red !important;
+	animation: warning .3s ease;
+	animation-iteration-count: 2;
+}
+@keyframes warning {
+	0% {transform: translateX(-2px);}
+	25% {transform: translateX(2px);}
+	50% {transform: translateX(-2px);}
+	75% {transform: translateX(2px);}
 }
 
-.submit-button:disabled {
-	background-color: #CCCCCC; /* 회색 배경색 */
-	color: #666666; /* 회색 텍스트 색상 */
-	cursor: not-allowed; /* 마우스 커서를 기본값으로 변경하여 클릭 방지 */
+.int-area input:focus + label,
+.int-area input:valid + label {
+	top:0;
+	font-size: 11px; color: #166cea;
 }
+
+.field-error {
+	padding: 10px;
+	color: red !important;
+	font-family:Noto Sans KR, sans-serif;
+	font-size:11px;
+	text-align: left;
+}
+
+.btn-area {
+	margin-top: 50px;
+}
+.btn-area button {
+	width: 100%; height: 50px;
+	background: #ff6f0f;
+	color:rgba(255, 255, 255, 1);
+	font-size: 16px;
+	border: 1px solid;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
