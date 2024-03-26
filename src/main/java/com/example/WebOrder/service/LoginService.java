@@ -71,5 +71,27 @@ public class LoginService implements UserDetailsService {
     }
 
 
+    // 현재 유저의 Username을 얻어내는 메소드
+    public String getUsernameOfCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!authentication.isAuthenticated()) throw new RuntimeException("로그인 하지 않음");
+        User user = (User) authentication.getPrincipal();
+
+        return user.getUsername();
+    }
+
+    // 현재 유저의 패스워드와 매개변수로 주어진 password가 일치하면 true, 아니면 false를 리턴하는 메소드
+    public Boolean isPasswordCorrect(String password){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!authentication.isAuthenticated()) throw new RuntimeException("로그인 하지 않음");
+        User user = (User) authentication.getPrincipal();
+
+        if (!passwordEncoder.matches(password, user.getPassword())) return false;
+        return true;
+    }
+
+
 }
 
