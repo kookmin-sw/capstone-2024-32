@@ -15,30 +15,29 @@ import java.util.Base64;
 public class GuestController {
 
     //QR를 찍었을 때 접근가능한 page
-    @GetMapping("/guest/{encodedUserId}/login")
-    public String getShopPageByGuestNotAuthenticated(@PathVariable String encodedUserId, Model model){
-        model.addAttribute("ownerId", new String(Base64.getDecoder().decode(encodedUserId)));
+    @GetMapping("/guest/{userId}/{seatId}/login")
+    public String getShopPageByGuestNotAuthenticated(@PathVariable String userId, Model model){
         return null;
     }
 
     //비밀번호 인증을 성공했을 시 접근가능한 page
-    @GetMapping("/guest/{encodedUserId}")
-    public String getShopPageByGuest(@PathVariable String encodedUserId){
+    @GetMapping("/guest/{userId}/{seatId}")
+    public String getShopPageByGuest(@PathVariable Long userId, @PathVariable Long seatId){
         return null;
     }
 
 
 
     //주문하기를 눌렀을 때 접근가능한 page
-    @GetMapping("/guest/order/{encodedUserId}")
-    public String getOrderPageByGuest(@PathVariable String encodedUserId){
+    @GetMapping("/guest/{userId}/{seatId}/order")
+    public String getOrderPageByGuest(@PathVariable Long userId, @PathVariable Long seatId){
         return null;
     }
 
 
     //메뉴 상세정보 보기
-    @GetMapping("/guest/order/{encodedUserId}/{menuId}")
-    public String getMenuByGuest(@PathVariable String encodedUserId, @PathVariable String menuId){
+    @GetMapping("/guest/menu/{userId}/{menuId}")
+    public String getMenuByGuest(@PathVariable Long userId, @PathVariable Long menuId){
         return null;
     }
 
