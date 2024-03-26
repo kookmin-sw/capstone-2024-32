@@ -56,16 +56,16 @@ public class LoginController {
     @PostMapping("/register")
     public String register(@Valid UserFormDto dto, BindingResult bindingResult){
 
-        if (bindingResult.hasErrors()){
-            log.info("validation 에러");
-            return "redirect:/register";
-        }
+
 
         log.info("회원가입 시도");
         if (loginService.usernameExists(dto.getUsername())){
             log.info("username 중복");
             bindingResult.addError(new FieldError("UserFormDto", "username", "유저네임이 중복되었습니다."));
-            return "redirect:/register";
+            return "redirect:/register?error=true";
+        }
+        else if (bindingResult.hasErrors()){
+            return "redirect:/register?pwderror=true";
         }
         else {
             loginService.createUser(dto);
