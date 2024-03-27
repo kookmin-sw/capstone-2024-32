@@ -26,4 +26,7 @@ public class Seat {
     @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
+
+    // 해당 좌석에서 주문 받은 횟수
+    private Long orderedTime;
 }
