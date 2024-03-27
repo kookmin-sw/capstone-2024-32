@@ -3,6 +3,7 @@ package com.example.WebOrder.controller;
 import com.example.WebOrder.entity.User;
 import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.OrderPasswordService;
+import com.example.WebOrder.service.SeatService;
 import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,10 +21,12 @@ import java.io.IOException;
 public class OwnerController {
     private final OrderPasswordService orderPasswordService;
     private final LoginService loginService;
+    private final SeatService seatService;
 
-    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService) {
+    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService) {
         this.orderPasswordService = orderPasswordService;
         this.loginService = loginService;
+        this.seatService = seatService;
     }
 
 
@@ -34,34 +37,51 @@ public class OwnerController {
     }
 
     //전체 테이블뷰 보기
-    @GetMapping("/owner/seat")
+    @GetMapping("/owner/seat/view")
     public String getWholeSeatByOwner(){
         return null;
     }
 
+    //테이블 관리 페이지
+    // !!!!!!!!! 새로 추가한 url !!!!!!!!!!!!!
+    @GetMapping("/owner/seat/manage")
+    public String getSeatManagePageByOwner(Model model) {
+        model.addAttribute("mostOrderedSeat", seatService.getMostOrderedSeatOfCurrentUser()); //가장 많이 주문된 좌석
+        model.addAttribute("leastOrderedSeat", seatService.getLeastOrderedSeatOfCurrentUser()); //가장 적게 주문된 좌석
+        model.addAttribute("totalSeatNum", seatService.getTotalSeatNum()); //총 좌석 개수
+        model.addAttribute("seatList", seatService.getBasicSeatListOfCurrentUser()); //좌석 이름 리스트
+
+
+        return "html/seatManage";
+    }
+
     //테이블 생성하기
     @PostMapping("/owner/seat/create")
-    public String postCreateSeatByOwner(){
-        return null;
+    public String createSeatByOwner(String seatName){
+        seatService.addSeat(seatName);
+        return "redirect:/owner/seat/manage";
     }
 
 
     //테이블 삭제하기
     @PostMapping("/owner/seat/delete/{seatId}")
-    public String deleteSeatByOwner(){
-        return null;
+    public String deleteSeatByOwner(@PathVariable("seatId") Long seatId){
+        seatService.deleteSeat(seatId);
+        return "redirect:/owner/seat/manage";
     }
 
     //테이블 수정하기
     @PostMapping("/owner/seat/update/{seatId}")
-    public String updateSeatByOwner(){
-        return null;
+    public String updateSeatByOwner(@PathVariable("seatId") Long seatId, String seatName){
+        seatService.updateSeat(seatId, seatName);
+        return "redirect:/owner/seat/manage";
     }
 
     //테이블 치우기
     @PostMapping("/owner/seat/clear/{seatId}")
-    public String clearSeatByOwner(){
-        return null;
+    public String clearSeatByOwner(@PathVariable("seatId") Long seatId){
+        seatService.clearSeat(seatId);
+        return "redirect:/owner/seat/manage";
     }
 
     //주문대기열 보기
