@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테이블 관리</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <script src="/js/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<form method="post" th:if="${isCreate}" th:action="@{'/owner/seat/create'}">
+    <label for="seatNameCreate"></label>
+    <input type="text" id="seatNameCreate" name="seatName">
+    <button type="submit">생성하기</button>
+</form>
+
+<form method="post" th:if="${!isCreate}" th:action="@{'/owner/seat/update/' + ${seat.seatId}}">
+    <label for="seatNameUpdate"></label>
+    <input type="text" id="seatNameUpdate" name="seatName" th:value="${seat.name}">
+    <button type="submit">수정하기</button>
+</form>
+
+
+
+</body>
+</html>

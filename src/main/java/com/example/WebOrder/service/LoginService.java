@@ -92,6 +92,14 @@ public class LoginService implements UserDetailsService {
         return true;
     }
 
+    //현재 유저의 entity를 가져오기
+    public User getCurrentUserEntity(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!authentication.isAuthenticated()) throw new RuntimeException("로그인 하지 않음");
+        return (User) authentication.getPrincipal();
+    }
+
 
 }
 

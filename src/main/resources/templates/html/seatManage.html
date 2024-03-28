@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테이블 관리</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <script src="/js/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div>손님들에게 가장 인기 많은 테이블</div>
+<div th:text="${mostOrderedSeat}"></div>
+
+<div>손님들에게 가장 인기 없는 테이블</div>
+<div th:text="${leastOrderedSeat}"></div>
+
+<div>테이블 리스트</div>
+<div th:each="seat : ${seatList}" class="card">
+    <div th:text="${seat.name}" class="table-name"></div>
+    <div th:text="${seat.orderedTime}" class="ordered-num"></div>
+    <form method="post" class="delete-form" th:action="@{'/owner/seat/delete/' + ${seat.seatId}}" >
+        <button type="submit">삭제하기</button>
+    </form>
+    <a th:href="@{'/owner/seat/update/' + ${seat.seatId}}">이름 바꾸기</a>
+
+</div>
+
+<a th:href="@{'/owner/seat/create'}">테이블 추가하기</a>
+<script>
+    // JavaScript 코드를 작성하여 삭제하기 링크를 클릭하면 해당 seat의 delete form을 자동으로 제출합니다.
+    let deleteLinks = document.querySelectorAll('.delete-link');
+    deleteLinks.forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault(); // 기본 동작 방지
+
+            let seatId = link.getAttribute('data-seat-id'); // 해당 seat의 id 가져오기
+            let form = document.querySelector('.delete-form[data-seat-id="' + seatId + '"]'); // 해당 seat의 delete form 가져오기
+            form.submit(); // delete form 제출
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
