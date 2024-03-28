@@ -66,8 +66,8 @@ body {
 
 .int-area input:focus + label,
 .int-area input:valid + label,
-.int-area input.filled + label{
-	top:0;
+.int-area input:not(:placeholder-shown) + label {
+	top: -2px;
 	font-size: 11px; color: #166cea;
 }
 
