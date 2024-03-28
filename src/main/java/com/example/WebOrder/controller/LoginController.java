@@ -24,22 +24,28 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @GetMapping("/index")
+    @GetMapping("index")
     public String getIndex(){
         return "html/index";
     }
+
+    @GetMapping("/home")
+    public String getHome(){
+        return "html/home";
+    }
+
     @GetMapping("/login")
-    public String getLoginForm(){
+    public String getLoginForm(@ModelAttribute("loginFormDto") LoginFormDto dto){
         log.info("로그인 폼 소환");
         return "html/loginForm";
     }
 
     @PostMapping("/login")
-    public String login(@Valid LoginFormDto dto){
+    public String login(@Valid @ModelAttribute("loginFormDto") LoginFormDto dto){
         log.info("로그인 시도");
         if (loginService.isLoginAttemptValid(dto)){
             log.info("로그인 성공");
-            return "redirect:/index";
+            return "redirect:/home";
         }
         else {
             log.info("로그인 실패");
@@ -55,8 +61,6 @@ public class LoginController {
 
     @PostMapping("/register")
     public String register(@Valid UserFormDto dto, BindingResult bindingResult){
-
-
 
         log.info("회원가입 시도");
         if (loginService.usernameExists(dto.getUsername())){
