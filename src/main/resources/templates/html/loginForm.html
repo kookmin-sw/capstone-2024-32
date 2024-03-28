@@ -14,7 +14,7 @@
 <section class="login-form">
     <h1>로고</h1>
 
-    <form action="" th:object="${loginFormDto}" method="post">
+    <form th:action="@{/login}" th:object="${loginFormDto}" method="post">
         <div class="int-area">
             <input type="text" name="username" id="username" autocomplete="off" required>
             <label for="username">아이디 *</label>
@@ -34,7 +34,7 @@
 
     <div class="caption">
         <span>계정이 없으신가요?&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <a href="/register" style="color: blue">회원가입</a>
+        <a th:href="@{/register}" style="color: blue">회원가입</a>
     </div>
 
 </section>
