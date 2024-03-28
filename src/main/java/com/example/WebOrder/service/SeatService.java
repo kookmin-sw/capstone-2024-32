@@ -33,6 +33,7 @@ public class SeatService {
 
         seat.setName(seatName);
         seat.setOrderedTime(0L);
+        seat.setUser(loginService.getCurrentUserEntity());
         return seatRepository.save(seat).getId();
     }
 
@@ -112,4 +113,17 @@ public class SeatService {
         return seatRepository.countByUser(loginService.getCurrentUserEntity());
     }
 
+    public String getSeatName(Long seatId) {
+        Optional<Seat> optionalSeat = seatRepository.findById(seatId);
+        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+
+        return optionalSeat.get().getName();
+    }
+
+    public SeatDto getSeatDto(Long seatId) {
+        Optional<Seat> optionalSeat = seatRepository.findById(seatId);
+        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+
+        return SeatDto.fromEntity(optionalSeat.get());
+    }
 }
