@@ -1,5 +1,6 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.User;
 import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.OrderPasswordService;
@@ -56,6 +57,14 @@ public class OwnerController {
     }
 
     //테이블 생성하기
+
+    @GetMapping("/owner/seat/create")
+    public String getCreateSeatForm(Model model){
+        model.addAttribute("seat", new SeatDto());
+        model.addAttribute("isCreate", true);
+        model.addAttribute("seatName", null);
+        return "html/seatCreate";
+    }
     @PostMapping("/owner/seat/create")
     public String createSeatByOwner(String seatName){
         seatService.addSeat(seatName);
@@ -71,6 +80,13 @@ public class OwnerController {
     }
 
     //테이블 수정하기
+    @GetMapping("/owner/seat/update/{seatId}")
+    public String getUpdateSeatForm(@PathVariable("seatId") Long seatId, Model model){
+        model.addAttribute("seat", seatService.getSeatDto(seatId));
+        model.addAttribute("isCreate", false);
+        model.addAttribute("seatName", seatService.getSeatName(seatId));
+        return "html/seatCreate";
+    }
     @PostMapping("/owner/seat/update/{seatId}")
     public String updateSeatByOwner(@PathVariable("seatId") Long seatId, String seatName){
         seatService.updateSeat(seatId, seatName);
