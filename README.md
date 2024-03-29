@@ -1,76 +1,158 @@
-# Welcome to GitHub
+# 🍱 EZOrder
 
-캡스톤 팀 생성을 축하합니다.
+2024 캡스톤디자인 32조
 
-## 팀소개 및 페이지를 꾸며주세요.
+<br/>
 
-- 프로젝트 소개
-  - 프로젝트 설치방법 및 데모, 사용방법, 프리뷰등을 readme.md에 작성.
-  - Api나 사용방법등 내용이 많을경우 wiki에 꾸미고 링크 추가.
+## 목차
+  - [📝 프로젝트 소개](#-프로젝트-소개)
+  - [🔍️ 주요 기능](#️-주요-기능)
+  - [👷 팀원 소개](#-팀원-소개)
+  - [🚀 프로젝트 구조](#-프로젝트-구조)
+  - [✅ 기대 효과](#-기대-효과)
+  - [✨ 기술 스택](#-기술-스택)
 
-- 팀페이지 꾸미기
-  - 프로젝트 소개 및 팀원 소개
-  - index.md 예시보고 수정.
+<br/>
 
-- GitHub Pages 리파지토리 Settings > Options > GitHub Pages 
-  - Source를 marster branch
-  - Theme Chooser에서 태마선택
-  - 수정후 팀페이지 확인하여 점검.
+## 📝 프로젝트 소개
 
-**팀페이지 주소** -> https://kookmin-sw.github.io/ '{{자신의 리파지토리 아이디}}'
+<code>음식점 QR 주문 웹 서비스</code>
+<br/>
 
-**예시)** 2023년 0조  https://kookmin-sw.github.io/capstone-2023-00/
+<aside>
+
+손님은 QR 코드를 찍기만 해도 웹으로 쉽게 주문을 할 수 있고, 가게 사장님은 주문 내역을 쉽게 보고 처리할 수 있도록 도와주는 것을 목표로 합니다.
+
+비슷한 아이디어를 가진 서비스가 이미 현업에 존재하지만, EZOrder는 앱을 설치하거나 로그인을 하는 것과 같은 불편한 과정이 존재하지 않아 손님 입장에서 편하게 주문할 수 있습니다.
+
+또한 가게 입장에서는 키오스크나 테이블 별 태블릿 설치와 같은 추가적인 설비가 필요하지 않다는 장점이 있습니다.
+
+<br/>
+
+## 🔍️ 주요 기능
+
+ <code> QR 스캔을 통한 편한 주문 </code>
+ <br/>
+ 
+ 테이블마다 부착되어 있는 QR 코드 스캔을 통해, 그 자리에서 편하게 주문이 가능합니다.
+ <br/>
+ <br/>
+
+ <code> 실제 주문자만 적을 수 있는 검증된 리뷰 </code>
+ <br/>
+
+ 주문한 사람만 리뷰를 적을 수 있는 시스템이기에 신뢰도 있는 리뷰를 볼 수 있습니다.
+ <br/>
+ <br/>
+
+ <code> 편한 메뉴 관리 시스템 </code>
+ <br/>
+ 
+ 가게 운영자는 편하게 메뉴판을 수정할 수 있습니다.
+ <br/>
+ <br/>
+
+ <code> 편하게 볼 수 있는 가게 현황 </code>
+ <br/>
+
+ 가게 운영자 입장에서 주문 대기열, 테이블 별 주문 현황을 파악할 수 있어 탄력적인 관리가 가능합니다.
+
+ <br/><br/>
 
 
-## 내용에 아래와 같은 내용들을 추가하세요.
+<br/><br/>
 
-### 1. 프로잭트 소개
-
-프로젝트
-
-### 2. 소개 영상
-
-프로젝트 소개하는 영상을 추가하세요
-
-### 3. 팀 소개
-
-팀을 소개하세요.
-
-팀원정보 및 담당이나 사진 및 SNS를 이용하여 소개하세요.
-
-### 4. 사용법
-
-소스코드제출시 설치법이나 사용법을 작성하세요.
-
-### 5. 기타
-
-추가적인 내용은 자유롭게 작성하세요.
+## 👷 팀원 소개
 
 
-## Markdown을 사용하여 내용꾸미기
+<img align="left" src="docs/images/profile/minseo.png" width="180" height="170">
 
-Markdown은 작문을 스타일링하기위한 가볍고 사용하기 쉬운 구문입니다. 여기에는 다음을위한 규칙이 포함됩니다.
+```
+이름 : 박민서
 
-```markdown
-Syntax highlighted code block
+학번 : xxxx1610
 
-# Header 1
-## Header 2
-### Header 3
+이메일 : minseo1224@kookmin.ac.kr
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+역할 : Leader, Back-end, Front-end
 ```
 
-자세한 내용은 [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Support or Contact
+<img align="left" src="docs/images/profile/wonki.png" width="180" height="170" >
 
-readme 파일 생성에 추가적인 도움이 필요하면 [도움말](https://help.github.com/articles/about-readmes/) 이나 [contact support](https://github.com/contact) 을 이용하세요.
+```
+이름 : 문원기
+
+학번 : xxxx1608
+
+이메일 : wkm99@kookmin.ac.kr
+
+역할 : Back-end, Front-end
+```
+
+<br/><br/>
+
+
+
+## 🚀 프로젝트 구조 
+
+
+<code> 시나리오 </code>  
+
+<img src="docs/images/scenario.png">
+
+<br/>
+
+
+<code> 시스템 구조도 </code>  
+
+<img src="docs/images/system.png">
+
+
+<br/><br/>
+
+## ✅ 기대 효과
+
+<code> 초기 설비 비용을 비약적으로 줄일 수 있습니다. </code>
+ <br/>
+
+기존의 주문 방식은 키오스크나 테이블마다 배치된 테블릿을 이용하는 방식으로, 이는 주로 인건비를 절감하기 위한 수단으로 등장했습니다. 
+
+그러나 이러한 방식은 설치와 운용에 따른 비용 부담도 크다는 단점이 있었습니다.
+
+EZOrder를 통해 이러한 비용을 혁신적으로 줄일 수 있습니다.
+<br/>
+<br/>
+
+<code> 생생하고 신뢰도 높은 리뷰를 확인할 수 있습니다. </code>
+ <br/>
+ 
+저희의 리뷰 시스템은 QR 인증과 쿠키를 활용하여 더욱 신뢰할 수 있는 리뷰를 제공합니다.
+
+음식을 직접 주문한 손님들에 의해 작성된 리뷰만을 수용하며, 이를 통해 손님들은 생생하고 신뢰할 수 있는 정보를 얻을 수 있습니다.
+
+더불어, 리뷰 작성은 음식을 주문한 후 2시간 이내에 이루어져야 하므로, 음식을 먹은지 얼마 안 된 손님들의 의견만이 반영됩니다. 이러한 체계는 가게 입장에서도 실시간으로 피드백을 받을 수 있어, 빠른 조치와 서비스 개선에 도움을 줍니다.
+
+<br/>
+<br/>
+
+<code> 가게 주인은 매장의 전반적인 관리를 손쉽게 수행할 수 있습니다. </code>
+ <br/>
+ 
+매장 내 테이블 현황을 실시간으로 파악하고, 주문 대기열을 즉각 확인할 수 있습니다.
+
+각 주문의 테이블 출처와 처리 상태를 간편하게 확인할 수 있으며, 메뉴판을 손쉽게 추가, 삭제, 수정할 수 있습니다.
+
+더불어, 가게 사정에 따라 메뉴를 변경해야 할 경우에도 즉각적으로 메뉴판을 업데이트할 수 있습니다.
+<br/>
+<br/>
+
+## ✨ 기술 스택
+<div align=left>
+  <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/Javascript-DB7093?style=for-the-badge&logo=javascript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
+  <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+</div>
