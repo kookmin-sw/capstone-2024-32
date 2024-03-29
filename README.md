@@ -157,24 +157,27 @@ EZOrder를 통해 이러한 비용을 혁신적으로 줄일 수 있습니다.
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
 
-
+<br/>
+<br/>
 
 ## 🔧 사용법
 
 ```
-1. application.yaml에 DB 설정을 마친다. 
+1. application.yaml에 DB 설정을 마친다. (spring.datasource 부분)
 2. MySQL에서 yaml에 적은 DB 설정을 토대로 schema를 만든다.
 3. 만약 로컬이 아닌 ec2에서 가동한다면 해당 서버의 기본 주소를 qrcode.url에 적는다. 로컬이라면 그대로 둔다.
 4. 그 후에 코드를 가동하면 작동한다.
 ```
+<br/>
+<br/>
 
 application.yaml 예시
 ```yaml
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/web-order-db?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
-    username: root
-    password: #비밀번호는 실제 실행시에만 작성할 것.
+    url: jdbc:mysql://localhost:3306/web-order-db?characterEncoding=UTF-8&serverTimezone=Asia/Seoul #이곳에 DB의 url을 적으면 된다.
+    username: root #DB 설정상 username을 작성할 것.
+    password: #DB 설정상 password를 작성할 것
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql : true
@@ -194,5 +197,8 @@ jwt:
   secret: xIjvWyzFNiIL16uC7Z4vtoY6nkCKk+wjN/ruzg8lkX6t09fC+qHWMRG+4RtoYakCOQWq1bmyYH34oab36pf8Tw==
 
 qrcode:
-  url: localhost:8080
+  url: localhost:8080 #서버가 qr코드를 생성할 때 사용하는 기본 주소를 작성할 것
 ```
+
+<br/>
+<br/>
