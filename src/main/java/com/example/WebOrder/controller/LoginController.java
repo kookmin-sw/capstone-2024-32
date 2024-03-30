@@ -40,18 +40,18 @@ public class LoginController {
         return "html/loginForm";
     }
 
-    @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginFormDto") LoginFormDto dto){
-        log.info("로그인 시도");
-        if (loginService.isLoginAttemptValid(dto)){
-            log.info("로그인 성공");
-            return "redirect:/home";
-        }
-        else {
-            log.info("로그인 실패");
-            return "redirect:/login?error=true";
-        }
-    }
+//    @PostMapping("/login")
+//    public String login(@Valid @ModelAttribute("loginFormDto") LoginFormDto dto){
+//        log.info("로그인 시도");
+//        if (loginService.isLoginAttemptValid(dto)){
+//            log.info("로그인 성공");
+//            return "redirect:/home";
+//        }
+//        else {
+//            log.info("로그인 실패");
+//            return "redirect:/login?error=true";
+//        }
+//    }
 
     @GetMapping("/register")
     public String registerForm(@ModelAttribute("userFormDto") UserFormDto dto) {
