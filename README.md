@@ -12,6 +12,7 @@
   - [✅ 기대 효과](#-기대-효과)
   - [✨ 기술 스택](#-기술-스택)
   - [🔧 사용법](#-사용법)
+  - [🗃️ 관련 자료](#-관련-자료)
 
 <br/>
 
@@ -201,3 +202,14 @@ qrcode:
 
 <br/>
 <br/>
+
+
+## 🗃️ 관련 자료
+
+<br/>
+
+[중간보고서](https://github.com/kookmin-sw/capstone-2024-32/blob/master/docs/%EC%BA%A1%EC%8A%A4%ED%86%A4%EB%94%94%EC%9E%90%EC%9D%B8_%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%EC%84%9C_32%ED%8C%80.pdf)
+
+<br/>
+
+[중간발표자료](https://github.com/kookmin-sw/capstone-2024-32/blob/master/docs/%EC%A4%91%EA%B0%84%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_32%ED%8C%80.pdf)
