@@ -1,7 +1,9 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.User;
+import com.example.WebOrder.service.ItemService;
 import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.OrderPasswordService;
 import com.example.WebOrder.service.SeatService;
@@ -23,11 +25,13 @@ public class OwnerController {
     private final OrderPasswordService orderPasswordService;
     private final LoginService loginService;
     private final SeatService seatService;
+    private final ItemService itemService;
 
-    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService) {
+    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService) {
         this.orderPasswordService = orderPasswordService;
         this.loginService = loginService;
         this.seatService = seatService;
+        this.itemService = itemService;
     }
 
 
@@ -141,32 +145,52 @@ public class OwnerController {
 
     //메뉴 전체보기
     @GetMapping("/owner/menu")
-    public String getWholeMenuByOwner(){
-        return null;
+    public String getWholeMenuByOwner(Model model){
+        Long userId = loginService.getCurrentUserEntity().getId();
+        model.addAttribute("itemStat", itemService.getBestItemStat(userId));
+        model.addAttribute("itemList",itemService.getAllItemsOfUser(userId));
+
+        return "html/menuManage";
     }
 
     //메뉴 상세보기
-    @GetMapping("/owner/menu/{menuId}")
+    @GetMapping("/owner/menu/detail/{itemId}")
     public String getMenuByOwner() {
         return null;
     }
 
     //메뉴 추가하기
-    @PostMapping("/owner/menu")
-    public String addMenuByOwner(){
-        return null;
+
+    @GetMapping("/owner/menu/create")
+    public String getMenuCreateForm(Model model){
+        model.addAttribute("isCreate", true);
+        model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
+        return "html/menuForm";
+    }
+    @PostMapping("/owner/menu/create")
+    public String addMenuByOwner(ItemDto dto){
+        itemService.createItem(loginService.getCurrentUserEntity().getId(), dto);
+        return "redirect:/owner/menu";
     }
 
     //메뉴 삭제하기
-    @PostMapping("/owner/menu/{menuId}/delete")
-    public String deleteMenuByOwner(){
-        return null;
+    @PostMapping("/owner/menu/delete/{itemId}")
+    public String deleteMenuByOwner(@PathVariable("itemId") Long itemId){
+        itemService.deleteItem(loginService.getCurrentUserEntity().getId(), itemId);
+        return "redirect:/owner/menu";
     }
 
     //메뉴 업데이트하기
-    @PostMapping("/onwer/menu/{menuId}/update")
-    public String updateMenuByOwner(){
-        return null;
+    @GetMapping("/owner/menu/update/{itemId}")
+    public String getMenuUpdateForm(@PathVariable("itemId") Long itemId, Model model){
+        model.addAttribute("isCreate", false);
+        model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
+        return "html/menuForm";
+    }
+    @PostMapping("/onwer/menu/update/{itemId}")
+    public String updateMenuByOwner(@PathVariable("itemId") Long itemId, ItemDto dto){
+        itemService.updateItem(loginService.getCurrentUserEntity().getId(), itemId, dto);
+        return "redirect:/owner/menu";
     }
 
 }
