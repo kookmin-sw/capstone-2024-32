@@ -1,0 +1,53 @@
+.menu-form {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f4f4f4;
+    border-radius: 1rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+}
+.menu-form h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+.menu-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+.menu-form input[type="text"] {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border: 0.1rem solid #ccc;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+}
+
+#description,
+#descriptionUpdate{
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border: 0.1rem solid #ccc;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    min-height: 10rem;
+    overflow-y: auto; /* 세로 스크롤을 추가하여 내용이 넘칠 경우 스크롤이 생기도록 합니다. */
+}
+
+.menu-form input[type="submit"] {
+    width: 100%;
+    padding: 1.2rem;
+    border: none;
+    border-radius: 1rem;
+    background-color: #fc9d7a;
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.menu-form input[type="submit"]:hover {
+    background-color: rgb(255, 138, 94);
+}
