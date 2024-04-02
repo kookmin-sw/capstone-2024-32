@@ -11,6 +11,8 @@
   - [🚀 프로젝트 구조](#-프로젝트-구조)
   - [✅ 기대 효과](#-기대-효과)
   - [✨ 기술 스택](#-기술-스택)
+  - [🔧 사용법](#-사용법)
+  - [🗃️ 관련 자료](#-관련-자료)
 
 <br/>
 
@@ -18,8 +20,6 @@
 
 <code>음식점 QR 주문 웹 서비스</code>
 <br/>
-
-<aside>
 
 손님은 QR 코드를 찍기만 해도 웹으로 쉽게 주문을 할 수 있고, 가게 사장님은 주문 내역을 쉽게 보고 처리할 수 있도록 도와주는 것을 목표로 합니다.
 
@@ -156,3 +156,60 @@ EZOrder를 통해 이러한 비용을 혁신적으로 줄일 수 있습니다.
   <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=html5&logoColor=white">
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
+
+<br/>
+<br/>
+
+## 🔧 사용법
+
+```
+1. application.yaml에 DB 설정을 마친다. (spring.datasource 부분)
+2. MySQL에서 yaml에 적은 DB 설정을 토대로 schema를 만든다.
+3. 만약 로컬이 아닌 ec2에서 가동한다면 해당 서버의 기본 주소를 qrcode.url에 적는다. 로컬이라면 그대로 둔다.
+4. 그 후에 코드를 가동하면 작동한다.
+```
+<br/>
+<br/>
+
+application.yaml 예시
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/web-order-db?characterEncoding=UTF-8&serverTimezone=Asia/Seoul #이곳에 DB의 url을 적으면 된다.
+    username: root #DB 설정상 username을 작성할 것.
+    password: #DB 설정상 password를 작성할 것
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql : true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+  web:
+    resources:
+      static-locations: file:media/,classpath:/static
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+jwt:
+  secret: xIjvWyzFNiIL16uC7Z4vtoY6nkCKk+wjN/ruzg8lkX6t09fC+qHWMRG+4RtoYakCOQWq1bmyYH34oab36pf8Tw==
+
+qrcode:
+  url: localhost:8080 #서버가 qr코드를 생성할 때 사용하는 기본 주소를 작성할 것
+```
+
+<br/>
+<br/>
+
+
+## 🗃️ 관련 자료
+
+<br/>
+
+[중간보고서](https://github.com/kookmin-sw/capstone-2024-32/blob/master/docs/%EC%BA%A1%EC%8A%A4%ED%86%A4%EB%94%94%EC%9E%90%EC%9D%B8_%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%EC%84%9C_32%ED%8C%80.pdf)
+
+<br/>
+
+[중간발표자료](https://github.com/kookmin-sw/capstone-2024-32/blob/master/docs/%EC%A4%91%EA%B0%84%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_32%ED%8C%80.pdf)

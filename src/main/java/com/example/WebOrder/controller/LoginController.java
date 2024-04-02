@@ -2,19 +2,19 @@ package com.example.WebOrder.controller;
 
 import com.example.WebOrder.dto.LoginFormDto;
 import com.example.WebOrder.dto.UserFormDto;
-import com.example.WebOrder.entity.User;
 import com.example.WebOrder.service.LoginService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+
+
+// 로그인과 관련된 url을 매핑한 컨트롤러
 @Slf4j
 @Controller
 public class LoginController {
@@ -24,10 +24,6 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @GetMapping("index")
-    public String getIndex(){
-        return "html/index";
-    }
 
     @GetMapping("/home")
     public String getHome(){
@@ -40,18 +36,6 @@ public class LoginController {
         return "html/loginForm";
     }
 
-    @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginFormDto") LoginFormDto dto){
-        log.info("로그인 시도");
-        if (loginService.isLoginAttemptValid(dto)){
-            log.info("로그인 성공");
-            return "redirect:/home";
-        }
-        else {
-            log.info("로그인 실패");
-            return "redirect:/login?error=true";
-        }
-    }
 
     @GetMapping("/register")
     public String registerForm(@ModelAttribute("userFormDto") UserFormDto dto) {
