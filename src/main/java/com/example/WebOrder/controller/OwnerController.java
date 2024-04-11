@@ -3,19 +3,13 @@ package com.example.WebOrder.controller;
 import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.User;
-import com.example.WebOrder.service.ItemService;
-import com.example.WebOrder.service.LoginService;
-import com.example.WebOrder.service.OrderPasswordService;
-import com.example.WebOrder.service.SeatService;
+import com.example.WebOrder.service.*;
 import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -26,12 +20,14 @@ public class OwnerController {
     private final LoginService loginService;
     private final SeatService seatService;
     private final ItemService itemService;
+    private final ReviewService reviewService;
 
-    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService) {
+    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService, ReviewService reviewService) {
         this.orderPasswordService = orderPasswordService;
         this.loginService = loginService;
         this.seatService = seatService;
         this.itemService = itemService;
+        this.reviewService = reviewService;
     }
 
 
@@ -155,8 +151,10 @@ public class OwnerController {
 
     //메뉴 상세보기
     @GetMapping("/owner/menu/detail/{itemId}")
-    public String getMenuByOwner() {
-        return null;
+    public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model) {
+        model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
+        model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId));
+        return "html/menuDetail";
     }
 
     //메뉴 추가하기
@@ -184,11 +182,11 @@ public class OwnerController {
     @GetMapping("/owner/menu/update/{itemId}")
     public String getMenuUpdateForm(@PathVariable("itemId") Long itemId, Model model){
         model.addAttribute("isCreate", false);
-        model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
+        model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
         return "html/menuForm";
     }
-    @PostMapping("/onwer/menu/update/{itemId}")
-    public String updateMenuByOwner(@PathVariable("itemId") Long itemId, ItemDto dto){
+    @PostMapping("/owner/menu/update/{itemId}")
+    public String updateMenuByOwner(@PathVariable("itemId") Long itemId, @ModelAttribute ItemDto dto){
         itemService.updateItem(loginService.getCurrentUserEntity().getId(), itemId, dto);
         return "redirect:/owner/menu";
     }
