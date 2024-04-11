@@ -111,10 +111,10 @@
         <textarea id="description" name="description" rows="6" required></textarea>
         <label for="price">가격:</label>
         <input type="text" id="price" name="price" required>
-        <input type="submit" value="완료">
+        <button type="submit">완료</button>
     </form>
 
-    <form class="menu-form" th:if="${!isCreate}" th:action="/owner/menu/${itemInfo.itemId}/update" method="post">
+    <form class="menu-form" th:if="${!isCreate}" th:action="@{'/owner/menu/update/' + ${itemInfo.itemId}}" method="post">
         <h2>메뉴 수정하기</h2>
         <label for="nameUpdate">메뉴 이름:</label>
         <input type="text" id="nameUpdate" name="name" th:value="${itemInfo.name}" required>
@@ -122,7 +122,7 @@
         <textarea id="descriptionUpdate" name="description" rows="6" th:value="${itemInfo.description}" required></textarea>
         <label for="priceUpdate">가격:</label>
         <input type="text" id="priceUpdate" name="price" th:value="${itemInfo.price}" required>
-        <input type="submit" value="수정하기">
+        <button type="submit">수정하기</button>
     </form>
 
 

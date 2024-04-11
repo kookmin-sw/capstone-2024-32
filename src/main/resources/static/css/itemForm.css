@@ -37,7 +37,7 @@
     overflow-y: auto; /* 세로 스크롤을 추가하여 내용이 넘칠 경우 스크롤이 생기도록 합니다. */
 }
 
-.menu-form input[type="submit"] {
+.menu-form button {
     width: 100%;
     padding: 1.2rem;
     border: none;
@@ -48,6 +48,6 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.menu-form input[type="submit"]:hover {
+.menu-form button:hover {
     background-color: rgb(255, 138, 94);
 }
