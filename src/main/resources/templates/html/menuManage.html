@@ -127,18 +127,25 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="item : ${itemList}" th:id="${item.itemId}">
+      <tr th:each="item : ${itemList}" th:id="${item.itemId}" th:onclick="'redirectToDetail(\'' + ${item.itemId} + '\')'">
         <td th:text="${item.name}">파멸의 김치찌개(파, 멸치)</td>
         <td th:text="${item.price}">9999</td>
         <td th:text="${item.avgRate}">2.5</td>
         <td>
-          <form  th:action="${'/owner/menu/delete/' + item.itemId }" method="post">
+          <form th:action="@{'/owner/menu/delete/' + ${item.itemId}}" method="post">
             <button type="submit">삭제</button>
           </form>
         </td>
       </tr>
       </tbody>
     </table>
+
+    <script>
+      function redirectToDetail(itemId) {
+        var url = '/owner/menu/detail/' + itemId;
+        window.location.href = url; // 클릭 시 해당 URL로 페이지 이동
+      }
+    </script>
   </div>
 </div>
 
