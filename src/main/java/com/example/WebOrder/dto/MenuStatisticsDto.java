@@ -12,7 +12,7 @@ public class MenuStatisticsDto {
 
     //가장 별점이 좋은 메뉴
     private String bestRateMenu;
-    private Long bestRateNum;
+    private Integer bestRateNum;
 
 
     //가장 많이 주문된 메뉴
