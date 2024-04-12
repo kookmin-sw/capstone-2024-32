@@ -48,5 +48,14 @@ public class ReviewService {
         return returnValue;
     }
 
+    public List<ReviewDto> getReviewsOfItem(Long itemId){
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) throw new RuntimeException("엔티티 없음");
+        Item item = optionalItem.get();
+
+        List<Review> reviews = item.getReviews();
+        return reviews.stream().map(ReviewDto::fromEntity).toList();
+    }
+
 
 }

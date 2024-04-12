@@ -285,6 +285,14 @@ body.dark .switch::before {
     padding: 8px 40px;
 }
 
+.container {
+    position: relative;
+    height: 100vh;
+    transition: var(--tran-05);
+    left: 250px; /* sidebar가 펼쳐진 경우에는 sidebar의 너비만큼 오른쪽으로 이동하도록 설정 */
+    width: calc(100% - 250px); /* sidebar가 펼쳐진 경우에는 화면 전체 너비에서 sidebar의 너비를 뺀 만큼의 너비를 차지하도록 설정 */
+}
+
 .sidebar.close ~ .container {
     left: 88px;
     width: calc(100% - 88px);
