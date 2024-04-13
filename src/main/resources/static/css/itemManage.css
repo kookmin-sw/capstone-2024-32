@@ -1,0 +1,78 @@
+.item-container {
+    display: flex;
+    flex-direction: column; /* 수직 배치 */
+    align-items: center; /* 수평 가운데 정렬 */
+}
+
+.item-top-container {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* 좌우로 최대한 펼쳐 배치 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+
+.item-container {
+    width: 80%; /* 아이템 컨테이너의 너비 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 1vh; /* 안쪽 여백 설정 */
+    background-color: #f0f0f0; /* 배경색 설정 */
+    border-radius: 2rem; /* 테두리 모서리를 둥글게 설정 */
+}
+
+.item-stat-card {
+    background-color: #f0f0f0;
+    margin-bottom: 20px; /* 아이템 통계 카드와 테이블 사이 간격 설정 */
+    margin-right: 5%; /* 제일 중요! item-stat-card와 item-button-container의 간격을 조절하기 위해 이것만 width:45% 잡고 간격 5% 줌 */
+    width: 45%;
+    border: 2px solid #fc9d7a;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.item-stat-label {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.item-button-container{
+    margin-bottom: 20px;
+    width: 50%;
+}
+
+.item-button {
+    display: inline-block;
+    padding: 8px 16px; /* 원하는 패딩 값으로 조정하세요 */
+    background-color: #fc9d7a; /* 배경색 */
+    color: black; /* 글자색 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    text-decoration: none; /* 링크에 밑줄 제거 */
+    border-radius: 4px; /* 버튼의 모서리를 둥글게 만듭니다 */
+    border: none; /* 테두리 제거 */
+    cursor: pointer; /* 포인터 커서로 변경하여 클릭 가능한 상태로 만듭니다 */
+    transition: background-color 0.3s; /* 배경색 변경에 애니메이션 효과를 줍니다 */
+}
+
+.item-button:hover {
+    background-color: #f66a3a;
+}
+
+.item-list-container {
+    width: 100%; /* 테이블 너비 설정 */
+    border-collapse: collapse; /* 테이블 셀 경계를 병합 */
+}
+
+.item-list-container th,
+.item-list-container td {
+    padding: 10px; /* 셀 안의 내용과 경계 사이 간격 설정 */
+    text-align: center; /* 셀 안의 텍스트 가운데 정렬 */
+}
+
+.item-list-container th {
+    background-color: #f2f2f2; /* 테이블 머릿글 배경색 설정 */
+}
+
+.item-list-container tr:nth-child(even) {
+    background-color: #f9f9f9; /* 짝수 행 배경색 설정 */
+}
