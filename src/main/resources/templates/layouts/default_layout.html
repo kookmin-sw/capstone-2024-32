@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <th:block th:insert="~{fragments/config :: configFragment}"></th:block>
+    <title>Layout</title>
+</head>
+
+<body>
+
+    <nav th:replace="~{fragments/sidebar :: sidebarFragment}"></nav>
+
+    <th:block layout:fragment="content" th:class="container">
+
+    </th:block>
+
+</body>
+</html>

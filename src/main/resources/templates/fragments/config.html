@@ -1,0 +1,15 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <th:block th:fragment="configFragment">
+
+        <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+        <link rel="stylesheet" th:href="@{https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css}" >
+        <link th:href="@{https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap}" rel="stylesheet">
+        <script type="text/javascript" th:src="@{https://kit.fontawesome.com/8eb04a528c.js}" crossorigin="anonymous"></script>
+
+        <th:block layout:fragment="css"></th:block>
+        <th:block layout:fragment="script"></th:block>
+
+    </th:block>
+</html>
