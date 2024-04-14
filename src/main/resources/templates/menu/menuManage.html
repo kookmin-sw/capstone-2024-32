@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+<head>
+  <title>메뉴 관리</title>
+  <th:block layout:fragment="css">
+      <link rel="stylesheet" th:href="@{/css/itemManage.css}" >
+  </th:block>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!--메뉴 관리 관련 내용 -->
+        <div class="item-container">
+          <div class="item-top-container">
+              <div class="item-stat-card">
+                  <div class="item-stat-label">가장 별점이 좋은 메뉴</div>
+                  <div class="highest-rate-item" th:text="${itemStat.bestRateMenu + ' ' + itemStat.bestRateNum + '/5.0'}">단무지 (4.5/5.0)</div>
+                  <div class="item-stat-label">가장 주문이 많은 메뉴</div>
+                  <div class="most-ordered-item" th:text="${itemStat.mostOrderedMenu + ' ' + itemStat.mostOrderedNum + '회'}">김치 (105회)</div>
+              </div>
+
+              <div class="item-button-container">
+                  <a class="item-button" th:href="@{/owner/menu/create}">메뉴 만들기</a>
+              </div>
+          </div>
+
+
+          <table class="item-list-container">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Price</th>
+                      <th>Average Rate</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr th:each="item : ${itemList}" th:id="${item.itemId}" th:onclick="'redirectToDetail(\'' + ${item.itemId} + '\')'">
+                      <td th:text="${item.name}">파멸의 김치찌개(파, 멸치)</td>
+                      <td th:text="${item.price}">9999</td>
+                      <td th:text="${item.avgRate}">2.5</td>
+                      <td>
+                          <form th:action="@{'/owner/menu/delete/' + ${item.itemId}}" method="post">
+                          <button type="submit">삭제</button>
+                          </form>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+
+          <script>
+              function redirectToDetail(itemId) {
+                  var url = '/owner/menu/detail/' + itemId;
+                  window.location.href = url; // 클릭 시 해당 URL로 페이지 이동
+              }
+          </script>
+        </div>
+    </div>
+
+</body>
+</html>
