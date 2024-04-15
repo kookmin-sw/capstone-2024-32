@@ -133,11 +133,7 @@ public class OwnerController {
         return "html/qrcode";
     }
 
-    //주문 비밀번호 페이지 보기
-    @GetMapping("/owner/code/password")
-    public String getPasswordOfShopByOwner(){
-        return null;
-    }
+
 
     //메뉴 전체보기
     @GetMapping("/owner/menu")
