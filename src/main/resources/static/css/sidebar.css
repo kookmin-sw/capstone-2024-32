@@ -269,7 +269,7 @@ body.dark .switch::before {
     left: 24px;
 }
 
-.home {
+.container {
     position: relative;
     height: 100vh;
     left: 250px;
@@ -278,20 +278,13 @@ body.dark .switch::before {
     transition: var(--tran-05);
 }
 
-.home .text {
+.container .text {
     font-size: 30px;
     font-weight: 500;
     color: var(--text-color);
     padding: 8px 40px;
 }
 
-.container {
-    position: relative;
-    height: 100vh;
-    transition: var(--tran-05);
-    left: 250px; /* sidebar가 펼쳐진 경우에는 sidebar의 너비만큼 오른쪽으로 이동하도록 설정 */
-    width: calc(100% - 250px); /* sidebar가 펼쳐진 경우에는 화면 전체 너비에서 sidebar의 너비를 뺀 만큼의 너비를 차지하도록 설정 */
-}
 
 .sidebar.close ~ .container {
     left: 88px;
