@@ -142,7 +142,7 @@ public class OwnerController {
         model.addAttribute("itemStat", itemService.getBestItemStat(userId));
         model.addAttribute("itemList",itemService.getAllItemsOfUser(userId));
 
-        return "html/menuManage";
+        return "menu/menuManage";
     }
 
     //메뉴 상세보기
@@ -150,7 +150,7 @@ public class OwnerController {
     public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model) {
         model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
         model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId));
-        return "html/menuDetail";
+        return "menu/menuDetail";
     }
 
     //메뉴 추가하기
@@ -159,7 +159,7 @@ public class OwnerController {
     public String getMenuCreateForm(Model model){
         model.addAttribute("isCreate", true);
         model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
-        return "html/menuForm";
+        return "menu/menuForm";
     }
     @PostMapping("/owner/menu/create")
     public String addMenuByOwner(ItemDto dto){
@@ -179,7 +179,7 @@ public class OwnerController {
     public String getMenuUpdateForm(@PathVariable("itemId") Long itemId, Model model){
         model.addAttribute("isCreate", false);
         model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
-        return "html/menuForm";
+        return "menu/menuForm";
     }
     @PostMapping("/owner/menu/update/{itemId}")
     public String updateMenuByOwner(@PathVariable("itemId") Long itemId, @ModelAttribute ItemDto dto){
