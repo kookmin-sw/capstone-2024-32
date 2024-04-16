@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/sockjs.min.js"></script>
+    <script src="/js/stomp.min.js"></script>
+    <title>인증번호</title>
+</head>
+<body>
+    <h1>Entrance Code</h1>
+    <div id="entranceCode" th:text="${entranceCode}"></div>
+</body>
+<script>
+    let stompClient = null;
+
+    function connect() {
+        let socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/entranceCode', function(message) {
+                showEntranceCode(message.body);
+            });
+        });
+    }
+
+    function showEntranceCode(code) {
+        document.getElementById('entranceCode').innerText = code;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        connect();
+    });
+</script>
+</html>
