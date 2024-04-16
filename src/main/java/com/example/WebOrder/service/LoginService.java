@@ -22,10 +22,12 @@ import java.util.Optional;
 public class LoginService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrderPasswordService orderPasswordService;
 
-    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, OrderPasswordService orderPasswordService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.orderPasswordService = orderPasswordService;
     }
 
     @Override
@@ -67,7 +69,10 @@ public class LoginService implements UserDetailsService {
         user.setName(dto.getName());
         user.setSeats(new ArrayList<>());
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        orderPasswordService.updateEntranceCode(user.getId());
+        return user;
     }
 
 

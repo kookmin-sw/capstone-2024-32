@@ -32,6 +32,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Seat> seats = new ArrayList<>();
 
+    private String entranceCode;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
