@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/orderForm.css}">
+    <title>Title</title>
+</head>
+<body>
+    <form class="wrapper" method="post">
+        <div class="screen-backdrop"></div>
+        <div class="screen home-screen">
+            <div class="head-wrapper">
+                <div class="menu-btn">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                    >
+                        <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+                        />
+                    </svg>
+                </div>
+                <div class="menu">
+                    <div class="content">
+                        <h1>메뉴</h1>
+                        <p>원하시는 메뉴를 주문하세요!</p>
+                    </div>
+                </div>
+            </div>
+            <!-- categories -->
+            <div class="categories-wrapper">
+                <div class="categories">
+                    <div class="category">
+                        <th:block th:each="item : ${items}">
+                            <div th:for="item" class="item" th:attr="item-id=${item.itemId}" onclick="clickItem(this)">
+                                <div class="content">
+                                    <div>
+                                        <input type="hidden" th:value="${item.itemId}" class="item_id">
+                                        <h1 th:text="${item.name}">아이템 이름</h1>
+                                        <h3 th:text="${item.price} + 원">아이템 가격</h3>
+                                    </div>
+                                </div>
+                                <img src="/images/burger.jpg" alt="">
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메뉴 상세 + 리뷰 보기 - 분리 예정 -->
+        <div class="screen item-screen">
+            <div class="head-wrapper">
+                <div class="back-btn">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+                        />
+                    </svg>
+                </div>
+            </div>
+            <div class="item-details">
+                <img src="/images/burger.jpg" alt="" id="item-img">
+                <div class="details">
+                    <h1>아이템 이름</h1>
+                    <p>아이템 설명</p>
+                    <p>아이템 가격</p>
+                    <label for="count">수량</label>
+                    <input type="number" id="count" min="1" max="10" value="1">
+                </div>
+            </div>
+            <div class="reviews-wrapper">
+                <div class="reviews">
+                    <div class="review-wrapper">
+                        <div class="review">
+                            <p>리뷰내용</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 리뷰 추가 버튼 -->
+        <div class="add-review-btn">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+            >
+                <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                />
+            </svg>
+        </div>
+
+        <!-- backdrop -->
+        <div class="black-backdrop"></div>
+        <!-- 리뷰 추가 -->
+        <div class="add-review">
+            <div class="add-review-backdrop"></div>
+            <h1 class="heading">리뷰 쓰기</h1>
+            <div class="input-group">
+                <label>별점</label>
+            </div>
+            <div class="input-group">
+                <label for="review-input">리뷰</label>
+                <input type="text" id="review-input" required>
+            </div>
+            <div class="btns">
+                <button class="cancel-btn">취소</button>
+                <button class="add-btn">추가</button>
+            </div>
+        </div>
+
+        <!-- <section class="menu">
+            <div class="list">
+                <li th:each="item : ${items}">
+                    <input type="hidden" th:value="${item.itemId}" class="item_id">
+                    <span th:value="${item.name}" class="item_name"></span>
+                    <span th:value="${item.price}" class="item_price"></span>
+                    <span th:value="${item.description}" class="item_description"></span>
+                    <img th:src="${item.itemImageUrl}" alt="">
+                </li>
+            </div>
+        </section> -->
+    </form>
+    <script th:src="@{/js/orderForm.js}"></script>
+    <script th:inline="javascript">
+            let items = [[${items}]];
+            function clickItem(element) {
+                let item_id = parseInt(element.getAttribute("item-id"));
+                let item = findItemById(item_id);
+                wrapper.classList.toggle("show-item");
+                console.log(item);
+            }
+
+            function findItemById(id) {
+                return items.find(item => item.itemId === id);
+            }
+        // function sendItem(item) {
+        //     let tmp = item;
+        // }
+    </script>
+</body>
+</html>

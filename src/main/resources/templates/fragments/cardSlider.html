@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <section th:fragment="cardSliderFragment(items)">
+        <div class="swiper mySwiper container">
+            <div class="swiper-wrapper content">
+
+                <div class="swiper-slide card" th:each="item : ${items}">
+                    <div class="card-content">
+                        <div class="image">
+                            <img th:src="${item.itemImageUrl}" alt="" />
+                        </div>
+
+                        <div class="name-profession">
+                            <span class="name" th:value="${item.itemId}" th:text="${item.name}">음식이름</span>
+                            <span class="price" th:text="${item.price}">설명</span>
+                        </div>
+
+                        <div class="button">
+                            <button class="aboutMe">수량</button>
+                            <button class="hireMe">담기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+
+        <!-- Swiper JS -->
+        <script th:src="@{https://unpkg.com/swiper/swiper-bundle.min.js}"></script>
+
+        <!-- Initialize Swiper -->
+        <script>
+            var swiper = new Swiper(".mySwiper", {
+                slidesPerView: 3,
+                spaceBetween: 30,
+                slidesPerGroup: 3,
+                loop: true,
+                loopFillGroupWithBlank: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+            });
+        </script>
+    </section>
+
+
+</html>
