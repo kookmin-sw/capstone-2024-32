@@ -1,0 +1,52 @@
+package com.example.WebOrder.controller;
+
+import com.example.WebOrder.dto.OrderItemDto;
+import com.example.WebOrder.service.ItemService;
+import com.example.WebOrder.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@Controller
+@Slf4j
+public class OrderController {
+
+    private final ItemService itemService;
+    private final OrderService orderService;
+
+    public OrderController(ItemService itemService, OrderService orderService) {
+        this.itemService = itemService;
+        this.orderService = orderService;
+    }
+
+
+    // 인증을 성공했을 시 접근가능한 page
+    @GetMapping("/{userId}/{seatId}/order")
+    public String getShopPageByGuest(@PathVariable Long userId, @PathVariable Long seatId, Model model){
+        // 인증 과정 했다 치고
+        model.addAttribute("items",itemService.getAllItemsOfUser(userId));
+        return "order/orderForm";
+    }
+
+    //주문하기
+    @PostMapping("/{userId}/{seatId}/order")
+    public String order(@PathVariable Long seatId, @RequestBody String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        OrderItemDto[] orderItemDtoList = objectMapper.readValue(json, OrderItemDto[].class);
+        orderService.order(seatId, orderItemDtoList);
+        log.info("주문 성공");
+        return "redirect:/orderSuccess";
+    }
+
+    @GetMapping("/orderSuccess")
+    public String orderSuccess(){
+        return "order/orderSuccess";
+    }
+
+}
