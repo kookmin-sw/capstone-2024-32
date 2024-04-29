@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>회원정보</title>
-  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-  <script src="/js/jquery-3.7.1.min.js"></script>
+  <th:block layout:fragment="script">
+    <script src="/js/jquery-3.7.1.min.js"></script>
+  </th:block>
 </head>
 <body>
 
-<div>유저이름</div>
-<div th:text="${profile.username}"></div>
+    <div layout:fragment="content">
+        <div>유저이름</div>
+        <div th:text="${profile.username}"></div>
 
-<div>이름</div>
-<div th:text="${profile.name}"></div>
+        <div>이름</div>
+        <div th:text="${profile.name}"></div>
 
-<a href="/myprofile/edit" th:if="${isMine}">수정하기</a>
-
+        <a href="/myprofile/edit" th:if="${isMine}">수정하기</a>
+    </div>
 </body>
 </html>

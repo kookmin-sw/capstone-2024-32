@@ -32,4 +32,46 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문 상태 [ORDER, PROGRESS, COMPLETE]
+
+    // 연관관계 메서드
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    // 생성 메서드
+    public static Order createOrder(Seat seat, List<OrderItem> orderItems) {
+        Order order = new Order();
+        order.setSeat(seat);
+        for (OrderItem orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDateTime(LocalDateTime.now());
+        return order;
+    }
+
+    // 비즈니스 로직
+    /**
+     * 주문 취소
+     */
+    public void cancel() {
+        if (status == OrderStatus.PROGRESS || status == OrderStatus.COMPLETE) {
+            throw new IllegalStateException("진행 중 또는 완료된 주문입니다.");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+    }
+
+    // 조회 로직
+
+    /**
+     * 전체 주문 가격 조회
+     */
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
 }

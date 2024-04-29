@@ -2,10 +2,12 @@ package com.example.WebOrder.dto;
 
 import com.example.WebOrder.entity.Order;
 import com.example.WebOrder.entity.OrderItem;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,15 +15,16 @@ public class OrderDto {
     private Long id;
     private Long seatId;
     private String orderItems;
-    private LocalDateTime orderedTime;
+    private LocalDateTime orderDateTime;
     private String orderStatus;
+
 
     public static OrderDto fromEntity(Order order){
         OrderDto dto = new OrderDto();
         dto.setId(order.getId());
         dto.setSeatId(order.getSeat().getId());
 
-        dto.setOrderedTime(order.getOrderDateTime());
+        dto.setOrderDateTime(order.getOrderDateTime());
         dto.setOrderStatus(order.getStatus().name());
 
         StringBuilder sb = new StringBuilder();
