@@ -72,7 +72,7 @@ public class SeatService {
         int bill = 0;
         for (Order order : seat.getOrders()){
             for (OrderItem orderItem : order.getOrderItems()){
-                bill += orderItem.getOrderPrice();
+                bill += orderItem.getTotalPrice();
             }
         }
 
