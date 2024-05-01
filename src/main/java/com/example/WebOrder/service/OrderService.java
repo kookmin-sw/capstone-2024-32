@@ -9,9 +9,11 @@ import com.example.WebOrder.repository.SeatRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +28,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final SeatRepository seatRepository;
     private final ItemRepository itemRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public OrderService(LoginService loginService, OrderRepository orderRepository, SeatRepository seatRepository, ItemRepository itemRepository) {
+    public OrderService(LoginService loginService, OrderRepository orderRepository, SeatRepository seatRepository, ItemRepository itemRepository, SimpMessagingTemplate simpMessagingTemplate) {
         this.loginService = loginService;
         this.orderRepository = orderRepository;
         this.seatRepository = seatRepository;
         this.itemRepository = itemRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -57,7 +61,7 @@ public class OrderService {
     public List<OrderDto> getUnfinishedOrder(Long userId){
         if (!loginService.isCurrentUserAuthenticated(userId)) throw new RuntimeException("권한없음");
 
-        List<Order> orderList = orderRepository.findOrdersByUserIdAndStatus(userId, OrderStatus.ORDER);
+        List<Order> orderList = orderRepository.findOrdersByUserIdAndStatusIn(userId, Arrays.asList(OrderStatus.ORDER, OrderStatus.PROGRESS));
 
         return orderList.stream().map(OrderDto::fromEntity).toList();
     }
@@ -69,4 +73,23 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
+    public void changeOrderStatus(Long userId, Long orderId, String action) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isEmpty()) throw new RuntimeException("엔티티없음");
+        Order order = optionalOrder.get();
+
+        if (action.equals("완료")){
+            order.setStatus(OrderStatus.COMPLETE);
+            orderRepository.save(order);
+        }
+        else if (action.equals("진행중")){
+            order.setStatus(OrderStatus.PROGRESS);
+            orderRepository.save(order);
+        }
+        else if (action.equals("취소")){
+            deleteOrder(userId, orderId);
+        }
+
+        simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(userId));
+    }
 }
