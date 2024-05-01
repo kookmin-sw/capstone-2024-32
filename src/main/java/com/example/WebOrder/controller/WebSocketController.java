@@ -1,28 +1,41 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.dto.OrderDto;
 import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.OrderPasswordService;
+import com.example.WebOrder.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
 public class WebSocketController {
     private final LoginService loginService;
+    private final OrderService orderService;
     private final OrderPasswordService orderPasswordService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public WebSocketController(LoginService loginService, OrderPasswordService orderPasswordService) {
+    public WebSocketController(LoginService loginService, OrderService orderService, OrderPasswordService orderPasswordService, SimpMessagingTemplate simpMessagingTemplate) {
         this.loginService = loginService;
+        this.orderService = orderService;
         this.orderPasswordService = orderPasswordService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
+    //주문 인증번호 관련
     // 웹소켓 내부적으로 통신을 주고 받기 위해 사용함
     @MessageMapping("/entranceCode")
     @SendTo("/topic/entranceCode")
@@ -47,6 +60,30 @@ public class WebSocketController {
     public String updateEntranceCode(){
         orderPasswordService.updateEntranceCode(loginService.getCurrentUserEntity().getId());
         return "redirect:/owner/code/entrance";
+    }
+
+    //주문 대기열 관련
+    // 웹소켓 내부적으로 통신을 주고 받기 위해 사용함
+    @MessageMapping("/queue")
+    @SendTo("/topic/queue")
+    public List<OrderDto> sendQueue(List<OrderDto> dtoList) {return dtoList;}
+
+    //주문 대기열 보기
+    //주문대기열 보기
+    @GetMapping("/owner/queue")
+    public String getOrderQueueByOwner(Model model){
+        model.addAttribute("orders", orderService.getUnfinishedOrder(loginService.getCurrentUserEntity().getId()));
+        return "order/orderQueue";
+    }
+
+    @MessageMapping("/updateOrderStatus")
+    public void handleOrderStatusUpdate(@Payload Map<String, Object> payload) {
+        // 주문 상태 업데이트 처리
+        // message.getOrderId()와 message.getAction()을 사용하여 처리 로직 작성
+        Long orderId = Long.parseLong(payload.get("orderId").toString());
+        String action = payload.get("action").toString();
+
+        orderService.changeOrderStatus(orderId, action);
     }
 
 }
