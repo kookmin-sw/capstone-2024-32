@@ -46,6 +46,7 @@ public class Order {
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }
+        order.setUserId(seat.getUser().getId());
         order.setStatus(OrderStatus.ORDER);
         order.setOrderDateTime(LocalDateTime.now());
         return order;
