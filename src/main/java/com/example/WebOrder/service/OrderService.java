@@ -58,11 +58,13 @@ public class OrderService {
         // 주문 저장
         orderRepository.save(order);
 
+        simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(seat.getUser().getId()));
+
         return order.getId();
     }
 
     public List<OrderDto> getUnfinishedOrder(Long userId){
-        if (!loginService.isCurrentUserAuthenticated(userId)) throw new RuntimeException("권한없음");
+//        if (!loginService.isCurrentUserAuthenticated(userId)) throw new RuntimeException("권한없음");
 
         List<Order> orderList = orderRepository.findOrdersByUserIdAndStatusIn(userId, Arrays.asList(OrderStatus.ORDER, OrderStatus.PROGRESS));
 
@@ -76,7 +78,7 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
-    public void changeOrderStatus(Long userId, Long orderId, String action) {
+    public void changeOrderStatus(Long orderId, String action) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()) throw new RuntimeException("엔티티없음");
         Order order = optionalOrder.get();
@@ -90,9 +92,10 @@ public class OrderService {
             orderRepository.save(order);
         }
         else if (action.equals("취소")){
-            deleteOrder(userId, orderId);
+            order.setStatus(OrderStatus.CANCEL);
+            orderRepository.save(order);
         }
 
-        simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(userId));
+        simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(order.getUserId()));
     }
 }
