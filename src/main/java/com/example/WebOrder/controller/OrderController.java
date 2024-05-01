@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
@@ -27,7 +24,7 @@ public class OrderController {
 
 
     // 인증을 성공했을 시 접근가능한 page
-    @GetMapping("/{userId}/{seatId}/order")
+    @GetMapping("/order/{userId}/{seatId}")
     public String getShopPageByGuest(@PathVariable Long userId, @PathVariable Long seatId, Model model){
         // 인증 과정 했다 치고
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
@@ -35,17 +32,17 @@ public class OrderController {
     }
 
     //주문하기
-    @PostMapping("/{userId}/{seatId}/order")
-    public String order(@PathVariable Long seatId, @RequestBody String json) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        OrderItemDto[] orderItemDtoList = objectMapper.readValue(json, OrderItemDto[].class);
-        orderService.order(seatId, orderItemDtoList);
+    @ResponseBody
+    @PostMapping("/order/{userId}/{seatId}")
+    public Boolean order(@PathVariable Long userId, @PathVariable Long seatId, @RequestBody String json) throws JsonProcessingException {
+        orderService.order(seatId, json);
         log.info("주문 성공");
-        return "redirect:/orderSuccess";
+        return true;
     }
 
-    @GetMapping("/orderSuccess")
+    @GetMapping("/order/success")
     public String orderSuccess(){
+        log.info("주문 성공 리다이렉트");
         return "order/orderSuccess";
     }
 
