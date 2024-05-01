@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -70,22 +72,18 @@ public class WebSocketController {
     //주문대기열 보기
     @GetMapping("/owner/queue")
     public String getOrderQueueByOwner(Model model){
+        model.addAttribute("orders", orderService.getUnfinishedOrder(loginService.getCurrentUserEntity().getId()));
         return "order/orderQueue";
     }
 
     @MessageMapping("/updateOrderStatus")
     public void handleOrderStatusUpdate(@Payload Map<String, Object> payload) {
-        Long userId = loginService.getCurrentUserEntity().getId();
         // 주문 상태 업데이트 처리
         // message.getOrderId()와 message.getAction()을 사용하여 처리 로직 작성
         Long orderId = Long.parseLong(payload.get("orderId").toString());
         String action = payload.get("action").toString();
 
-        orderService.changeOrderStatus(loginService.getCurrentUserEntity().getId(), orderId, action);
-
-
-        // 업데이트된 주문 정보를 '/topic/orderUpdate' 토픽으로 클라이언트에게 전달
-        simpMessagingTemplate.convertAndSend("/topic/queue", orderService.getUnfinishedOrder(userId));
+        orderService.changeOrderStatus(orderId, action);
     }
 
 }
