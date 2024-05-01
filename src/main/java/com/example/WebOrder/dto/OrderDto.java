@@ -18,6 +18,8 @@ public class OrderDto {
     private LocalDateTime orderDateTime;
     private String orderStatus;
 
+    public String seatName;
+
 
     public static OrderDto fromEntity(Order order){
         OrderDto dto = new OrderDto();
@@ -26,6 +28,7 @@ public class OrderDto {
 
         dto.setOrderDateTime(order.getOrderDateTime());
         dto.setOrderStatus(order.getStatus().name());
+        dto.setSeatName(order.getSeat().getName());
 
         StringBuilder sb = new StringBuilder();
         for (OrderItem orderItem : order.getOrderItems()) {
