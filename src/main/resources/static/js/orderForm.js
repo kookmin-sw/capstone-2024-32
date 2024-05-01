@@ -21,3 +21,16 @@ const toggleAddReviewForm = () => {
 
 addReviewBtn.addEventListener("click", toggleAddReviewForm);
 blackBackdrop.addEventListener("click", toggleAddReviewForm);
+
+const cartBtn = document.querySelector(".cart-btn");
+const closeCart = document.querySelector('.close');
+const body = document.querySelector("body");
+
+cartBtn.addEventListener("click", () => {
+    body.classList.toggle('show-cart');
+});
+
+closeCart.addEventListener("click", () => {
+    body.classList.toggle('show-cart');
+})
+
