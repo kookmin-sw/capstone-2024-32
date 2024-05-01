@@ -77,7 +77,7 @@ body {
     padding: 0 30px;
 }
 
-.menu-btn {
+.cart-btn {
     width: 2rem;
     cursor: pointer;
     color: #2e2e2e;
@@ -330,4 +330,80 @@ body {
 .black-backdrop.active {
     opacity: 1;
     visibility: visible;
+}
+
+.cartTab {
+    width: 400px;
+    background-color: #353432;
+    color: #eee;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    inset: 0 -400px 0 auto;
+    display: grid;
+    grid-template-rows: 70px 1fr 70px;
+    transition: var(--tran-05);
+}
+
+body.show-cart .cartTab {
+    inset: 0 0 0 auto;
+}
+
+body.showCart .container {
+    transform: translateX(-250px);
+}
+
+.cartTab h1 {
+    padding: 20px;
+    margin: 0;
+    font-weight: 300;
+}
+
+.cartTab .btn {
+    display: grid;
+    grid-template-columns : repeat(2, 1fr);
+    border: none;
+    font-family: Poppins;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.cartTab .btn .close {
+    background-color: #eee;
+}
+.cartTab .listCart .item img {
+    width: 100%;
+}
+.cartTab .listCart .item {
+    display: grid;
+    grid-template-columns: 70px 150px 50px 1fr;
+    gap: 10px;
+    text-align: center;
+    align-items: center;
+}
+
+.listCart .count span {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: #eee;
+    color: #555;
+    border-radius: 10%;
+    cursor: pointer;
+}
+
+.listCart .count span:nth-child(2) {
+    background-color: transparent;
+    color: #eee;
+}
+
+.listCart .item:nth-child(even) {
+    background-color: #eee1;
+}
+.listCart {
+    overflow: auto;
+}
+.listCart::-webkit-scrollbar {
+    width: 0;
 }
