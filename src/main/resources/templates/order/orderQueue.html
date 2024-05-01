@@ -59,7 +59,25 @@
 </head>
 <body>
 <div class="swiper-container">
-    <div class="swiper-wrapper" id="queueContainer"></div>
+    <div class="swiper-wrapper" id="queueContainer">
+        <!-- orders 리스트를 순회하며 각 order에 대한 카드를 생성 -->
+        <div th:each="order : ${orders}" class="swiper-slide" th:attr="slide-order-id = ${order.id}">
+            <div class="card-content">
+                <!-- 테이블 이름 출력 -->
+                <h4 th:text="'테이블 : ' + ${order.seatName}"></h4>
+                <!-- 주문 상태 출력 -->
+                <h5 th:text="'상태: ' + ${order.orderStatus}"></h5>
+                <!-- 주문 아이템 리스트 출력 -->
+                <p class="order-content" th:text="${order.orderItems}"></p>
+                <!-- 주문 취소 버튼 -->
+                <button class="btn btn-danger" th:onclick="'cancelOrder(\'' + ${order.id} + '\')'">취소</button>
+                <!-- 주문 진행중 버튼 -->
+                <button class="btn btn-warning" th:onclick="'progressOrder(\'' + ${order.id} + '\')'">진행중</button>
+                <!-- 주문 완료 버튼 -->
+                <button class="btn btn-success" th:onclick="'completeOrder(\'' + ${order.id} + '\')'">완료</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Pagination -->
     <div class="swiper-pagination"></div>
@@ -100,21 +118,25 @@
 
     // 주문 정보를 화면에 표시하는 함수
     function displayOrder(orders) {
+        let activeSlidesId = swiper.slides[swiper.activeIndex].getAttribute("slide-order-id");
+        console.log(activeSlidesId);
         document.getElementById('queueContainer').innerHTML = '';
-        let queueContainer = document.getElementById('queueContainer');
 
         orders.forEach(order => {
+            let slideDiv = document.createElement('div');
+            slideDiv.classList.add('swiper-slide');
+            slideDiv.setAttribute('slide-order-id', order.id);
             // 주문 카드 생성
             let cardDiv = document.createElement('div');
             cardDiv.classList.add('card-content');
 
             // 카드 내용 구성
             let seatHeader = document.createElement('h4');
-            seatHeader.textContent = order.seatName;
+            seatHeader.textContent = '테이블 : ' + order.seatName;
             cardDiv.appendChild(seatHeader);
 
             let statusHeader = document.createElement('h5');
-            statusHeader.textContent = order.orderStatus;
+            statusHeader.textContent = '상태 : ' + order.orderStatus;
             cardDiv.appendChild(statusHeader);
 
             let orderContent = document.createElement('p');
@@ -133,16 +155,36 @@
             cardDiv.appendChild(completeBtn);
 
             // 새로운 주문 정보를 슬라이드에 추가
-            queueContainer.appendChild(cardDiv);
+
+            slideDiv.appendChild(cardDiv);
+            swiper.appendSlide(slideDiv);
         });
         // Swiper 슬라이드 업데이트
-        swiper.update(); // Swiper 업데이트
+        swiper.update();
+
+        // 이전에 활성화된 슬라이드가 있다면 그곳으로 가기
+        let previousSlideExists = false;
+        for (let i = 0; i < swiper.slides.length; i++) {
+            let slideOrderId = swiper.slides[i].getAttribute('slide-order-id');
+            console.log('slideOrderId : ' + slideOrderId);
+
+            // 'slide-order-id'가 3과 일치하는 슬라이드를 찾음
+            if (slideOrderId && parseInt(slideOrderId) == activeSlidesId) {
+                // 해당 슬라이드를 활성화하여 Swiper의 active index로 설정
+                swiper.slideTo(i); // i는 찾은 슬라이드의 인덱스
+                previousSlideExists = true;
+                break; // 슬라이드를 찾았으므로 반복문 종료
+            }
+        }
+        if (!previousSlideExists) swiper.slideTo(0);
     }
 
     // 버튼 생성을 위한 도우미 함수
     function createButton(className, text, onClickHandler) {
         let button = document.createElement('button');
-        button.classList.add(className);
+        for (let splitClassName of className.split(' ')) {
+            button.classList.add(splitClassName);
+        }
         button.textContent = text;
         button.onclick = onClickHandler;
         return button;
