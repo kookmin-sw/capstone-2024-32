@@ -7,6 +7,7 @@ import com.example.WebOrder.repository.ItemRepository;
 import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.SeatRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -41,8 +42,10 @@ public class OrderService {
     /**
      * 주문
      */
-    public Long order(Long seatId, OrderItemDto... dtoList) throws JsonProcessingException {
+    public Long order(Long seatId, String json) throws JsonProcessingException {
         Seat seat = seatRepository.findById(seatId).get();
+        ObjectMapper objectMapper = new ObjectMapper();
+        OrderItemDto[] dtoList = objectMapper.readValue(json, OrderItemDto[].class);
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemDto dto : dtoList) {
             if (dto.getCount() > 0) {
