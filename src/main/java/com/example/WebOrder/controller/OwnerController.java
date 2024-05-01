@@ -1,6 +1,7 @@
 package com.example.WebOrder.controller;
 
 import com.example.WebOrder.dto.ItemDto;
+import com.example.WebOrder.dto.OrderDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.User;
 import com.example.WebOrder.service.*;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -21,13 +23,15 @@ public class OwnerController {
     private final SeatService seatService;
     private final ItemService itemService;
     private final ReviewService reviewService;
+    private final OrderService orderService;
 
-    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService, ReviewService reviewService) {
+    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService, ReviewService reviewService, OrderService orderService) {
         this.orderPasswordService = orderPasswordService;
         this.loginService = loginService;
         this.seatService = seatService;
         this.itemService = itemService;
         this.reviewService = reviewService;
+        this.orderService = orderService;
     }
 
 
@@ -100,11 +104,7 @@ public class OwnerController {
         return "redirect:/owner/seat/manage";
     }
 
-    //주문대기열 보기
-    @GetMapping("/owner/queue")
-    public String getOrderQueueByOwner(){
-        return null;
-    }
+
 
     //주문처리하기
     @PostMapping("/owner/order/{orderId}/check")
