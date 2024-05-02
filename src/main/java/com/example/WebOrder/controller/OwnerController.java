@@ -45,71 +45,6 @@ public class OwnerController {
         return null;
     }
 
-    //전체 테이블뷰 보기
-    @GetMapping("/owner/seat/view")
-    public String getWholeSeatByOwner(){
-        return null;
-    }
-
-    //테이블 관리 페이지
-    // !!!!!!!!! 새로 추가한 url !!!!!!!!!!!!!
-    @GetMapping("/owner/seat/manage")
-    public String getSeatManagePageByOwner(Model model) {
-        model.addAttribute("mostOrderedSeat", seatService.getMostOrderedSeatOfCurrentUser()); //가장 많이 주문된 좌석
-        model.addAttribute("leastOrderedSeat", seatService.getLeastOrderedSeatOfCurrentUser()); //가장 적게 주문된 좌석
-        model.addAttribute("totalSeatNum", seatService.getTotalSeatNum()); //총 좌석 개수
-        model.addAttribute("seatList", seatService.getBasicSeatListOfCurrentUser()); //좌석 이름 리스트
-
-
-        return "html/seatManage";
-    }
-
-    //테이블 생성하기
-
-    @GetMapping("/owner/seat/create")
-    public String getCreateSeatForm(Model model){
-        model.addAttribute("seat", new SeatDto());
-        model.addAttribute("isCreate", true);
-        model.addAttribute("seatName", null);
-        return "html/seatCreate";
-    }
-    @PostMapping("/owner/seat/create")
-    public String createSeatByOwner(String seatName){
-        seatService.addSeat(seatName);
-        return "redirect:/owner/seat/manage";
-    }
-
-
-    //테이블 삭제하기
-    @PostMapping("/owner/seat/delete/{seatId}")
-    public String deleteSeatByOwner(@PathVariable("seatId") Long seatId){
-        seatService.deleteSeat(seatId);
-        return "redirect:/owner/seat/manage";
-    }
-
-    //테이블 수정하기
-    @GetMapping("/owner/seat/update/{seatId}")
-    public String getUpdateSeatForm(@PathVariable("seatId") Long seatId, Model model){
-        model.addAttribute("seat", seatService.getSeatDto(seatId));
-        model.addAttribute("isCreate", false);
-        model.addAttribute("seatName", seatService.getSeatName(seatId));
-        return "html/seatCreate";
-    }
-    @PostMapping("/owner/seat/update/{seatId}")
-    public String updateSeatByOwner(@PathVariable("seatId") Long seatId, String seatName){
-        seatService.updateSeat(seatId, seatName);
-        return "redirect:/owner/seat/manage";
-    }
-
-    //테이블 치우기
-    @PostMapping("/owner/seat/clear/{seatId}")
-    public String clearSeatByOwner(@PathVariable("seatId") Long seatId){
-        seatService.clearSeat(seatId);
-        return "redirect:/owner/seat/manage";
-    }
-
-
-
     //주문처리하기
     @PostMapping("/owner/order/{orderId}/check")
     public String checkOrderByOwner(){
@@ -139,64 +74,6 @@ public class OwnerController {
 
 
 
-    //메뉴 전체보기
-    @GetMapping("/owner/menu")
-    public String getWholeMenuByOwner(Model model){
-        Long userId = loginService.getCurrentUserEntity().getId();
-        model.addAttribute("itemStat", itemService.getBestItemStat(userId));
-        model.addAttribute("itemList",itemService.getAllItemsOfUser(userId));
 
-        return "menu/menuManage";
-    }
-
-    //메뉴 상세보기
-    @GetMapping("/owner/menu/detail/{itemId}")
-    public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model) {
-        model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
-        model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId));
-        return "menu/menuDetail";
-    }
-
-    //메뉴 추가하기
-
-    @GetMapping("/owner/menu/create")
-    public String getMenuCreateForm(Model model){
-        model.addAttribute("isCreate", true);
-        model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
-        return "menu/menuForm";
-    }
-    @PostMapping("/owner/menu/create")
-    public String addMenuByOwner(ItemDto dto, @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        String fileName = "";
-        if(image != null) { // 이미지 업로드한 경우
-            fileName = s3UploadService.upload(image);
-            log.info("filename = " + fileName);
-            itemService.createItem(loginService.getCurrentUserEntity().getId(), dto, fileName);
-        }
-        else {
-            itemService.createItem(loginService.getCurrentUserEntity().getId(), dto);
-        }
-        return "redirect:/owner/menu";
-    }
-
-    //메뉴 삭제하기
-    @PostMapping("/owner/menu/delete/{itemId}")
-    public String deleteMenuByOwner(@PathVariable("itemId") Long itemId) throws IOException {
-        itemService.deleteItem(loginService.getCurrentUserEntity().getId(), itemId);
-        return "redirect:/owner/menu";
-    }
-
-    //메뉴 업데이트하기
-    @GetMapping("/owner/menu/update/{itemId}")
-    public String getMenuUpdateForm(@PathVariable("itemId") Long itemId, Model model){
-        model.addAttribute("isCreate", false);
-        model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
-        return "menu/menuForm";
-    }
-    @PostMapping("/owner/menu/update/{itemId}")
-    public String updateMenuByOwner(@PathVariable("itemId") Long itemId, @ModelAttribute ItemDto dto){
-        itemService.updateItem(loginService.getCurrentUserEntity().getId(), itemId, dto);
-        return "redirect:/owner/menu";
-    }
 
 }
