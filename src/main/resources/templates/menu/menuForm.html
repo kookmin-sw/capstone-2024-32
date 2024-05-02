@@ -12,7 +12,7 @@
 <body>
     <div layout:fragment="content">
         <!-- 메뉴 폼 -->
-        <form class="menu-form" th:if="${isCreate}" action="/owner/menu/create" method="post">
+        <form class="menu-form" th:if="${isCreate}" action="/owner/menu/create" method="post" enctype="multipart/form-data">
             <h2>메뉴 만들기</h2>
             <label for="name">메뉴 이름:</label>
             <input type="text" id="name" name="name" required>
@@ -20,6 +20,8 @@
             <textarea id="description" name="description" rows="6" required></textarea>
             <label for="price">가격:</label>
             <input type="text" id="price" name="price" required>
+            <label for="price">사진</label>
+            <input type="file" id="image" name="image">
             <button type="submit">완료</button>
         </form>
 
