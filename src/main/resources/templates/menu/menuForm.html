@@ -11,9 +11,6 @@
 
 <body>
     <div layout:fragment="content">
-        <!-- 카테고리 폼 -->
-        <form class="caregory-form" th:if="${}"
-
         <!-- 메뉴 폼 -->
         <form class="menu-form" th:if="${isCreate}" action="/owner/menu/create" method="post" enctype="multipart/form-data">
             <h2>메뉴 만들기</h2>
