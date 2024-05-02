@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,13 +26,16 @@ public class OwnerController {
     private final ReviewService reviewService;
     private final OrderService orderService;
 
-    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService, ReviewService reviewService, OrderService orderService) {
+    private final S3UploadService s3UploadService;
+
+    public OwnerController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService, ItemService itemService, ReviewService reviewService, OrderService orderService, S3UploadService s3UploadService) {
         this.orderPasswordService = orderPasswordService;
         this.loginService = loginService;
         this.seatService = seatService;
         this.itemService = itemService;
         this.reviewService = reviewService;
         this.orderService = orderService;
+        this.s3UploadService = s3UploadService;
     }
 
 
@@ -162,14 +166,22 @@ public class OwnerController {
         return "menu/menuForm";
     }
     @PostMapping("/owner/menu/create")
-    public String addMenuByOwner(ItemDto dto){
-        itemService.createItem(loginService.getCurrentUserEntity().getId(), dto);
+    public String addMenuByOwner(ItemDto dto, @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        String fileName = "";
+        if(image != null) { // 이미지 업로드한 경우
+            fileName = s3UploadService.upload(image);
+            log.info("filename = " + fileName);
+            itemService.createItem(loginService.getCurrentUserEntity().getId(), dto, fileName);
+        }
+        else {
+            itemService.createItem(loginService.getCurrentUserEntity().getId(), dto);
+        }
         return "redirect:/owner/menu";
     }
 
     //메뉴 삭제하기
     @PostMapping("/owner/menu/delete/{itemId}")
-    public String deleteMenuByOwner(@PathVariable("itemId") Long itemId){
+    public String deleteMenuByOwner(@PathVariable("itemId") Long itemId) throws IOException {
         itemService.deleteItem(loginService.getCurrentUserEntity().getId(), itemId);
         return "redirect:/owner/menu";
     }

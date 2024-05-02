@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final LoginService loginService;
+    private final S3UploadService s3UploadService;
 
-    public ItemService(ItemRepository itemRepository, LoginService loginService) {
+    public ItemService(ItemRepository itemRepository, LoginService loginService, S3UploadService s3UploadService) {
         this.itemRepository = itemRepository;
         this.loginService = loginService;
+        this.s3UploadService = s3UploadService;
     }
 
     //아이템 정보 리스트를 사용자에게 전달.
@@ -58,9 +61,31 @@ public class ItemService {
         return savedItem.getId();
     }
 
-    @Transactional
-    public void deleteItem(Long ownerId, Long itemId){
+    public Long createItem(Long ownerId, ItemDto dto, String fileName) {
         if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
+
+        Item item = new Item();
+        item.setName(dto.getName());
+        item.setPrice(dto.getPrice());
+        item.setItemImageUrl(fileName);
+        item.setDescription(dto.getDescription());
+        item.setOwnerId(ownerId);
+        item.setReviews(new ArrayList<>());
+        item.setAvgRate(0);
+        item.setOrderedCount(0L);
+
+        Item savedItem = itemRepository.save(item);
+
+        return savedItem.getId();
+    }
+
+    @Transactional
+    public void deleteItem(Long ownerId, Long itemId) throws IOException {
+        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
+        String image = itemRepository.findById(itemId).get().getItemImageUrl();
+        if (image != null) {
+            s3UploadService.delete(image);
+        }
         itemRepository.deleteById(itemId);
     }
 
