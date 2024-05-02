@@ -131,7 +131,7 @@ public class OwnerController {
 
     //QR코드 생성하기
     @GetMapping("/owner/code/qr/{seatId}")
-    public String getQRCodeOfSeatByOnwer(@PathVariable Long seatId, Model model) throws IOException, WriterException {
+    public String getQRCodeOfSeatByOwner(@PathVariable Long seatId, Model model) throws IOException, WriterException {
         String img = orderPasswordService.generateQRCode(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(), seatId);
         model.addAttribute("img", img);
         return "html/qrcode";

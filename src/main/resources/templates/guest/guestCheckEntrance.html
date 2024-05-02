@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ===== CSS ===== -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- ==== JS ===== -->
+  <script src="/js/bootstrap.min.js"></script>
+  <title>Entrance Code</title>
+</head>
+<body>
+<div class="container mt-5">
+  <h2>인증번호 입력</h2>
+  <form method="post">
+    <div class="form-group">
+      <label for="entranceCode">인증번호</label>
+      <input type="text" class="form-control" id="entranceCode" name="entranceCode" maxlength="4" pattern="\d{4}" required>
+      <small id="authCodeHelp" class="form-text text-muted">4자리 숫자로 입력해 주세요.</small>
+    </div>
+    <button type="submit" class="btn btn-primary">확인</button>
+  </form>
+</div>
+</body>
+</html>
