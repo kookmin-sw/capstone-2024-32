@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- ==== JS ===== -->
+    <script src="/js/bootstrap.min.js"></script>
+    <title>Welcome!</title>
+    <style>
+        /* 버튼 컨테이너 스타일 */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* 화면 전체 높이를 차지 */
+        }
+        /* 버튼 스타일 */
+        .btn-custom {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto btn-container text-center">
+            <!-- 주문하기 버튼 -->
+            <a th:href="@{'/guest/' + ${userId} + '/' + ${seatId} + '/checkEntrance'}" class="btn btn-primary btn-lg btn-custom">주문하기</a>
+            <!-- 리뷰 작성 버튼 -->
+            <a href="/writeReview" class="btn btn-success btn-lg btn-custom">리뷰 작성</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
