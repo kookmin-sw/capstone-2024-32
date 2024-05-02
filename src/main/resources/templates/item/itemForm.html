@@ -11,9 +11,21 @@
 
 <body>
     <div layout:fragment="content">
+
+        <form class="category-form" th:action="@{'/admin/category/create'}" method="post">
+            <label for="category">카테고리명:</label>
+            <input type="text" id="category" name="name" required>
+            <button type="submit">저장</button>
+        </form>
+
         <!-- 메뉴 폼 -->
-        <form class="menu-form" th:if="${isCreate}" action="/owner/menu/create" method="post" enctype="multipart/form-data">
+        <form class="menu-form" th:if="${isCreate}" action="/admin/item/create" method="post" enctype="multipart/form-data">
             <h2>메뉴 만들기</h2>
+            <select class="categories" name="categoryId">
+                <th:block th:each="category : ${categories}">
+                    <option th:text="${category.name}" th:value="${category.categoryId}"></option>
+                </th:block>
+            </select>
             <label for="name">메뉴 이름:</label>
             <input type="text" id="name" name="name" required>
             <label for="description">메뉴 설명:</label>
@@ -21,11 +33,11 @@
             <label for="price">가격:</label>
             <input type="text" id="price" name="price" required>
             <label for="price">사진</label>
-            <input type="file" id="image" name="image">
+            <input type="file" id="image" name="image" required>
             <button type="submit">완료</button>
         </form>
 
-        <form class="menu-form" th:if="${!isCreate}" th:action="@{'/owner/menu/update/' + ${itemInfo.itemId}}" method="post">
+        <form class="menu-form" th:if="${!isCreate}" th:action="@{'/admin/item/update/' + ${itemInfo.itemId}}" method="post">
             <h2>메뉴 수정하기</h2>
             <label for="nameUpdate">메뉴 이름:</label>
             <input type="text" id="nameUpdate" name="name" th:value="${itemInfo.name}" required>
@@ -35,6 +47,8 @@
             <input type="text" id="priceUpdate" name="price" th:value="${itemInfo.price}" required>
             <button type="submit">수정하기</button>
         </form>
+
+
     </div>
 </body>
 </html>
