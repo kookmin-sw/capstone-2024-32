@@ -70,7 +70,7 @@ public class WebSocketController {
 
     //주문 대기열 보기
     //주문대기열 보기
-    @GetMapping("/owner/queue")
+    @GetMapping("/admin/queue")
     public String getOrderQueueByOwner(Model model){
         model.addAttribute("orders", orderService.getUnfinishedOrder(loginService.getCurrentUserEntity().getId()));
         return "order/orderQueue";
