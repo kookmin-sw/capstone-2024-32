@@ -22,7 +22,7 @@
               </div>
 
               <div class="item-button-container">
-                  <a class="item-button" th:href="@{/owner/menu/create}">메뉴 만들기</a>
+                  <a class="item-button" th:href="@{/admin/item/create}">메뉴 만들기</a>
               </div>
           </div>
 
@@ -41,7 +41,7 @@
                       <td th:text="${item.price}">9999</td>
                       <td th:text="${item.avgRate}">2.5</td>
                       <td>
-                          <form th:action="@{'/owner/menu/delete/' + ${item.itemId}}" method="post">
+                          <form th:action="@{'/admin/item/delete/' + ${item.itemId}}" method="post">
                           <button type="submit">삭제</button>
                           </form>
                       </td>
@@ -51,7 +51,7 @@
 
           <script>
               function redirectToDetail(itemId) {
-                  var url = '/owner/menu/detail/' + itemId;
+                  var url = '/admin/item/detail/' + itemId;
                   window.location.href = url; // 클릭 시 해당 URL로 페이지 이동
               }
           </script>

@@ -15,7 +15,7 @@
         <div class="menu-horizontal">
             <!--메뉴 상단-->
             <div class="menu-top">
-                <img class="menu-pic" src="#">
+                <img class="menu-pic" th:src="${itemInfo.itemImageUrl}">
                 <div class="menu-info">
                     <div class="menu-title" th:text="${itemInfo.name}">메뉴 이름</div>
                     <div class="menu-description" th:text="${itemInfo.description}">메뉴 설명</div>
@@ -45,9 +45,9 @@
             </div>
 
             <!--메뉴 버튼-->
-            <form class="menu-bottom" th:action="@{'/owner/menu/delete/' + ${itemInfo.itemId}}" th:method="post">
+            <form class="menu-bottom" th:action="@{'/admin/item/delete/' + ${itemInfo.itemId}}" th:method="post">
                 <a href="#" class="stop-btn">메뉴 중지</a>
-                <a th:href="@{'/owner/menu/update/' + ${itemInfo.itemId}}" class="edit-btn">메뉴 수정</a>
+                <a th:href="@{'/admin/item/update/' + ${itemInfo.itemId}}" class="edit-btn">메뉴 수정</a>
                 <button type="submit" class="delete-btn">메뉴 삭제</button>
             </form>
         </div>
