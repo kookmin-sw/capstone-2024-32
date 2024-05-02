@@ -21,7 +21,6 @@ const toggleCartForm = () => {
 cartBtn.addEventListener("click", toggleCartForm);
 blackBackdrop.addEventListener("click", toggleCartForm);
 
-
 let orderItems = [];
 let orderItemsHTML = document.querySelector('.orderItems');
 
@@ -47,6 +46,7 @@ const addToCart = (element) => {
     }
     console.log(orderItems);
     addOrderItemsToHtml();
+    toggleCartForm();
 }
 
 const addOrderItemsToHtml = () => {

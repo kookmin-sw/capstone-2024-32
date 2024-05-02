@@ -1,5 +1,6 @@
 package com.example.WebOrder.dto;
 
+import com.example.WebOrder.entity.Category;
 import com.example.WebOrder.entity.Item;
 import com.example.WebOrder.entity.Review;
 import lombok.EqualsAndHashCode;
@@ -17,9 +18,10 @@ public class ItemDto {
     private String description;
     private String itemImageUrl;
     private int price;
-    private Long ownerId;
+    private Long adminId;
     private Integer avgRate;
     private Long orderedCount;
+    private Long categoryId;
 
     public static ItemDto fromEntity(Item item){
         ItemDto dto = new ItemDto();
@@ -28,7 +30,7 @@ public class ItemDto {
         dto.setPrice(item.getPrice());
         dto.setDescription(item.getDescription());
         dto.setItemImageUrl(item.getItemImageUrl());
-        dto.setOwnerId(item.getOwnerId());
+        dto.setAdminId(item.getAdminId());
 
         if (item.getReviews().size() != 0){
             int avgOfRate = 0;
@@ -43,6 +45,7 @@ public class ItemDto {
 
 
         dto.setOrderedCount(item.getOrderedCount());
+        dto.setCategoryId(item.getCategory().getId());
 
         return dto;
     }

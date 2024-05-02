@@ -3,7 +3,9 @@ package com.example.WebOrder.service;
 
 import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.dto.MenuStatisticsDto;
+import com.example.WebOrder.entity.Category;
 import com.example.WebOrder.entity.Item;
+import com.example.WebOrder.repository.CategoryRepository;
 import com.example.WebOrder.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +20,20 @@ import java.util.Optional;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final CategoryRepository categoryRepository;
     private final LoginService loginService;
     private final S3UploadService s3UploadService;
 
-    public ItemService(ItemRepository itemRepository, LoginService loginService, S3UploadService s3UploadService) {
+    public ItemService(ItemRepository itemRepository, CategoryRepository categoryRepository, LoginService loginService, S3UploadService s3UploadService) {
         this.itemRepository = itemRepository;
+        this.categoryRepository = categoryRepository;
         this.loginService = loginService;
         this.s3UploadService = s3UploadService;
     }
 
     //아이템 정보 리스트를 사용자에게 전달.
     public List<ItemDto> getAllItemsOfUser(Long userId){
-        List<Item> itemList = itemRepository.findAllByOwnerId(userId);
+        List<Item> itemList = itemRepository.findAllByAdminId(userId);
 
         List<ItemDto> itemDtoList = itemList.stream().map(ItemDto::fromEntity).toList();
         return itemDtoList;
@@ -43,36 +47,21 @@ public class ItemService {
         return ItemDto.fromEntity(optionalItem.get());
     }
 
-    public Long createItem(Long ownerId, ItemDto dto) {
-        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
-
-        Item item = new Item();
-        item.setName(dto.getName());
-        item.setPrice(dto.getPrice());
-        item.setItemImageUrl(dto.getItemImageUrl());
-        item.setDescription(dto.getDescription());
-        item.setOwnerId(ownerId);
-        item.setReviews(new ArrayList<>());
-        item.setAvgRate(0);
-        item.setOrderedCount(0L);
-
-        Item savedItem = itemRepository.save(item);
-
-        return savedItem.getId();
-    }
-
-    public Long createItem(Long ownerId, ItemDto dto, String fileName) {
-        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
+    public Long createItem(Long adminId, ItemDto dto, String fileName) {
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
 
         Item item = new Item();
         item.setName(dto.getName());
         item.setPrice(dto.getPrice());
         item.setItemImageUrl(fileName);
         item.setDescription(dto.getDescription());
-        item.setOwnerId(ownerId);
+        item.setAdminId(adminId);
         item.setReviews(new ArrayList<>());
         item.setAvgRate(0);
         item.setOrderedCount(0L);
+        log.info(String.valueOf(dto.getCategoryId()));
+        Category category = categoryRepository.findById(dto.getCategoryId()).get();
+        item.setCategory(category);
 
         Item savedItem = itemRepository.save(item);
 
@@ -89,8 +78,8 @@ public class ItemService {
         itemRepository.deleteById(itemId);
     }
 
-    public Long updateItem(Long ownerId, Long itemId,ItemDto dto) {
-        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
+    public Long updateItem(Long adminId, Long itemId,ItemDto dto) {
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
 
@@ -101,7 +90,7 @@ public class ItemService {
         item.setDescription(dto.getDescription());
         item.setPrice(dto.getPrice());
         item.setItemImageUrl(dto.getItemImageUrl());
-        item.setOwnerId(ownerId);
+        item.setAdminId(adminId);
 
         itemRepository.save(item);
 
@@ -109,8 +98,8 @@ public class ItemService {
     }
 
     public MenuStatisticsDto getBestItemStat(Long userId) {
-        Optional<Item> avgRateEntity = itemRepository.findTopByOwnerIdOrderByAvgRateDesc(userId);
-        Optional<Item> orderedEntity = itemRepository.findTopByOwnerIdOrderByOrderedCountDesc(userId);
+        Optional<Item> avgRateEntity = itemRepository.findTopByAdminIdOrderByAvgRateDesc(userId);
+        Optional<Item> orderedEntity = itemRepository.findTopByAdminIdOrderByOrderedCountDesc(userId);
 
         MenuStatisticsDto dto = new MenuStatisticsDto();
         if (avgRateEntity.isEmpty()) {

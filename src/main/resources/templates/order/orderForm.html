@@ -41,25 +41,28 @@
             <!-- categories -->
             <div class="categories-wrapper">
                 <div class="categories">
-                    <div class="category">
-                        <h1>카테고리명</h1>
-                        <th:block th:each="item : ${items}">
-                            <div th:for="item" class="item">
-                                <div class="left">
-                                    <div class="content">
-                                        <input type="hidden" th:value="${item.itemId}" class="itemId">
-                                        <h1 th:text="${item.name}">아이템 이름</h1>
-                                        <p th:text="${item.price} + 원">아이템 가격</p>
+                    <th:block th:each="category : ${categories}">
+                        <h1 th:text="${category.name}">카테고리명</h1>
+                        <div class="category">
+                            <input type="hidden" th:value="${category.id}" class="categoryId">
+                            <th:block th:each="item : ${category.items}">
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="content">
+                                            <input type="hidden" th:value="${item.id}" class="itemId">
+                                            <h1 th:text="${item.name}">아이템 이름</h1>
+                                            <p th:text="${item.price} + '원'">아이템 가격</p>
+                                        </div>
+                                        <div class="buttons">
+                                            <button class="addCart" th:attr="itemId=${item.id}" onclick="addToCart(this)">담기</button>
+                                            <button class="detail" th:attr="itemId=${item.id}" onclick="showItemDetail(this)">상세보기</button>
+                                        </div>
                                     </div>
-                                    <div class="buttons">
-                                        <button class="addCart" th:attr="itemId=${item.itemId}" onclick="addToCart(this)">담기</button>
-                                        <button class="detail" th:attr="itemId=${item.itemId}" onclick="showItemDetail(this)">상세보기</button>
-                                    </div>
+                                    <img th:src="${item.itemImageUrl}" alt="">
                                 </div>
-                                <img th:src="${item.itemImageUrl}" alt="">
-                            </div>
-                        </th:block>
-                    </div>
+                            </th:block>
+                        </div>
+                    </th:block>
                 </div>
             </div>
         </div>
@@ -128,40 +131,40 @@
 
     <script th:src="@{/js/orderForm.js}"></script>
     <script th:inline="javascript">
-            let items = [[${items}]];
-            const details = document.querySelector(".item-details");
-            function showItemDetail(element) {
-                let itemId = parseInt(element.getAttribute("itemId"));
-                let item = findItemById(itemId);
-                wrapper.classList.toggle('show-item');
-                // details.querySelector(".image").src = item.itemImageUrl;
-                details.querySelector(".itemName").innerHTML = item.name;
-                details.querySelector(".description").innerHTML = item.description;
-                details.querySelector(".price").innerHTML = item.price + '원';
-            }
+        let items = [[${items}]];
+        const details = document.querySelector(".item-details");
+        function showItemDetail(element) {
+            let itemId = parseInt(element.getAttribute("itemId"));
+            let item = findItemById(itemId);
+            wrapper.classList.toggle('show-item');
+            details.querySelector(".image").src = item.itemImageUrl;
+            details.querySelector(".itemName").innerHTML = item.name;
+            details.querySelector(".description").innerHTML = item.description;
+            details.querySelector(".price").innerHTML = item.price + '원';
+        }
 
-            function findItemById(id) {
-                return items.find(item => item.itemId == id);
-            }
+        function findItemById(id) {
+            return items.find(item => item.itemId == id);
+        }
 
-            async function submitOrder() {
-                alert(JSON.stringify(orderItems));
-                let response = await fetch('', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderItems),
-                    credentials: 'include'
-                });
-                alert(response.status);
-                if (await response.text() == 'true') {
-                    window.location.replace("/order/success");
-                }
-                else {
-                    alert('주문 오류');
-                }
+        async function submitOrder() {
+            alert(JSON.stringify(orderItems));
+            let response = await fetch('', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderItems),
+                credentials: 'include'
+            });
+            alert(response.status);
+            if (await response.text() === 'true') {
+                window.location.replace("/order/success");
             }
+            else {
+                alert('주문 오류');
+            }
+        }
     </script>
 </body>
 </html>
