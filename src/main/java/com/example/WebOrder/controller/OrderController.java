@@ -1,6 +1,7 @@
 package com.example.WebOrder.controller;
 
 import com.example.WebOrder.dto.OrderItemDto;
+import com.example.WebOrder.service.CategoryService;
 import com.example.WebOrder.service.ItemService;
 import com.example.WebOrder.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,10 +17,12 @@ public class OrderController {
 
     private final ItemService itemService;
     private final OrderService orderService;
+    private final CategoryService categoryService;
 
-    public OrderController(ItemService itemService, OrderService orderService) {
+    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService) {
         this.itemService = itemService;
         this.orderService = orderService;
+        this.categoryService = categoryService;
     }
 
 
@@ -27,6 +30,7 @@ public class OrderController {
     @GetMapping("/order/{userId}/{seatId}")
     public String getShopPageByGuest(@PathVariable Long userId, @PathVariable Long seatId, Model model){
         // 인증 과정 했다 치고
+        model.addAttribute("categories", categoryService.getAllCategories(userId));
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
         return "order/orderForm";
     }
