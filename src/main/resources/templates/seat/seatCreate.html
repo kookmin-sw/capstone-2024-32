@@ -13,13 +13,13 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <form method="post" th:if="${isCreate}" th:action="@{'/owner/seat/create'}">
+        <form method="post" th:if="${isCreate}" th:action="@{'/admin/seat/create'}">
             <label for="seatNameCreate"></label>
             <input type="text" id="seatNameCreate" name="seatName">
             <button type="submit">생성하기</button>
         </form>
 
-        <form method="post" th:if="${!isCreate}" th:action="@{'/owner/seat/update/' + ${seat.seatId}}">
+        <form method="post" th:if="${!isCreate}" th:action="@{'/admin/seat/update/' + ${seat.seatId}}">
             <label for="seatNameUpdate"></label>
             <input type="text" id="seatNameUpdate" name="seatName" th:value="${seat.name}">
             <button type="submit">수정하기</button>
