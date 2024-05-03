@@ -118,8 +118,13 @@
 
     // 주문 정보를 화면에 표시하는 함수
     function displayOrder(orders) {
-        let activeSlidesId = swiper.slides[swiper.activeIndex].getAttribute("slide-order-id");
-        console.log(activeSlidesId);
+        let activeSlidesId;
+        if (swiper.slides.length > 0) {
+            activeSlidesId = swiper.slides[swiper.activeIndex].getAttribute("slide-order-id");
+        }
+        else {
+            activeSlidesId = 0;
+        }
         document.getElementById('queueContainer').innerHTML = '';
 
         orders.forEach(order => {
