@@ -21,14 +21,14 @@
         <div th:each="seat : ${seatList}" class="card">
             <div th:text="${seat.name}" class="table-name"></div>
             <div th:text="${seat.orderedTime}" class="ordered-num"></div>
-            <form method="post" class="delete-form" th:action="@{'/owner/seat/delete/' + ${seat.seatId}}" >
+            <form method="post" class="delete-form" th:action="@{'/admin/seat/delete/' + ${seat.seatId}}" >
                 <button type="submit">삭제하기</button>
             </form>
-            <a th:href="@{'/owner/seat/update/' + ${seat.seatId}}">이름 바꾸기</a>
+            <a th:href="@{'/admin/seat/update/' + ${seat.seatId}}">이름 바꾸기</a>
 
         </div>
 
-        <a th:href="@{'/owner/seat/create'}">테이블 추가하기</a>
+        <a th:href="@{'/admin/seat/create'}">테이블 추가하기</a>
         <script>
             // JavaScript 코드를 작성하여 삭제하기 링크를 클릭하면 해당 seat의 delete form을 자동으로 제출합니다.
             let deleteLinks = document.querySelectorAll('.delete-link');
