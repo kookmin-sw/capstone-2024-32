@@ -1,0 +1,171 @@
+/* Google Fonts - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EFEFEF;
+}
+
+.i-name {
+    color: #444a53;
+    padding: 30px 30px 0 30px;
+    font-size: 24px;
+    font-weight: 700;
+}
+.i-name i {
+    margin-right: 1rem;
+}
+
+.slide-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 8rem 0;
+}
+
+.slide-content {
+    width: 100%;
+    margin: 0 40px;
+    overflow: hidden;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px; /* 더 작은 각도의 라운드 모서리 */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* 영수증에 그림자 추가 */
+    background-color: #FFF;
+    height: 30rem;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 14px;
+    overflow: auto;
+}
+
+.card-content::-webkit-scrollbar {
+    width: 0;
+}
+
+.card-content .name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.status {
+    font-size: 1rem;
+    color: #707070;
+}
+
+.order-header {
+    width: 100%;
+}
+
+.order-header .btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    width: 100%;
+
+}
+
+.btn {
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #FFF;
+    padding: 0.25rem 0.5rem;
+    background-color: #4070F4;
+    border-radius: 6px;
+    margin: 0.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.order-content-header {
+    width: 100%;
+    border-top: 1px solid rgba(0,0,0,0.2);
+    margin-top: 0.5rem;
+}
+
+.order-content {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #707070;
+    text-align: center;
+    width: 100%;
+    overflow: auto;
+}
+
+.order-content::-webkit-scrollbar {
+    width: 0;
+}
+
+.order-content p {
+    width: 100%;
+    padding: 1em;
+    text-align: left;
+    background-color: #fafafa;
+}
+
+.order-content p:nth-child(even) {
+    background-color: #ececec;
+}
+
+.btn:hover {
+    background: #265DF2;
+}
+
+.swiper-navBtn {
+    color: #6E93f7;
+    transition: color 0.3s ease;
+}
+
+.swiper-navBtn:hover {
+    color: #4070F4;
+}
+
+.swiper-navBtn::before,
+.swiper-navBtn::after {
+    font-size: 35px;
+}
+
+.swiper-button-next {
+    right: 0;
+}
+
+.swiper-button-prev {
+    left: 0;
+}
+
+.swiper-pagination-bullet {
+    background-color: #6E93f7;
+    opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #4070F4;
+}
+
+@media screen and (max-width: 768px) {
+    .slide-content {
+        margin: 0 10px;
+    }
+
+    .swiper-navBtn {
+        display: none;
+    }
+}
