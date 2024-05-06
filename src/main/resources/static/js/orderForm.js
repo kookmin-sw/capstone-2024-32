@@ -66,10 +66,11 @@ const addOrderItemsToHtml = () => {
                     </div>
                     <div class="count">
                         <span class="minus">-</span>
-                        <span>${orderItem.count}</span>
+                        <span class="num">${orderItem.count}</span>
                         <span class="plus">+</span>
                     </div>
                     <div class="totalPrice">${item.price * orderItem.count}원</div>
+                    <span class="delete-btn">x</span>
                 `;
             orderItemsHTML.appendChild(newOrderItem);
         })
@@ -85,6 +86,10 @@ orderItemsHTML.addEventListener("click", (event) => {
             type = 'plus';
         }
         changeQuantity(itemId, type);
+    }
+    else if (clickedPosition.classList.contains('delete-btn')) {
+        let itemId = clickedPosition.parentElement.dataset.id;
+        deleteItem(itemId);
     }
 })
 
@@ -105,6 +110,14 @@ const changeQuantity = (itemId, type) => {
                 }
                 break;
         }
+    }
+    addOrderItemsToHtml();
+}
+
+const deleteItem = (itemId) => {
+    let itemPos = orderItems.findIndex((value) => value.itemId == itemId);
+    if (itemPos >= 0) {
+        orderItems.splice(itemPos, 1);
     }
     addOrderItemsToHtml();
 }
