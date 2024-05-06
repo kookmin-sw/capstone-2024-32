@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>테이블 현황 표</title>
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- ==== JS ===== -->
+    <script src="/js/bootstrap.min.js"></script>
+    <style>
+        .card {
+            height: 272px;
+        }
+
+        .fixed-height {
+            height: 100px; /* 원하는 높이로 설정 */
+            overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
+        }
+
+        .multiline {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="cardContainer">
+        <!-- 카드가 동적으로 생성되는 곳 -->
+    </div>
+
+    <form hidden="hidden" method="post" id="emptyForm">
+        <input type="text" id="seatId" name="seatId">
+        <button type="submit"></button>
+    </form>
+
+    <script th:inline="javascript">
+        var cardNum = [[${seatNum}]];
+        var cardList = [[${seatList}]];
+
+        // 카드 동적 생성 함수
+        function createCards() {
+            var cardContainer = document.getElementById('cardContainer');
+
+            // cardNum의 배수에 맞게 빈 카드 생성
+            var numEmptyCards = cardNum % 4 === 0 ? 0 : 4 - (cardNum % 4);
+            for (var i = 0; i < cardNum + numEmptyCards; i++) {
+                var card = document.createElement('div');
+                card.className = 'col';
+
+                if (i < cardNum) {
+                    // 카드에 데이터가 있는 경우
+                    var cardContent = cardList[i]; // cardList에서 데이터 가져오기
+                    card.innerHTML = `
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- 테이블 이름 -->
+                                <h5 class="card-title">${cardContent.seatName}</h5>
+
+                                <!-- 주문 내역 -->
+                                <p class="mb-3 fixed-height multiline">${cardContent.orderedItems}</p>
+
+                                <!-- 총 가격 -->
+                                <p class="text-end mb-3">${cardContent.totalPrice}원</p>
+
+                                <!-- 버튼 컨테이너 -->
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn btn-secondary me-2" seat-id="${cardContent.seatId}" onclick="emptyTable(this)">empty</button>
+                                    <button class="btn btn-primary" seat-id="${cardContent.seatId}" onclick="billTable(this)">bill</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 비어있는 카드인 경우
+                    card.classList.add('empty-card');
+                    card.innerHTML = `
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- 비어있는 카드는 내용이 없습니다 -->
+                            </div>
+                        </div>
+                    `;
+                }
+
+                cardContainer.appendChild(card);
+            }
+        }
+
+        // 페이지 로드 시 카드 생성
+        window.onload = createCards;
+    </script>
+
+    <script>
+        function emptyTable(button) {
+            let seatId = button.getAttribute("seat-id");
+            let form = document.getElementById("emptyForm");
+            document.getElementById("seatId").value = seatId;
+            console.log(document.getElementById("seatId").value);
+            form.submit();
+        }
+
+        function billTable(button) {
+            let seatId = button.getAttribute("seat-id");
+            window.location.href = "/admin/seat/bill/" + seatId;
+        }
+    </script>
+</div>
+</body>
+</html>
