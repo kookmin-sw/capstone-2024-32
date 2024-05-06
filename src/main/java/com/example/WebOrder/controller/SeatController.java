@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 @Controller
 public class SeatController {
@@ -25,7 +28,13 @@ public class SeatController {
     //전체 테이블뷰 보기
     @GetMapping("/admin/seat/view")
     public String getWholeSeatByOwner(Model model){
+        LocalDateTime now = LocalDateTime.now();
+        // 원하는 포맷 지정 (예: "yyyy-MM-dd HH:mm:ss")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 포맷에 맞게 시간을 문자열로 변환
+        String formattedTime = now.format(formatter);
         // 주문정보까지 포함된 좌석 정보 리스트
+        model.addAttribute("currentTime", formattedTime);
         model.addAttribute("seatList", seatService.getWholeSeatOrdersOfCurrentUser());
         model.addAttribute("seatNum", seatService.getTotalSeatNum());
         return "seat/seatView";
