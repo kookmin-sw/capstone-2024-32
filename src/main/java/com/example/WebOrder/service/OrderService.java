@@ -89,7 +89,7 @@ public class OrderService {
             order.setStatus(OrderStatus.COMPLETE);
             orderRepository.save(order);
         }
-        else if (action.equals("진행중")){
+        else if (action.equals("접수")){
             order.setStatus(OrderStatus.PROGRESS);
             orderRepository.save(order);
         }
