@@ -14,7 +14,7 @@ import java.util.List;
 public class OrderDto {
     private Long id;
     private Long seatId;
-    private String orderItems;
+    private List<OrderItemDto> orderItems;
     private LocalDateTime orderDateTime;
     private String orderStatus;
 
@@ -29,15 +29,7 @@ public class OrderDto {
         dto.setOrderDateTime(order.getOrderDateTime());
         dto.setOrderStatus(order.getStatus().name());
         dto.setSeatName(order.getSeat().getName());
-
-        StringBuilder sb = new StringBuilder();
-        for (OrderItem orderItem : order.getOrderItems()) {
-            sb.append(orderItem.getItem().getName());
-            sb.append(" ");
-            sb.append(orderItem.getCount());
-            sb.append("개 \n");
-        }
-        dto.setOrderItems(sb.toString());
+        dto.setOrderItems(order.getOrderItems());
 
         return dto;
     }
