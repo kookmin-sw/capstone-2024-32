@@ -1,5 +1,5 @@
 package com.example.WebOrder.entity;
 
 public enum OrderStatus {
-    ORDER, PROGRESS, COMPLETE, CANCEL
+    ORDER, PROGRESS, COMPLETE, CANCEL, BILLED
 }

@@ -31,7 +31,7 @@ public class Order {
     private LocalDateTime orderDateTime;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status; // 주문 상태 [ORDER, PROGRESS, COMPLETE]
+    private OrderStatus status; // 주문 상태 [ORDER, PROGRESS, COMPLETE, BILLED]
 
     // 연관관계 메서드
     public void addOrderItem(OrderItem orderItem) {
