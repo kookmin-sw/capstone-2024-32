@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>테이블 계산 표</title>
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- ==== JS ===== -->
+    <script src="/js/bootstrap.min.js"></script>
+    <style>
+        .card {
+            height: 80%;
+            width: 50%;
+            margin: 0 auto;
+        }
+        .fixed-height {
+            height: 80%; /* 원하는 높이로 설정 */
+            overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
+        }
+
+        .multiline {
+            white-space: pre-line;
+        }
+
+        .button-container {
+            height: 5%;
+            display: flex;
+            justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <div class="top-button-container">
+                <button onclick="goBack()" class="btn btn-secondary go-back-btn">뒤로가기</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title table-name" th:text="${seat.seatName}">테이블 계산 표</h5>
+            <div class="table-content multiline fixed-height" th:text="${seat.orderedItems}"></div>
+            <hr class="bg-dark my-4" style="height: 3px;">
+            <div class="table-content" th:text="${seat.totalPrice} + '원'"></div>
+            <form class="button-container mt-3" method="post">
+                <a th:href="@{'/admin/seat/bill/' + ${seat.seatId} + '/api'}" class="btn btn-primary print-btn">상세보기</a>
+                <button type="submit" class="btn btn-success ml-2">결제하기</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goBack(){
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>
