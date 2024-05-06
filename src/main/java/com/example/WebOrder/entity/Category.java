@@ -1,5 +1,6 @@
 package com.example.WebOrder.entity;
 
+import com.example.WebOrder.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +24,18 @@ public class Category {
     private List<Item> items = new ArrayList<>();
 
     private Long adminId;
+
+    private CategoryStatus status;
+
+    public List<ItemDto> getItems() {
+        List<ItemDto> dtoList = new ArrayList<>();
+
+        for (Item item : items) {
+            if (item.getStatus() == ItemStatus.ACTIVE) {
+                dtoList.add(ItemDto.fromEntity(item));
+            }
+        }
+        return dtoList;
+    }
 }
 
