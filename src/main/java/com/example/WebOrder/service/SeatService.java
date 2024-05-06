@@ -7,6 +7,7 @@ import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.SeatRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,12 +24,14 @@ public class SeatService {
     private final OrderRepository orderRepository;
     private final LoginService loginService;
     private final OrderService orderService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public SeatService(SeatRepository seatRepository, OrderRepository orderRepository, LoginService loginService, OrderService orderService) {
+    public SeatService(SeatRepository seatRepository, OrderRepository orderRepository, LoginService loginService, OrderService orderService, SimpMessagingTemplate simpMessagingTemplate) {
         this.seatRepository = seatRepository;
         this.orderRepository = orderRepository;
         this.loginService = loginService;
         this.orderService = orderService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public Long addSeat(String seatName) {
@@ -67,6 +70,7 @@ public class SeatService {
             order.setStatus(OrderStatus.CANCEL);
             orderRepository.save(order);
         }
+        simpMessagingTemplate.convertAndSend("/topic/queue", orderService.getUnfinishedOrder(seat.getUser().getId()));
     }
 
     // 테이블 계산하기
@@ -82,6 +86,7 @@ public class SeatService {
             order.setStatus(OrderStatus.BILLED);
             orderRepository.save(order);
         }
+        simpMessagingTemplate.convertAndSend("/topic/queue", orderService.getUnfinishedOrder(seat.getUser().getId()));
     }
 
     // 현재 유저의 seat 중 가장 많이 주문을 받은 seat를 가져오기
