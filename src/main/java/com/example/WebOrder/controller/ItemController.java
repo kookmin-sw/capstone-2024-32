@@ -35,6 +35,7 @@ public class ItemController {
         Long userId = loginService.getCurrentUserEntity().getId();
         model.addAttribute("itemStat", itemService.getBestItemStat(userId));
         model.addAttribute("itemList",itemService.getAllItemsOfUser(userId));
+        model.addAttribute("categories", categoryService.getAllCategory(userId));
         return "item/itemManage";
     }
 
@@ -52,7 +53,7 @@ public class ItemController {
         Long adminId = loginService.getCurrentUserEntity().getId();
         model.addAttribute("isCreate", true);
         model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
-        model.addAttribute("categories", categoryService.getAllCategoryDtos(adminId));
+        model.addAttribute("categories", categoryService.getAllCategory(adminId));
         return "item/itemForm";
     }
 
