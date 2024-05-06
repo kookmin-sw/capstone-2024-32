@@ -44,18 +44,18 @@
                     <th:block th:each="category : ${categories}">
                         <h1 th:text="${category.name}">카테고리명</h1>
                         <div class="category">
-                            <input type="hidden" th:value="${category.id}" class="categoryId">
+                            <input type="hidden" th:value="${category.categoryId}" class="categoryId">
                             <th:block th:each="item : ${category.items}">
                                 <div class="item">
                                     <div class="left">
                                         <div class="content">
-                                            <input type="hidden" th:value="${item.id}" class="itemId">
+                                            <input type="hidden" th:value="${item.itemId}" class="itemId">
                                             <h1 th:text="${item.name}">아이템 이름</h1>
                                             <p th:text="${item.price} + '원'">아이템 가격</p>
                                         </div>
                                         <div class="buttons">
-                                            <button class="addCart" th:attr="itemId=${item.id}" onclick="addToCart(this)">담기</button>
-                                            <button class="detail" th:attr="itemId=${item.id}" onclick="showItemDetail(this)">상세보기</button>
+                                            <button class="addCart" th:attr="itemId=${item.itemId}" onclick="addToCart(this)">담기</button>
+                                            <button class="detail" th:attr="itemId=${item.itemId}" onclick="showItemDetail(this)">상세보기</button>
                                         </div>
                                     </div>
                                     <img th:src="${item.itemImageUrl}" alt="">

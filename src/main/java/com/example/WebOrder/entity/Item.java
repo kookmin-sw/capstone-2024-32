@@ -45,5 +45,6 @@ public class Item {
 
     private Long orderedCount;
 
+    private ItemStatus status;
 
 }

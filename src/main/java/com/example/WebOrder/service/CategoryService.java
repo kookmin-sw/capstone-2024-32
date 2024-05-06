@@ -3,6 +3,7 @@ package com.example.WebOrder.service;
 import com.example.WebOrder.dto.CategoryDto;
 import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.entity.Category;
+import com.example.WebOrder.entity.CategoryStatus;
 import com.example.WebOrder.entity.Item;
 import com.example.WebOrder.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
@@ -24,16 +25,14 @@ public class CategoryService {
         this.loginService = loginService;
     }
 
-    public List<CategoryDto> getAllCategoryDtos(Long adminId) {
-        List<Category> categoryList = categoryRepository.findAllByAdminId(adminId);
+    public List<CategoryDto> getAllCategory(Long adminId) {
+        List<Category> categoryList = categoryRepository.findAllByAdminIdAndStatus(adminId, CategoryStatus.ACTIVE);
 
         List<CategoryDto> categoryDtoList = categoryList.stream().map(CategoryDto::fromEntity).toList();
+        log.info(String.valueOf(categoryDtoList.size()));
         return categoryDtoList;
     }
 
-    public List<Category> getAllCategories(Long adminId) {
-        return categoryRepository.findAllByAdminId(adminId);
-    }
 
     public Long createCategory(Long adminId, CategoryDto dto) {
         if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
@@ -41,6 +40,7 @@ public class CategoryService {
         Category category = new Category();
         category.setName(dto.getName());
         category.setAdminId(adminId);
+        category.setStatus(CategoryStatus.ACTIVE);
 
         Category savedCategory = categoryRepository.save(category);
 
@@ -51,6 +51,8 @@ public class CategoryService {
     public void deleteCategory(Long adminId, Long categoryId) throws IOException {
         if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
 
-        categoryRepository.deleteById(categoryId);
+        Category category = categoryRepository.findById(categoryId).get();
+        category.setStatus(CategoryStatus.INACTIVE);
+        categoryRepository.save(category);
     }
 }

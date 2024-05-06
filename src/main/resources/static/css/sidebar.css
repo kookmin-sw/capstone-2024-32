@@ -9,10 +9,10 @@
 
 :root {
 
-    --body-color: #fae6d9;
+    --body-color: #fff9f1;
     --sidebar-color: #fff;
-    --primary-color: #FF6F0F;
-    --primary-color-light: #fff6f1;
+    --primary-color: #fcd38c;
+    --primary-color-light: #fff9f1;
     --toggle-color: #ddd;
     --text-color: #707070;
 
@@ -200,6 +200,11 @@ body.dark .sidebar li a:hover .text {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: auto;
+}
+
+.sidebar .menu-bar::-webkit-scrollbar {
+    width: 0;
 }
 
 .menu-bar .mode {
@@ -270,20 +275,20 @@ body.dark .switch::before {
 }
 
 .container {
-    position: relative;
-    height: 100vh;
+    position: absolute;
+    height: 100%;
     left: 250px;
     width: calc(100% - 250px);
     background: var(--body-color);
     transition: var(--tran-05);
 }
 
-.container .text {
-    font-size: 30px;
-    font-weight: 500;
-    color: var(--text-color);
-    padding: 8px 40px;
-}
+/*.container .text {*/
+/*    font-size: 30px;*/
+/*    font-weight: 500;*/
+/*    color: var(--text-color);*/
+/*    padding: 8px 40px;*/
+/*}*/
 
 
 .sidebar.close ~ .container {

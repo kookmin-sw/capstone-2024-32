@@ -2,6 +2,7 @@ package com.example.WebOrder.dto;
 
 import com.example.WebOrder.entity.Category;
 import com.example.WebOrder.entity.Item;
+import com.example.WebOrder.entity.ItemStatus;
 import com.example.WebOrder.entity.Review;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class ItemDto {
     private Integer avgRate;
     private Long orderedCount;
     private Long categoryId;
+    private ItemStatus status;
 
     public static ItemDto fromEntity(Item item){
         ItemDto dto = new ItemDto();
@@ -46,6 +48,7 @@ public class ItemDto {
 
         dto.setOrderedCount(item.getOrderedCount());
         dto.setCategoryId(item.getCategory().getId());
+        dto.setStatus(item.getStatus());
 
         return dto;
     }
