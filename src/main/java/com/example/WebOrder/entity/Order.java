@@ -1,5 +1,7 @@
 package com.example.WebOrder.entity;
 
+import com.example.WebOrder.dto.ItemDto;
+import com.example.WebOrder.dto.OrderItemDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +34,15 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문 상태 [ORDER, PROGRESS, COMPLETE, BILLED]
+
+    public List<OrderItemDto> getOrderItems() {
+        List<OrderItemDto> dtoList = new ArrayList<>();
+
+        for (OrderItem orderItem : orderItems) {
+            dtoList.add(OrderItemDto.fromEntity(orderItem));
+        }
+        return dtoList;
+    }
 
     // 연관관계 메서드
     public void addOrderItem(OrderItem orderItem) {
