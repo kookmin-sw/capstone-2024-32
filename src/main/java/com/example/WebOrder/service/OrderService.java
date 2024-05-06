@@ -2,6 +2,7 @@ package com.example.WebOrder.service;
 
 import com.example.WebOrder.dto.OrderDto;
 import com.example.WebOrder.dto.OrderItemDto;
+import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.*;
 import com.example.WebOrder.repository.ItemRepository;
 import com.example.WebOrder.repository.OrderRepository;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 주문 관련 업무를 처리하는 서비스
@@ -97,5 +99,14 @@ public class OrderService {
         }
 
         simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(order.getUserId()));
+    }
+
+    public List<OrderDto> getUnbilledOrderOfSeat(Long seatId) {
+        Optional<Seat> optionalSeat = seatRepository.findById(seatId);
+        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+        Seat seat = optionalSeat.get();
+
+        List<Order> orderList = orderRepository.findOrdersByStatusNotBilledOrCancelAndSeat(seat);
+        return orderList.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
     }
 }
