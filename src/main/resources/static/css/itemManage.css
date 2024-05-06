@@ -1,78 +1,251 @@
-.item-container {
-    display: flex;
-    flex-direction: column; /* 수직 배치 */
-    align-items: center; /* 수평 가운데 정렬 */
+*{
+    font-family: 'Poppins', sans-serif;
+}
+.i-name {
+    color: #444a53;
+    padding: 30px 30px 0 30px;
+    font-size: 24px;
+    font-weight: 700;
+}
+.i-name i {
+    margin-right: 1rem;
 }
 
-.item-top-container {
-    margin-top: 20px;
+.head-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 30px 0 30px
+}
+
+.item-button:active {
+    transform: scale(0.96);
+}
+
+.values {
+    padding: 30px 30px 0 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.values .val-box {
+    background: #fff;
+    padding: 16px 20px;
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.values .val-box div {
+    display: flex;
+    flex-direction: column;
+}
+
+.values .val-box i {
+    font-size: 25px;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    color: #fff;
+    margin-right: 15px;
+}
+
+.values .val-box:nth-child(1) i {
+    background: #7b74ec;
+}
+
+.values .val-box:nth-child(2) i {
+    background: #5c8af0;
+}
+
+.values .val-box:nth-child(3) i {
+    background: #e45d99;
+}
+
+.values .val-box:nth-child(4) i {
+    background: #74daec;
+}
+
+.values .val-box h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.values .val-box span {
+    font-size: 15px;
+    color: #828997;
+}
+
+.board {
+    position: relative;
+    width: 94%;
+    margin: 10px 0 30px 30px;
+    overflow: auto;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.select-category {
+    position: relative;
+    padding: 30px 30px 0 30px;
+    z-index: 1;
+}
+
+.select-category .select-btn {
+    display: flex;
+    height: 3rem;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    border: 2px #2a2f3b solid;
+    border-radius: 0.5em;
+    padding: 1em;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-between;
+    transition: background 0.3s;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    width: 10rem;
+}
+
+.select-btn:hover {
+    background: #c9c8c8;
+}
+
+.select-btn i {
+    font-size: 20px;
+    transition: 0.3s;
+}
+
+.select-category.active .select-btn {
+    border: 2px #26489a solid;
+    box-shadow: 0 0 0.8em #26489a;
+}
+.select-category.active .select-btn i {
+    transform: rotate(-180deg);
+}
+
+.select-category .options {
+    position: absolute;
+    padding: 0.2em 0.5em;
+    list-style: none;
+    background: #fff;
+    box-shadow: 0 0.5em 1em rgba(0,0,0,0.2);
+    border-radius: 5px;
+    display: none;
+    width: 10rem;
+}
+
+.options .option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0.7em 0.5em;
+    margin: 0.3em 0;
+    border-radius: 0.5em;
+    cursor: pointer;
+    background: #fff;
+}
+
+.options .option:hover {
+    background: #F2F2F2;
+}
+
+.select-category.active .options {
+    display: block;
+}
+
+.option .option-text {
+    font-size: 14px;
+    color: #333;
+}
+
+.board img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.board h5 {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.board p {
+    font-weight: 400;
+    font-size: 13px;
+    color: #787d8d;
+}
+
+.board .item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: start;
+}
+
+table {
     width: 100%;
-    display: flex;
-    justify-content: space-between; /* 좌우로 최대한 펼쳐 배치 */
-    align-items: center; /* 수직 가운데 정렬 */
+    border-collapse: collapse;
 }
 
-
-.item-container {
-    width: 80%; /* 아이템 컨테이너의 너비 설정 */
-    margin: 0 auto; /* 가운데 정렬 */
-    padding: 1vh; /* 안쪽 여백 설정 */
-    background-color: #f0f0f0; /* 배경색 설정 */
-    border-radius: 2rem; /* 테두리 모서리를 둥글게 설정 */
+tr {
+    border-bottom: 1px solid #eef0f3;
 }
 
-.item-stat-card {
-    background-color: #f0f0f0;
-    margin-bottom: 20px; /* 아이템 통계 카드와 테이블 사이 간격 설정 */
-    margin-right: 5%; /* 제일 중요! item-stat-card와 item-button-container의 간격을 조절하기 위해 이것만 width:45% 잡고 간격 5% 줌 */
-    width: 45%;
-    border: 2px solid #fc9d7a;
-    border-radius: 1rem;
-    padding: 1rem;
+thead td {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 400;
+    background: #F9FAFB;
+    text-align: start;
+    padding: 15px;
 }
 
-.item-stat-label {
-    font-weight: bold;
-    font-size: 1.3rem;
+tbody tr td {
+    padding: 10px 15px;
 }
 
-.item-button-container{
-    margin-bottom: 20px;
-    width: 50%;
-}
-
-.item-button {
+.active p {
+    background: #d7fada;
+    padding: 2px 10px;
     display: inline-block;
-    padding: 8px 16px; /* 원하는 패딩 값으로 조정하세요 */
-    background-color: #fc9d7a; /* 배경색 */
-    color: black; /* 글자색 */
-    text-align: center; /* 텍스트 가운데 정렬 */
-    text-decoration: none; /* 링크에 밑줄 제거 */
-    border-radius: 4px; /* 버튼의 모서리를 둥글게 만듭니다 */
-    border: none; /* 테두리 제거 */
-    cursor: pointer; /* 포인터 커서로 변경하여 클릭 가능한 상태로 만듭니다 */
-    transition: background-color 0.3s; /* 배경색 변경에 애니메이션 효과를 줍니다 */
+    border-radius: 40px;
+    color: #2b2b2b;
 }
 
-.item-button:hover {
-    background-color: #f66a3a;
+.options a,
+.options button {
+    text-decoration: none;
+    font-size: 14px;
+    color: #554cd1;
+    font-weight: 600;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
 }
 
-.item-list-container {
-    width: 100%; /* 테이블 너비 설정 */
-    border-collapse: collapse; /* 테이블 셀 경계를 병합 */
-}
+.delete button {
+    text-decoration: none;
+    font-size: 14px;
+    color: #554cd1;
+    font-weight: 600;
 
-.item-list-container th,
-.item-list-container td {
-    padding: 10px; /* 셀 안의 내용과 경계 사이 간격 설정 */
-    text-align: center; /* 셀 안의 텍스트 가운데 정렬 */
-}
-
-.item-list-container th {
-    background-color: #f2f2f2; /* 테이블 머릿글 배경색 설정 */
-}
-
-.item-list-container tr:nth-child(even) {
-    background-color: #f9f9f9; /* 짝수 행 배경색 설정 */
 }
