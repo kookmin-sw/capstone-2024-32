@@ -15,7 +15,7 @@ public class OrderItemDto {
 
     public static OrderItemDto fromEntity(OrderItem orderItem){
         OrderItemDto dto = new OrderItemDto();
-        dto.setItemId(orderItem.getId());
+        dto.setItemId(orderItem.getItem().getId());
         dto.setName(orderItem.getItem().getName());
         dto.setCount(orderItem.getCount());
         dto.setTotalPrice(orderItem.getTotalPrice());
