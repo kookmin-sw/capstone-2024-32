@@ -5,6 +5,7 @@ import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.dto.MenuStatisticsDto;
 import com.example.WebOrder.entity.Category;
 import com.example.WebOrder.entity.Item;
+import com.example.WebOrder.entity.ItemStatus;
 import com.example.WebOrder.repository.CategoryRepository;
 import com.example.WebOrder.repository.ItemRepository;
 import jakarta.transaction.Transactional;
@@ -33,7 +34,7 @@ public class ItemService {
 
     //아이템 정보 리스트를 사용자에게 전달.
     public List<ItemDto> getAllItemsOfUser(Long userId){
-        List<Item> itemList = itemRepository.findAllByAdminId(userId);
+        List<Item> itemList = itemRepository.findAllByAdminIdAndStatus(userId, ItemStatus.ACTIVE);
 
         List<ItemDto> itemDtoList = itemList.stream().map(ItemDto::fromEntity).toList();
         return itemDtoList;
@@ -62,6 +63,7 @@ public class ItemService {
         log.info(String.valueOf(dto.getCategoryId()));
         Category category = categoryRepository.findById(dto.getCategoryId()).get();
         item.setCategory(category);
+        item.setStatus(ItemStatus.ACTIVE);
 
         Item savedItem = itemRepository.save(item);
 
@@ -71,11 +73,9 @@ public class ItemService {
     @Transactional
     public void deleteItem(Long ownerId, Long itemId) throws IOException {
         if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
-        String image = itemRepository.findById(itemId).get().getItemImageUrl();
-        if (image != null) {
-            s3UploadService.delete(image);
-        }
-        itemRepository.deleteById(itemId);
+        Item item = itemRepository.findById(itemId).get();
+        item.setStatus(ItemStatus.INACTIVE);
+        itemRepository.save(item);
     }
 
     public Long updateItem(Long adminId, Long itemId,ItemDto dto) {

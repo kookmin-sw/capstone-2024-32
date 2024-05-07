@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,225 +9,218 @@
     <link rel="stylesheet" th:href="@{https://unpkg.com/swiper/swiper-bundle.min.css}" />
     <!-- ===== Fontawesome CDN Link ===== -->
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css}" />
-    <!-- ===== CSS ===== -->
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <!-- ==== JS ===== -->
     <script src="/js/sockjs.min.js"></script>
     <script src="/js/stomp.min.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
 
     <title>주문 대기열</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa; /* 배경색 설정 (선택 사항) */
-        }
-
-        .swiper-container {
-            width: 100%;
-            height: 100%; /* 전체 화면 크기로 조정 */
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .swiper-slide {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%; /* 전체 화면 크기로 조정 */
-            height: auto; /* 내용에 맞게 높이 자동 조정 */
-        }
-
-        .card-content {
-            width: 40%; /* 화면의 40% 차지 */
-            min-width: 280px; /* 최소 너비 */
-            padding: 20px;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff; /* 카드 배경색 */
-        }
-
-        .btn {
-            margin-top: 10px;
-            width: 100px;
-        }
-    </style>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/orderQueue.css}">
+    </th:block>
 </head>
 <body>
-<div class="swiper-container">
-    <div class="swiper-wrapper" id="queueContainer">
-        <!-- orders 리스트를 순회하며 각 order에 대한 카드를 생성 -->
-        <div th:each="order : ${orders}" class="swiper-slide" th:attr="slide-order-id = ${order.id}">
-            <div class="card-content">
-                <!-- 테이블 이름 출력 -->
-                <h4 th:text="'테이블 : ' + ${order.seatName}"></h4>
-                <!-- 주문 상태 출력 -->
-                <h5 th:text="'상태: ' + ${order.orderStatus}"></h5>
-                <!-- 주문 아이템 리스트 출력 -->
-                <p class="order-content" th:text="${order.orderItems}"></p>
-                <!-- 주문 취소 버튼 -->
-                <button class="btn btn-danger" th:onclick="'cancelOrder(\'' + ${order.id} + '\')'">취소</button>
-                <!-- 주문 진행중 버튼 -->
-                <button class="btn btn-warning" th:onclick="'progressOrder(\'' + ${order.id} + '\')'">진행중</button>
-                <!-- 주문 완료 버튼 -->
-                <button class="btn btn-success" th:onclick="'completeOrder(\'' + ${order.id} + '\')'">완료</button>
+    <div layout:fragment="content">
+        <h3 class="i-name">
+            <i class='bx bx-receipt icon'></i>
+            주문 현황
+        </h3>
+        <div class="slide-container swiper">
+            <div class="slide-content">
+                <div class="card-wrapper swiper-wrapper">
+                    <div class="card swiper-slide" th:attr="slide-order-id = ${order.id}" th:each="order : ${orders}">
+                        <div class="card-content">
+                            <div class="order-header">
+                                <!-- 테이블 이름 출력 -->
+                                <h4 class="name" th:text="${order.seatName}"></h4>
+                                <!-- 주문 상태 출력 -->
+                                <h5 class="status" th:text="'주문상태: ' + ${order.orderStatus}"></h5>
+
+                                <div class="btns">
+                                    <!-- 주문 취소 버튼 -->
+                                    <button class="btn" th:onclick="'cancelOrder(\'' + ${order.id} + '\')'">취소</button>
+                                    <!-- 주문 진행중 버튼 -->
+                                    <button class="btn" th:onclick="'progressOrder(\'' + ${order.id} + '\')'">접수</button>
+                                    <!-- 주문 완료 버튼 -->
+                                    <button class="btn" th:onclick="'completeOrder(\'' + ${order.id} + '\')'">완료</button>
+                                </div>
+                            </div>
+                            <h3 class="order-content-header">주문 내역</h3>
+                            <!-- 주문 아이템 리스트 출력 -->
+                            <div class="order-content">
+                                <p th:each="orderItem : ${order.orderItems}" th:text="${orderItem.name} + ' : ' + ${orderItem.count} + '개'"></p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
             </div>
+            <div class="swiper-button-next swiper-navBtn"></div>
+            <div class="swiper-button-prev swiper-navBtn"></div>
+            <div class="swiper-pagination"></div>
         </div>
-    </div>
 
-    <!-- Pagination -->
-    <div class="swiper-pagination"></div>
 
-    <!-- Navigation Buttons -->
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-</div>
+        <script th:inline="javascript">
+            // Swiper 인스턴스 초기화
+            var swiper = initializeSwiper();
 
-<script th:inline="javascript">
-    var swiper = new Swiper('.swiper-container', {
-        slidesPerView: 1,
-        spaceBetween: 30,
-        loop: true,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-    });
+            // WebSocket 연결 및 메시지 수신 처리
+            function connect() {
+                let socket = new SockJS('/ws');
+                let stompClient = Stomp.over(socket);
 
-    // WebSocket 연결 및 메시지 수신 처리
-    function connect() {
-        let socket = new SockJS('/ws');
-        let stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/queue', function(message) {
-                let orders = JSON.parse(message.body);
-                displayOrder(orders);
-            });
-        });
-    }
-
-    // 주문 정보를 화면에 표시하는 함수
-    function displayOrder(orders) {
-        let activeSlidesId;
-        if (swiper.slides.length > 0) {
-            activeSlidesId = swiper.slides[swiper.activeIndex].getAttribute("slide-order-id");
-        }
-        else {
-            activeSlidesId = 0;
-        }
-        document.getElementById('queueContainer').innerHTML = '';
-
-        orders.forEach(order => {
-            let slideDiv = document.createElement('div');
-            slideDiv.classList.add('swiper-slide');
-            slideDiv.setAttribute('slide-order-id', order.id);
-            // 주문 카드 생성
-            let cardDiv = document.createElement('div');
-            cardDiv.classList.add('card-content');
-
-            // 카드 내용 구성
-            let seatHeader = document.createElement('h4');
-            seatHeader.textContent = '테이블 : ' + order.seatName;
-            cardDiv.appendChild(seatHeader);
-
-            let statusHeader = document.createElement('h5');
-            statusHeader.textContent = '상태 : ' + order.orderStatus;
-            cardDiv.appendChild(statusHeader);
-
-            let orderContent = document.createElement('p');
-            orderContent.classList.add('order-content');
-            orderContent.textContent = order.orderItems;
-            cardDiv.appendChild(orderContent);
-
-            // 주문 취소, 진행 중, 완료 버튼 생성
-            let cancelBtn = createButton('btn btn-danger', '취소', () => cancelOrder(order.id));
-            let progressBtn = createButton('btn btn-warning', '진행중', () => progressOrder(order.id));
-            let completeBtn = createButton('btn btn-success', '완료', () => completeOrder(order.id));
-
-            // 카드에 버튼 추가
-            cardDiv.appendChild(cancelBtn);
-            cardDiv.appendChild(progressBtn);
-            cardDiv.appendChild(completeBtn);
-
-            // 새로운 주문 정보를 슬라이드에 추가
-
-            slideDiv.appendChild(cardDiv);
-            swiper.appendSlide(slideDiv);
-        });
-        // Swiper 슬라이드 업데이트
-        swiper.update();
-
-        // 이전에 활성화된 슬라이드가 있다면 그곳으로 가기
-        let previousSlideExists = false;
-        for (let i = 0; i < swiper.slides.length; i++) {
-            let slideOrderId = swiper.slides[i].getAttribute('slide-order-id');
-            console.log('slideOrderId : ' + slideOrderId);
-
-            // 'slide-order-id'가 3과 일치하는 슬라이드를 찾음
-            if (slideOrderId && parseInt(slideOrderId) == activeSlidesId) {
-                // 해당 슬라이드를 활성화하여 Swiper의 active index로 설정
-                swiper.slideTo(i); // i는 찾은 슬라이드의 인덱스
-                previousSlideExists = true;
-                break; // 슬라이드를 찾았으므로 반복문 종료
+                stompClient.connect({}, function(frame) {
+                    console.log('Connected: ' + frame);
+                    stompClient.subscribe('/topic/queue', function(message) {
+                        let orders = JSON.parse(message.body);
+                        displayOrder(orders);
+                    });
+                });
             }
-        }
-        if (!previousSlideExists) swiper.slideTo(0);
-    }
 
-    // 버튼 생성을 위한 도우미 함수
-    function createButton(className, text, onClickHandler) {
-        let button = document.createElement('button');
-        for (let splitClassName of className.split(' ')) {
-            button.classList.add(splitClassName);
-        }
-        button.textContent = text;
-        button.onclick = onClickHandler;
-        return button;
-    }
+            function displayOrder(orders) {
+                let slideContent = document.querySelector('.slide-content .swiper-wrapper');
+                clearSlideContent(slideContent);
 
-    // 주문 상태 변경 함수
-    function sendOrderAction(orderId, action) {
-        let socket = new SockJS('/ws');
-        let stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            stompClient.send('/app/updateOrderStatus', {}, JSON.stringify({
-                'orderId': orderId,
-                'action': action
-            }));
-            stompClient.disconnect();
-        });
-    }
+                let fragment = document.createDocumentFragment();
 
-    // 취소 버튼 클릭 시
-    function cancelOrder(orderId) {
-        sendOrderAction(orderId, '취소');
-    }
+                orders.forEach(order => {
+                    let cardDiv = createCard(order);
+                    fragment.appendChild(cardDiv);
+                });
 
-    // 진행중 버튼 클릭 시
-    function progressOrder(orderId) {
-        sendOrderAction(orderId, '진행중');
-    }
+                slideContent.appendChild(fragment);
 
-    // 완료 버튼 클릭 시
-    function completeOrder(orderId) {
-        sendOrderAction(orderId, '완료');
-    }
+                // Swiper 업데이트
+                swiper.update();
+            }
 
-    // 페이지 로드 시 WebSocket 연결
-    connect();
-</script>
+            function createCard(order) {
+                let cardDiv = document.createElement('div');
+                cardDiv.classList.add('card');
+                cardDiv.classList.add('swiper-slide');
 
+                let cardContentDiv = document.createElement('div');
+                cardContentDiv.classList.add('card-content');
+
+                let orderHeaderDiv = document.createElement('div');
+                orderHeaderDiv.classList.add('order-header');
+
+                // 테이블 이름과 주문 상태 출력
+                let tableHeader = createElement('h4', order.seatName);
+                tableHeader.classList.add('name');
+                orderHeaderDiv.appendChild(tableHeader);
+
+                let statusHeader = createElement('h5', '주문상태: ' + order.orderStatus);
+                statusHeader.classList.add('status');
+                orderHeaderDiv.appendChild(statusHeader);
+
+                // 취소, 진행중, 완료 버튼 추가
+                let btnDiv = document.createElement('div');
+                btnDiv.classList.add('btns');
+
+                let cancelBtn = createButton('btn', '취소', () => cancelOrder(order.id));
+                let progressBtn = createButton('btn', '접수', () => progressOrder(order.id));
+                let completeBtn = createButton('btn', '완료', () => completeOrder(order.id));
+
+                btnDiv.appendChild(cancelBtn);
+                btnDiv.appendChild(progressBtn);
+                btnDiv.appendChild(completeBtn);
+
+                orderHeaderDiv.appendChild(btnDiv);
+                cardContentDiv.appendChild(orderHeaderDiv);
+
+
+                let orderContentHeader = createElement('h3', '주문 내역');
+                orderContentHeader.classList.add('order-content-header');
+                cardContentDiv.appendChild(orderContentHeader);
+
+                let orderListDiv = document.createElement('div');
+                orderListDiv.classList.add('order-content');
+
+                let orderList = document.createElement('div');
+                order.orderItems.forEach(orderItem => {
+                    let listItem = document.createElement('p');
+                    listItem.textContent = orderItem.name + ' : ' + orderItem.count + '개';
+                    orderList.appendChild(listItem);
+                });
+
+                orderListDiv.appendChild(orderList);
+                cardContentDiv.appendChild(orderListDiv);
+
+                cardDiv.appendChild(cardContentDiv);
+
+                return cardDiv;
+            }
+
+            function createElement(tagName, textContent) {
+                let element = document.createElement(tagName);
+                element.textContent = textContent;
+                return element;
+            }
+
+            function createButton(className, text, onClickHandler) {
+                let button = createElement('button', text);
+                button.classList.add(className);
+                button.onclick = onClickHandler;
+                return button;
+            }
+
+            function clearSlideContent(slideContent) {
+                slideContent.innerHTML = '';
+            }
+
+            function initializeSwiper() {
+                return new Swiper('.slide-content', {
+                    slidesPerView: 3,
+                    spaceBetween: 25,
+                    centerSlide: true,
+                    fade: true,
+                    grabCursor: true,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                        dynamicBullets: true,
+                    },
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+
+                });
+            }
+
+            function sendOrderAction(orderId, action) {
+                let socket = new SockJS('/ws');
+                let stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    stompClient.send('/app/updateOrderStatus', {}, JSON.stringify({
+                        'orderId': orderId,
+                        'action': action
+                    }));
+                    stompClient.disconnect();
+                });
+            }
+
+            // 취소 버튼 클릭 시
+            function cancelOrder(orderId) {
+                sendOrderAction(orderId, '취소');
+            }
+
+            // 진행중 버튼 클릭 시
+            function progressOrder(orderId) {
+                sendOrderAction(orderId, '접수');
+            }
+
+            // 완료 버튼 클릭 시
+            function completeOrder(orderId) {
+                sendOrderAction(orderId, '완료');
+            }
+
+            // 페이지 로드 시 WebSocket 연결
+            connect();
+        </script>
+    </div>
 </body>
 </html>

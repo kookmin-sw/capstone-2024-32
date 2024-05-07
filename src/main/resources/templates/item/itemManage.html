@@ -3,60 +3,217 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default_layout}">
 <head>
-  <title>메뉴 관리</title>
-  <th:block layout:fragment="css">
-      <link rel="stylesheet" th:href="@{/css/itemManage.css}" >
-  </th:block>
+    <title>메뉴 관리</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/itemManage.css}">
+    </th:block>
 </head>
 
 <body>
-    <div layout:fragment="content">
-        <!--메뉴 관리 관련 내용 -->
-        <div class="item-container">
-          <div class="item-top-container">
-              <div class="item-stat-card">
-                  <div class="item-stat-label">가장 별점이 좋은 메뉴</div>
-                  <div class="highest-rate-item" th:text="${itemStat.bestRateMenu + ' ' + itemStat.bestRateNum + '/5.0'}">단무지 (4.5/5.0)</div>
-                  <div class="item-stat-label">가장 주문이 많은 메뉴</div>
-                  <div class="most-ordered-item" th:text="${itemStat.mostOrderedMenu + ' ' + itemStat.mostOrderedNum + '회'}">김치 (105회)</div>
-              </div>
+<div layout:fragment="content">
 
-              <div class="item-button-container">
-                  <a class="item-button" th:href="@{/admin/item/create}">메뉴 만들기</a>
-              </div>
-          </div>
+    <h3 class="i-name">
+        <i class='bx bx-baguette'></i>
+         메뉴 관리
+    </h3>
 
+    <div class="values">
+        <div class="val-box">
+            <i class='bx bxs-star'></i>
+            <div>
+                <h3>별점이 높은 메뉴</h3>
+                <span th:text="${itemStat.bestRateMenu}"></span>
+                <span th:text="${itemStat.bestRateNum + '/5.0'}"></span>
+            </div>
+        </div>
 
-          <table class="item-list-container">
-              <thead>
-                  <tr>
-                      <th>Name</th>
-                      <th>Price</th>
-                      <th>Average Rate</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr th:each="item : ${itemList}" th:id="${item.itemId}" th:onclick="'redirectToDetail(\'' + ${item.itemId} + '\')'">
-                      <td th:text="${item.name}">파멸의 김치찌개(파, 멸치)</td>
-                      <td th:text="${item.price}">9999</td>
-                      <td th:text="${item.avgRate}">2.5</td>
-                      <td>
-                          <form th:action="@{'/admin/item/delete/' + ${item.itemId}}" method="post">
-                          <button type="submit">삭제</button>
-                          </form>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
-
-          <script>
-              function redirectToDetail(itemId) {
-                  var url = '/admin/item/detail/' + itemId;
-                  window.location.href = url; // 클릭 시 해당 URL로 페이지 이동
-              }
-          </script>
+        <div class="val-box">
+            <i class='bx bx-receipt'></i>
+            <div>
+                <h3>주문이 많은 메뉴</h3>
+                <span th:text="${itemStat.mostOrderedMenu}">New Users</span>
+                <span th:text="${itemStat.mostOrderedNum + '회'}">New Users</span>
+            </div>
         </div>
     </div>
+
+    <div class="head-wrapper">
+        <div class="select-category">
+            <label for="select-btn">
+                <i class='bx bxs-category-alt' ></i>
+                카테고리
+            </label>
+            <div id="select-btn" class="select-btn">
+                <span class="sBtn-text">카테고리</span>
+                <i class="bx bx-chevron-down"></i>
+            </div>
+
+
+            <ul class="options">
+                <li th:each="category : ${categories}" class="option">
+                    <input type="hidden" class="categoryId" th:value="${category.categoryId}">
+                    <span th:text="${category.name}" class="option-text"></span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="button-container">
+            <a class="item-button" th:href="@{/admin/item/create}">
+                <i class='bx bx-duplicate' ></i>
+                메뉴 만들기
+            </a>
+        </div>
+    </div>
+
+    <div class="board">
+        <table>
+            <thead>
+                <tr>
+                    <td>이름</td>
+                    <td></td>
+                    <td>가격</td>
+                    <td>별점</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody class="itemList">
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (categories.length > 0) {
+                // 페이지 로드 시 초기 카테고리 선택 및 해당 카테고리명으로 표시
+                let initialCategory = categories[0];
+                findCategoryItemList(initialCategory.categoryId);
+                sBtn_text.innerText = initialCategory.name; // 선택된 카테고리명으로 표시
+            }
+        });
+
+        const optionCategory = document.querySelector(".select-category"),
+              selectBtn = optionCategory.querySelector(".select-btn"),
+              options = optionCategory.querySelectorAll(".option"),
+              sBtn_text = optionCategory.querySelector(".sBtn-text");
+
+        selectBtn.addEventListener("click", () => optionCategory.classList.toggle("active"));
+
+        options.forEach(option => {
+            option.addEventListener("click", () => {
+                let selectedOption = option.querySelector(".option-text");
+                sBtn_text.innerText = selectedOption.innerText;
+                optionCategory.classList.remove("active");
+                let categoryId = option.querySelector(".categoryId").value;
+                console.log(categoryId);
+                findCategoryItemList(categoryId);
+            })
+
+        })
+
+        let categories = [[${categories}]];
+        let itemList = [];
+        console.log(categories);
+
+        function findCategoryItemList(categoryId) {
+            if (categories.length === 0) {
+                return; // 카테고리가 없으면 처리하지 않음
+            }
+            let category = categories.find(category => category.categoryId == categoryId);
+            itemList = category.items;
+            renderItemList(itemList);
+        }
+
+        function renderItemList(itemList) {
+            const tbody = document.querySelector('.board tbody');
+            tbody.innerHTML = '';
+
+            itemList.forEach(item => {
+                if (item.status == "INACTIVE") {
+                    return;
+                }
+                const tr = document.createElement('tr');
+
+                // 아이템 이름, 이미지
+                const nameTd = document.createElement('td');
+                nameTd.classList.add('item');
+                const img = document.createElement('img');
+                img.setAttribute('src', item.itemImageUrl);
+                img.setAttribute('alt', '');
+                const itemNameDiv = document.createElement('div');
+                itemNameDiv.classList.add('itemName');
+                const itemNameH5 = document.createElement('h5');
+                itemNameH5.textContent = item.name;
+                itemNameDiv.appendChild(itemNameH5);
+                nameTd.appendChild(img);
+                nameTd.appendChild(itemNameDiv);
+
+                // 상세 보기 버튼
+                const detailTd = document.createElement('td');
+                detailTd.classList.add('detail');
+                const detailLink = document.createElement('a');
+                detailLink.setAttribute('href', '#');
+                detailLink.addEventListener('click', () => redirectToDetail(item.itemId));
+                const detailIcon = document.createElement('i');
+                detailIcon.classList.add('bx', 'bx-search-alt-2');
+                detailLink.appendChild(detailIcon);
+                detailTd.appendChild(detailLink);
+
+                // 아이템 가격
+                const priceTd = document.createElement('td');
+                priceTd.classList.add('itemPrice');
+                const priceH5 = document.createElement('h5');
+                priceH5.textContent = item.price;
+                priceTd.appendChild(priceH5);
+
+                // 평균 별점
+                const avgRateTd = document.createElement('td');
+                avgRateTd.classList.add('averageRate');
+                const avgRateP = document.createElement('p');
+                avgRateP.textContent = item.avgRate + '/5.0';
+                avgRateTd.appendChild(avgRateP);
+
+                // 수정 및 삭제
+                const optionsTd = document.createElement('td');
+                optionsTd.classList.add('options');
+                const editLink = document.createElement('a');
+                editLink.setAttribute('href', `/admin/item/update/${item.itemId}`);
+                const editIcon = document.createElement('i');
+                editIcon.classList.add('bx', 'bxs-pencil');
+                editLink.appendChild(editIcon);
+                editLink.textContent = '수정';
+                const deleteForm = document.createElement('form');
+                deleteForm.setAttribute('method', 'post');
+                deleteForm.setAttribute('action', `/admin/item/delete/${item.itemId}`);
+                const deleteButton = document.createElement('button');
+                deleteButton.setAttribute('type', 'submit');
+                const deleteIcon = document.createElement('i');
+                deleteIcon.classList.add('bx', 'bxs-trash');
+                deleteButton.appendChild(deleteIcon);
+                deleteButton.textContent = '삭제';
+                deleteForm.appendChild(deleteButton);
+                optionsTd.appendChild(editLink);
+                optionsTd.appendChild(deleteForm);
+
+                tr.appendChild(nameTd);
+                tr.appendChild(detailTd);
+                tr.appendChild(priceTd);
+                tr.appendChild(avgRateTd);
+                tr.appendChild(optionsTd);
+
+                tbody.appendChild(tr);
+            });
+
+        }
+
+        function redirectToDetail(itemId) {
+            var url = '/admin/item/detail/' + itemId;
+            window.location.href = url; // 클릭 시 해당 URL로 페이지 이동
+        }
+
+    </script>
+</div>
 
 </body>
 </html>

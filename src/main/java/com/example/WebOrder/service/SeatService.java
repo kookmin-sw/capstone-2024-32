@@ -1,5 +1,7 @@
 package com.example.WebOrder.service;
 
+import com.example.WebOrder.dto.ItemDto;
+import com.example.WebOrder.dto.OrderItemDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.dto.SeatOrderDto;
 import com.example.WebOrder.entity.*;
@@ -25,13 +27,15 @@ public class SeatService {
     private final LoginService loginService;
     private final OrderService orderService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ItemService itemService;
 
-    public SeatService(SeatRepository seatRepository, OrderRepository orderRepository, LoginService loginService, OrderService orderService, SimpMessagingTemplate simpMessagingTemplate) {
+    public SeatService(SeatRepository seatRepository, OrderRepository orderRepository, LoginService loginService, OrderService orderService, SimpMessagingTemplate simpMessagingTemplate, ItemService itemService) {
         this.seatRepository = seatRepository;
         this.orderRepository = orderRepository;
         this.loginService = loginService;
         this.orderService = orderService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.itemService = itemService;
     }
 
     public Long addSeat(String seatName) {
@@ -145,11 +149,12 @@ public class SeatService {
         int totalPrice = 0;
         // 해당 테이블에 걸려있는 주문들을 순회한다.
         for (Order order: orderList){
-            List<OrderItem> orderItems = order.getOrderItems();
+            List<OrderItemDto> orderItems = order.getOrderItems();
 
             // 주문 하나에 걸려있는 아이템들의 정보를 seatViewOrderedItemDto에 넣는다.
-            for (OrderItem orderItem: orderItems){
-                sb.append(orderItem.getItem().getName());
+            for (OrderItemDto orderItem: orderItems){
+                ItemDto itemDto = itemService.getItemInfoById(orderItem.getItemId());
+                sb.append(itemDto.getName());
                 sb.append(" X ");
                 sb.append(orderItem.getCount());
                 sb.append(" = ");

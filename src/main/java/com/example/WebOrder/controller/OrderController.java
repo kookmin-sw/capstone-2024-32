@@ -30,7 +30,7 @@ public class OrderController {
     @GetMapping("/order/{userId}/{seatId}")
     public String getShopPageByGuest(@PathVariable Long userId, @PathVariable Long seatId, Model model){
         // 인증 과정 했다 치고
-        model.addAttribute("categories", categoryService.getAllCategories(userId));
+        model.addAttribute("categories", categoryService.getAllCategory(userId));
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
         return "order/orderForm";
     }

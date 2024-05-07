@@ -308,6 +308,11 @@ body {
     position: relative;
     height: 25rem;
     top: 1rem;
+    overflow: auto;
+}
+
+.cartTab .cart::-webkit-scrollbar {
+    width: 0;
 }
 
 .cartTab .orderItems {
@@ -320,7 +325,8 @@ body {
 
 .cartTab .orderItems .item {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    grid-template-columns: 2fr 2fr 1fr 20px;
     grid-column-gap: 1rem;
     padding: 0.6rem 1rem;
     text-align: center;
@@ -328,26 +334,43 @@ body {
     background-color: var(--primary-color);
     border-radius: 5px;
 }
-
-.orderItems .count span {
-    display: inline-block;
+.orderItems .delete-btn {
     width: 25px;
     height: 25px;
-    background-color: ghostwhite;
+    background-color: transparent;
     color: #2e2e2e;
-    border-radius: 10%;
     cursor: pointer;
     transition: var(--tran-03);
 }
 
-.orderItems .count span:hover {
+.orderItems .delete-btn:hover {
     transform: scale(1.2);
 }
 
-.cartTab .orderItems .count span:nth-child(2) {
-    background-color: transparent;
-    border: hidden;
-    color: #2e2e2e;
+.orderItems .count {
+    height: 2rem;
+    min-width: 6rem;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 5px;
+}
+
+.orderItems .count span {
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+.cartTab .orderItems .count span.num {
+    font-size: 0.8rem;
+    border-right: 1px solid rgba(0,0,0,0.2);
+    border-left: 1px solid rgba(0,0,0,0.2);
+    pointer-events: none;
 }
 
 .orderItems .item:nth-child(even) {
@@ -409,80 +432,4 @@ button.order-btn {
 .black-backdrop.active {
     opacity: 1;
     visibility: visible;
-}
-
-/*.cartTab {*/
-/*    width: 400px;*/
-/*    background-color: #353432;*/
-/*    color: #eee;*/
-/*    position: fixed;*/
-/*    top: 0;*/
-/*    right: 0;*/
-/*    bottom: 0;*/
-/*    inset: 0 -400px 0 auto;*/
-/*    display: grid;*/
-/*    grid-template-rows: 70px 1fr 70px;*/
-/*    transition: var(--tran-05);*/
-/*}*/
-
-/*body.show-cart .cartTab {*/
-/*    inset: 0 0 0 auto;*/
-/*}*/
-
-/*body.showCart .container {*/
-/*    transform: translateX(-250px);*/
-/*}*/
-
-/*.cartTab h1 {*/
-/*    padding: 20px;*/
-/*    margin: 0;*/
-/*    font-weight: 300;*/
-/*}*/
-
-/*.cartTab .btn {*/
-/*    display: grid;*/
-/*    grid-template-columns : repeat(2, 1fr);*/
-/*    border: none;*/
-/*    font-family: "Inter", sans-serif;*/
-/*    font-weight: 500;*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*.cartTab .btn .close {*/
-/*    background-color: #eee;*/
-/*}*/
-/*.cartTab .listCart .item img {*/
-/*    width: 100%;*/
-/*}*/
-.cartTab .listCart .item {
-    display: grid;
-    grid-template-columns: 70px 150px 50px 1fr;
-    gap: 10px;
-    text-align: center;
-    align-items: center;
-}
-
-.listCart .count span {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background-color: #eee;
-    color: #555;
-    border-radius: 10%;
-    cursor: pointer;
-}
-
-.listCart .count span:nth-child(2) {
-    background-color: transparent;
-    color: #eee;
-}
-
-.listCart .item:nth-child(even) {
-    background-color: #eee1;
-}
-.listCart {
-    overflow: auto;
-}
-.listCart::-webkit-scrollbar {
-    width: 0;
 }
