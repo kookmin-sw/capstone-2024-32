@@ -4,6 +4,8 @@ import com.example.WebOrder.dto.CategoryDto;
 import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,7 @@ public class ItemController {
     @GetMapping("/admin/item/detail/{itemId}")
     public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model) {
         model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
+        model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId, PageRequest.of(0, 10, Sort.Direction.DESC, "id")));
         return "item/itemDetail";
     }
 
