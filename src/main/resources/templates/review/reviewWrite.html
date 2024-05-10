@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 작성 페이지</title>
+    <style>
+        .star_rating {
+            font-size: 24px;
+        }
+
+        .star,
+        .fixed-star {
+            color: gray;
+            cursor: pointer;
+        }
+
+        .star.active,
+        .fixed-star.active {
+            color: orange;
+        }
+    </style>
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- ==== JS ===== -->
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="star_rating">
+        <span class="star active" value="1">★</span>
+        <span class="star" value="2">★</span>
+        <span class="star" value="3">★</span>
+        <span class="star" value="4">★</span>
+        <span class="star" value="5">★</span>
+    </div>
+    <form method="post">
+        <input type="hidden" id="rate" name="rate" value="1">
+        <div class="form-group">
+            <label for="comment">리뷰</label>
+            <input type="text" class="form-control" id="comment" name="comment" placeholder="간단한 리뷰를 적어주세요">
+            <button class="btn">제출</button>
+        </div>
+    </form>
+
+
+    <div class="reviews-container">
+        <div th:each="review: ${reviews}" class="review">
+            <div class="star_rating">
+                <span class="fixed-star active" value="1">★</span>
+                <span class="fixed-star" value="2" th:if="${review.rate} < 2">★</span>
+                <span class="fixed-star active" value="2" th:if="${review.rate} >= 2">★</span>
+                <span class="fixed-star" value="3" th:if="${review.rate} < 3">★</span>
+                <span class="fixed-star active" value="3" th:if="${review.rate} >= 3">★</span>
+                <span class="fixed-star" value="4" th:if="${review.rate} < 4">★</span>
+                <span class="fixed-star active" value="4" th:if="${review.rate} >= 4">★</span>
+                <span class="fixed-star" value="5" th:if="${review.rate} < 5">★</span>
+                <span class="fixed-star active" value="5" th:if="${review.rate} == 5">★</span>
+            </div>
+            <div class="review-comment">
+                <p th:text="${review.getComment}">리뷰 내용</p>
+            </div>
+        </div>
+
+        <ui class="pagination">
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPage)}">
+                <a class="page-link" th:href="@{'?page=' + ${pageNumber}}" th:text="${pageNumber}"></a>
+            </li>
+        </ui>
+    </div>
+</div>
+
+<script>
+    // star는 기본적으로 회색
+    // star를 클릭할 시 해당 star가 노란색으로 변경
+    // 상위 value의 star를 클릭할 시, 하위 value의 star들도 노란색으로 변경.
+    // star를 클릭할 시 해당하는 value가 form에 rate에 반영.
+    document.addEventListener("DOMContentLoaded", function() {
+        const stars = document.querySelectorAll(".star");
+        const rateInput = document.getElementById("rate");
+
+        // 별 클릭 시 이벤트 처리
+        stars.forEach(star => {
+            star.addEventListener("click", () => {
+                const value = parseInt(star.getAttribute("value"));
+                rateInput.value = value; // 별점 값 입력
+
+                // 모든 별 초기화 (회색)
+                stars.forEach(s => s.classList.remove("active"));
+
+                // 클릭된 별을 포함하여 그 이하 별들을 노란색으로 변경
+                for (let i = 0; i < value; i++) {
+                    stars[i].classList.add("active");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -4,6 +4,20 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" th:href="@{/css/orderForm.css}">
+    <style>
+        .review-card{
+            display: flex; /* Flexbox 사용 */
+            flex-direction: row; /* 요소들을 가로로 정렬 (기본값이므로 생략 가능) */
+        }
+        .fixed-star {
+            color: gray;
+            cursor: pointer;
+        }
+
+        .fixed-star.active {
+            color: orange;
+        }
+    </style>
     <title>Title</title>
 </head>
 <body class="">
@@ -133,7 +147,7 @@
     <script th:inline="javascript">
         let items = [[${items}]];
         const details = document.querySelector(".item-details");
-        function showItemDetail(element) {
+        async function showItemDetail(element) {
             let itemId = parseInt(element.getAttribute("itemId"));
             let item = findItemById(itemId);
             wrapper.classList.toggle('show-item');
@@ -141,6 +155,64 @@
             details.querySelector(".itemName").innerHTML = item.name;
             details.querySelector(".description").innerHTML = item.description;
             details.querySelector(".price").innerHTML = item.price + '원';
+            await getReview(itemId);
+        }
+
+        async function getReview(itemId){
+            const details = document.querySelector(".reviews");
+            details.innerHTML = '';
+            await fetch('/review/get/'+ itemId.toString(), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // JSON 형식으로 파싱된 응답 반환
+                })
+                .then(reviewList => {
+                    // 받아온 ReviewDto 목록(reviewList)을 순회하면서 각 객체의 rate와 comment 출력
+                    reviewList.forEach(reviewDto => {
+                        let reviewCard = document.createElement('div');
+                        reviewCard.classList.add('review-card');
+                        const rate = reviewDto.rate;
+                        const comment = reviewDto.comment;
+                        // 꽉찬 별 채우기
+                        let activeStarSpan = document.createElement('span');
+                        activeStarSpan.classList.add('fixed-star', 'active');
+
+                        // rate 값에 따라 별(★) 추가
+                        for (let i = 1; i <= rate; i++) {
+                            const star = document.createElement('span');
+                            star.textContent = '★'; // 별(★) 텍스트 설정
+                            activeStarSpan.appendChild(star); // 생성된 별(★) 요소를 span 요소에 추가
+                        }
+                        // reviewCard 요소에 생성된 span 요소 추가
+                        reviewCard.appendChild(activeStarSpan);
+                        // 빈 별 채우기
+                        let starSpan = document.createElement('span');
+                        starSpan.classList.add('fixed-star');
+
+                        // rate 값에 따라 별(★) 추가
+                        for (let i = 1; i <= 5-rate; i++) {
+                            const star = document.createElement('span');
+                            star.textContent = '★'; // 별(★) 텍스트 설정
+                            starSpan.appendChild(star); // 생성된 별(★) 요소를 span 요소에 추가
+                        }
+                        // reviewCard 요소에 생성된 span 요소 추가
+                        reviewCard.appendChild(starSpan);
+
+                        // comment
+                        reviewCard.innerHTML = reviewCard.innerHTML + '<p class="review-comment">  ' + comment + '</p>';
+                        details.appendChild(reviewCard);
+                    })
+
+
+                });
         }
 
         function findItemById(id) {
@@ -159,12 +231,21 @@
             });
             alert(response.status);
             if (await response.text() === 'true') {
+                const cookies = response.headers.get('Set-Cookie');
+
+                if (cookies){
+                    document.cookie = cookies;
+                    alert('브라우저에 쿠키 적용 완료' + document.cookie);
+                }
+
                 window.location.replace("/order/success");
             }
             else {
                 alert('주문 오류');
             }
         }
+
+
     </script>
 </body>
 </html>
