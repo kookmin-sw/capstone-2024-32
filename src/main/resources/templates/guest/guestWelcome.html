@@ -29,7 +29,7 @@
             <!-- 주문하기 버튼 -->
             <a th:href="@{'/guest/' + ${userId} + '/' + ${seatId} + '/checkEntrance'}" class="btn btn-primary btn-lg btn-custom">주문하기</a>
             <!-- 리뷰 작성 버튼 -->
-            <a href="/writeReview" class="btn btn-success btn-lg btn-custom">리뷰 작성</a>
+            <a th:href="@{'/review/menu/' + ${userId}}" class="btn btn-success btn-lg btn-custom">리뷰 작성</a>
         </div>
     </div>
 </div>
