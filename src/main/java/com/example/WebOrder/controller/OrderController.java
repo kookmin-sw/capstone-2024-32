@@ -1,11 +1,12 @@
 package com.example.WebOrder.controller;
 
-import com.example.WebOrder.dto.OrderItemDto;
 import com.example.WebOrder.service.CategoryService;
 import com.example.WebOrder.service.ItemService;
 import com.example.WebOrder.service.OrderService;
+import com.example.WebOrder.service.ReviewService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,11 +19,13 @@ public class OrderController {
     private final ItemService itemService;
     private final OrderService orderService;
     private final CategoryService categoryService;
+    private final ReviewService reviewService;
 
-    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService) {
+    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService, ReviewService reviewService) {
         this.itemService = itemService;
         this.orderService = orderService;
         this.categoryService = categoryService;
+        this.reviewService = reviewService;
     }
 
 
@@ -38,9 +41,10 @@ public class OrderController {
     //주문하기
     @ResponseBody
     @PostMapping("/order/{userId}/{seatId}")
-    public Boolean order(@PathVariable Long userId, @PathVariable Long seatId, @RequestBody String json) throws JsonProcessingException {
-        orderService.order(seatId, json);
+    public Boolean order(@PathVariable Long userId, @PathVariable Long seatId, @RequestBody String json, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
+        Long orderId = orderService.order(seatId, json);
         log.info("주문 성공");
+        response.addCookie(reviewService.getCookieOfOrderInfo(request, orderId));
         return true;
     }
 

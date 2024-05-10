@@ -43,7 +43,6 @@ public class ItemController {
     @GetMapping("/admin/item/detail/{itemId}")
     public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model) {
         model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
-        model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId));
         return "item/itemDetail";
     }
 
