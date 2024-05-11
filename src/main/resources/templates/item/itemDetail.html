@@ -42,7 +42,47 @@
                     <div class="menu-review-rate" th:text="${review.rate}">4.0</div>
                     <div class="menu-review-comment" th:text="${review.comment}">너무 맛있어요.</div>
                 </div>
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" id="pagedown" th:attr="itemId=${itemId}" onclick="pageDown(this)"><</a>
+                        <a class="page-link" id="pageup" th:attr="itemId=${itemId}" onclick="pageUp(this)">></a>
+                    </li>
+                </ul>
             </div>
+
+            <script>
+                let currentPage = 1;
+                let urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has("page")){
+                    currentPage = parseInt(urlParams.get('page'));
+                    if (isNaN(currentPage) || currentPage <= 0) {
+                        currentPage = 1; // 파라미터가 숫자가 아니거나 1 이하일 경우 기본값으로 설정
+                    }
+                }
+                let totalPage = [[${totalPage}]];
+
+                function pageDown(element){
+                    if (currentPage == 1){
+                        return;
+                    }
+                    else {
+                        currentPage -= 1;
+                    }
+                    let itemId = element.getAttribute("itemId");
+                    window.location.href = '/admin/item/detail/' + itemId.toString() + '?page=' + currentPage;
+                }
+
+                function pageUp(element){
+                    if (currentPage == totalPage ){
+                        return;
+                    }
+                    else  {
+                        currentPage += 1;
+                    }
+                    let itemId = element.getAttribute('itemId');
+                    window.location.href = '/admin/item/detail/' + itemId.toString() + '?page=' + currentPage;
+                }
+            </script>
 
             <!--메뉴 버튼-->
             <form class="menu-bottom" th:action="@{'/admin/item/delete/' + ${itemInfo.itemId}}" th:method="post">
