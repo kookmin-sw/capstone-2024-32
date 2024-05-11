@@ -58,7 +58,7 @@ public class ItemService {
         item.setDescription(dto.getDescription());
         item.setAdminId(adminId);
         item.setReviews(new ArrayList<>());
-        item.setAvgRate(0);
+        item.setAvgRate(0.0);
         item.setOrderedCount(0L);
         log.info(String.valueOf(dto.getCategoryId()));
         Category category = categoryRepository.findById(dto.getCategoryId()).get();
@@ -104,7 +104,7 @@ public class ItemService {
         MenuStatisticsDto dto = new MenuStatisticsDto();
         if (avgRateEntity.isEmpty()) {
             dto.setBestRateMenu("메뉴 없음");
-            dto.setBestRateNum(0);
+            dto.setBestRateNum(0.0);
         }
         else {
             dto.setBestRateMenu(avgRateEntity.get().getName());
