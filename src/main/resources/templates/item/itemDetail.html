@@ -39,7 +39,7 @@
             <div class="menu-mid">
                 <div class="menu-review-card" th:if="${reviewList.size() == 0}">리뷰 없음</div>
                 <div class="menu-review-card" th:each="review : ${reviewList}">
-                    <div class="menu-review-rate" th:text="${review.rate}">4.0</div>
+                    <div class="menu-review-rate" th:text="${review.rate} + 점">4.0</div>
                     <div class="menu-review-comment" th:text="${review.comment}">너무 맛있어요.</div>
                 </div>
                 <ul class="pagination">
@@ -86,7 +86,6 @@
 
             <!--메뉴 버튼-->
             <form class="menu-bottom" th:action="@{'/admin/item/delete/' + ${itemInfo.itemId}}" th:method="post">
-                <a href="#" class="stop-btn">메뉴 중지</a>
                 <a th:href="@{'/admin/item/update/' + ${itemInfo.itemId}}" class="edit-btn">메뉴 수정</a>
                 <button type="submit" class="delete-btn">메뉴 삭제</button>
             </form>
