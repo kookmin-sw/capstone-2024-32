@@ -13,6 +13,7 @@ import com.example.WebOrder.repository.ReviewRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,10 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findByItemId(itemId, pageable).getContent();
         log.info(reviews.toString());
         return reviews.stream().map(ReviewDto::fromEntity).toList();
+    }
+
+    public Page<Review> getReviewPageOfItem(Long itemId, Pageable pageable){
+        return reviewRepository.findByItemId(itemId, pageable);
     }
 
 

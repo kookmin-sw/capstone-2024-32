@@ -39,6 +39,16 @@ public class ReviewController {
         return reviewsOfItem;
     }
 
+    @ResponseBody
+    @GetMapping("/review/page/{itemId}")
+    public Integer getReviewPageNumberOfItem( @PathVariable("itemId") Long itemId, @RequestParam(name="page", defaultValue = "1") Integer page){
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "id");
+
+        Integer pageNumber =  reviewService.getReviewPageOfItem(itemId, pageable).getTotalPages();
+
+        return pageNumber;
+    }
+
     // 쿠키를 분석해서 주문한 메뉴의 리스트를 보여주는 페이지
     @GetMapping("/review/menu/{userId}")
     public String getReviewMenuPage(HttpServletRequest request, Model model, @PathVariable("userId") Long userId){

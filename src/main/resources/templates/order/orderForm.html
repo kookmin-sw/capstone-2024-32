@@ -116,6 +116,12 @@
                         </div>
                     </div>
                 </div>
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" id="pagedown" onclick="pageDown(this)"><</a>
+                        <a class="page-link" id="pageup" onclick="pageUp(this)">></a>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -145,6 +151,8 @@
 
     <script th:src="@{/js/orderForm.js}"></script>
     <script th:inline="javascript">
+        let currentPage = 1;
+        let totalPage = 1;
         let items = [[${items}]];
         const details = document.querySelector(".item-details");
         async function showItemDetail(element) {
@@ -155,13 +163,58 @@
             details.querySelector(".itemName").innerHTML = item.name;
             details.querySelector(".description").innerHTML = item.description;
             details.querySelector(".price").innerHTML = item.price + '원';
-            await getReview(itemId);
+            document.querySelector("#pagedown").setAttribute("itemId", itemId.toString());
+            document.querySelector("#pageup").setAttribute("itemId", itemId.toString());
+            await getTotalPageOfReview(itemId);
+            await getReview(itemId, currentPage);
         }
 
-        async function getReview(itemId){
+        async function getTotalPageOfReview(itemId){
+            await fetch('/review/page/' + itemId.toString(), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text(); // JSON으로 파싱된 응답 반환
+                })
+                .then(result => {
+                    totalPage = result;
+                });
+        }
+
+        async function pageDown(element){
+            let itemId = parseInt(element.getAttribute("itemId"));
+            if (currentPage == 1) {
+                await getReview(itemId, currentPage);
+            }
+            else {
+                currentPage -= 1;
+                await getReview(itemId, currentPage);
+            }
+        }
+
+        async function pageUp(element) {
+            let itemId = parseInt(element.getAttribute("itemId"));
+            if (currentPage == totalPage) {
+                await getReview(itemId, currentPage);
+            }
+            else {
+                currentPage += 1;
+                await getReview(itemId, currentPage);
+            }
+        }
+
+
+        async function getReview(itemId, page){
             const details = document.querySelector(".reviews");
             details.innerHTML = '';
-            await fetch('/review/get/'+ itemId.toString(), {
+            await fetch('/review/get/'+ itemId.toString() + '?page=' + page.toString(), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

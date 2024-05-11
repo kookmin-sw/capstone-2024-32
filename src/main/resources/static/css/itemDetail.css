@@ -132,3 +132,34 @@
     border-radius: 10px;
     padding: 20px;
 }
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-link {
+    display: inline-block;
+    padding: 5px 10px;
+    color: #030302; /* 기본 색상 설정 */
+    text-decoration: none;
+    border: 1px solid #f9ea85; /* 테두리 설정 */
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: #f9ea85; /* 호버 시 배경색 변경 */
+    color: #333; /* 호버 시 텍스트 색상 변경 */
+}
+
+#pagedown, #pageup {
+    margin-right: 5px; /* 좌우 마진 설정 */
+}
