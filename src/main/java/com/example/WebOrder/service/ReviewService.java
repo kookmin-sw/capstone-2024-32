@@ -43,20 +43,14 @@ public class ReviewService {
         review.setRate(dto.getRate());
         review.setComment(dto.getComment());
 
-        reviewedItem.getReviews().add(review);
-
-        int avgOfRate = 0;
-        for (Review incReview : reviewedItem.getReviews()){
-            avgOfRate += incReview.getRate();
-        }
-        avgOfRate /= reviewedItem.getReviews().size();
-        reviewedItem.setAvgRate(avgOfRate);
+        review = reviewRepository.save(review);
 
 
-        Long returnValue = reviewRepository.save(review).getId();
+        reviewedItem.setAvgRate(reviewRepository.findAverageRateByItemId(dto.getItemId()));
+
         itemRepository.save(reviewedItem);
 
-        return returnValue;
+        return review.getId();
     }
 
     public List<ReviewDto> getReviewsOfItem(Long itemId, Pageable pageable){
@@ -124,5 +118,10 @@ public class ReviewService {
 
     public Integer getNumberOfPages(Long itemId) {
         return reviewRepository.findByItemId(itemId, Pageable.ofSize(10)).getTotalPages();
+    }
+
+    // 소수점 아래 1자리만 보이게 한다.
+    public Double getAverageRateOfItem(Long itemId){
+        return reviewRepository.findAverageRateByItemId(itemId);
     }
 }
