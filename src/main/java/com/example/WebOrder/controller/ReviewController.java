@@ -59,7 +59,12 @@ public class ReviewController {
     @GetMapping("/review/write/{userId}/{itemId}")
     public String getReviewWriteForm(@PathVariable("userId") Long userId, @PathVariable("itemId") Long itemId,@RequestParam(name="page", defaultValue = "1") Integer page, Model model){
         model.addAttribute("item", itemService.getItemInfoById(itemId));
-        model.addAttribute("totalPage", reviewService.getNumberOfPages(itemId));
+        Integer totalPages = reviewService.getNumberOfPages(itemId);
+        if (totalPages == 0)
+            model.addAttribute("totalPage", 1);
+        else
+            model.addAttribute("totalPage", totalPages);
+
         model.addAttribute("reviews", reviewService.getReviewsOfItem(itemId, PageRequest.of(page - 1, 10, Sort.Direction.DESC, "id")));
         return "review/reviewWrite";
     }
