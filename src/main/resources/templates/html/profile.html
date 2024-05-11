@@ -4,20 +4,78 @@
       layout:decorate="~{layouts/default_layout}">
 <head>
   <title>회원정보</title>
-  <th:block layout:fragment="script">
-    <script src="/js/jquery-3.7.1.min.js"></script>
-  </th:block>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/profile.css}">
+    </th:block>
 </head>
 <body>
 
     <div layout:fragment="content">
-        <div>유저이름</div>
-        <div th:text="${profile.username}"></div>
 
-        <div>이름</div>
-        <div th:text="${profile.name}"></div>
+        <div class="form-container">
+            <form action="/myprofile/edit" id="profileForm" method="post"  enctype="multipart/form-data">
+                <div class="column-left">
+                    <div class="form-header">마이페이지</div>
+                    <label for="name">가게 이름:</label>
+                    <input type="text" name="name" id="name" th:value="${profile.name}" required>
 
-        <a href="/myprofile/edit" th:if="${isMine}">수정하기</a>
+                    <label for="address">가게 주소:</label>
+                    <input type="text" name="address" id="address" th:value="${profile.address}">
+
+                    <label for="currentPassword">기존 비밀번호:</label>
+                    <input type="password" name="currentPassword" id="currentPassword" placeholder="프로필 수정 시 필수 항목입니다." required>
+                    <p class="field-error" th:if="${param.unauthorized}">비밀번호가 일치하지 않습니다.</p>
+
+                    <label for="changedPassword">변경할 비밀번호:</label>
+                    <input type="password" name="changedPassword" id="changedPassword" oninput="activatePasswordCheck()">
+                    <p class="field-error" th:if="${param.pwderror}">비밀번호는 8~16자 사이로 지어주세요.</p>
+
+                    <label for="changedPassword2">비밀번호 확인:</label>
+                    <input type="password" name="changedPassword2" id="changedPassword2">
+
+                    <label for="description">가게 설명:</label>
+                    <textarea name="description" id="description" th:text="${profile.description}"></textarea>
+
+                    <button type="submit">저장</button>
+                </div>
+                <div class="column-right">
+                    <label for="image">가게 대표 로고</label>
+                    <input id="image" type="file" name="image" onchange="displayProfilePic()" accept=".jpg, .jpeg, .png ">
+                    <img th:src="${profile.profileImageUrl}" alt="" id="profilePic">
+                </div>
+
+            </form>
+        </div>
+
+        <script>
+            function displayProfilePic() {
+                const input = document.getElementById('image');
+                const img = document.getElementById('profilePic');
+
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            const password = document.getElementById('changedPassword');
+            const password2 = document.getElementById('changedPassword2');
+            function activatePasswordCheck() {
+                if (password.value != "") {
+                    password2.setAttribute("required", true);
+                }
+                else {
+                    password2.removeAttribute("required");
+                }
+            }
+        </script>
     </div>
+
 </body>
 </html>
