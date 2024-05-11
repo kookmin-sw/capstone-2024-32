@@ -20,7 +20,7 @@ public class ItemDto {
     private String itemImageUrl;
     private int price;
     private Long adminId;
-    private Integer avgRate;
+    private Double avgRate;
     private Long orderedCount;
     private Long categoryId;
     private ItemStatus status;
@@ -33,17 +33,7 @@ public class ItemDto {
         dto.setDescription(item.getDescription());
         dto.setItemImageUrl(item.getItemImageUrl());
         dto.setAdminId(item.getAdminId());
-
-        if (item.getReviews().size() != 0){
-            int avgOfRate = 0;
-            for (Review incReview : item.getReviews()){
-                avgOfRate += incReview.getRate();
-            }
-            avgOfRate /= item.getReviews().size();
-            dto.setAvgRate(avgOfRate);
-        }
-        else
-            dto.setAvgRate(0);
+        dto.setAvgRate(item.getAvgRate());
 
 
         dto.setOrderedCount(item.getOrderedCount());

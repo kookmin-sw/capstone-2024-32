@@ -41,7 +41,7 @@ public class Item {
 
     @Max(value = 5)
     @Min(value = 0)
-    private Integer avgRate;
+    private Double avgRate;
 
     private Long orderedCount;
 
