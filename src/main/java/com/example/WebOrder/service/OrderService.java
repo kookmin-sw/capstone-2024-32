@@ -53,6 +53,7 @@ public class OrderService {
             if (dto.getCount() > 0) {
                 Item item = itemRepository.findById(dto.getItemId()).get();
                 orderItems.add(OrderItem.createOrderItem(item, dto.getCount()));
+                item.setOrderedCount(item.getOrderedCount() + dto.getCount());
             }
         }
         // 주문 생성
