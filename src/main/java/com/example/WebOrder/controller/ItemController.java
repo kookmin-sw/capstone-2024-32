@@ -43,9 +43,10 @@ public class ItemController {
 
     //메뉴 상세보기
     @GetMapping("/admin/item/detail/{itemId}")
-    public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model) {
+    public String getMenuByOwner(@PathVariable("itemId") Long itemId, Model model, @RequestParam(name="page", defaultValue = "1") Integer page) {
         model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
-        model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId, PageRequest.of(0, 10, Sort.Direction.DESC, "id")));
+        model.addAttribute("reviewList", reviewService.getReviewsOfItem(itemId, PageRequest.of(page - 1, 10, Sort.Direction.DESC, "id")));
+        model.addAttribute("totalPage", reviewService.getNumberOfPages(itemId));
         return "item/itemDetail";
     }
 
