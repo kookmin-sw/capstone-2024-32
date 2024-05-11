@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -54,10 +55,9 @@ public class ItemController {
     @GetMapping("/admin/item/create")
     public String createItemForm(Model model){
         Long adminId = loginService.getCurrentUserEntity().getId();
-        model.addAttribute("isCreate", true);
         model.addAttribute("itemInfo", new ItemDto());//빈 아이템 dto
         model.addAttribute("categories", categoryService.getAllCategory(adminId));
-        return "item/itemForm";
+        return "item/itemCreateForm";
     }
 
     @PostMapping("/admin/item/create")
@@ -77,27 +77,22 @@ public class ItemController {
 
     //메뉴 업데이트하기
     @GetMapping("/admin/item/update/{itemId}")
-    public String createItemForm(@PathVariable("itemId") Long itemId, Model model){
-        model.addAttribute("isCreate", false);
+    public String updateItemForm(@PathVariable("itemId") Long itemId, Model model){
+        Long adminId = loginService.getCurrentUserEntity().getId();
         model.addAttribute("itemInfo", itemService.getItemInfoById(itemId));
-        return "item/itemForm";
+        model.addAttribute("categories", categoryService.getAllCategory(adminId));
+        return "item/itemUpdateForm";
     }
     @PostMapping("/admin/item/update/{itemId}")
-    public String updateItem(@PathVariable("itemId") Long itemId, @ModelAttribute ItemDto dto){
-        itemService.updateItem(loginService.getCurrentUserEntity().getId(), itemId, dto);
-        return "redirect:/admin/item";
-    }
-
-    // 카테고리 추가
-    @PostMapping("/admin/category/create")
-    public String createCategory(CategoryDto dto) {
-        categoryService.createCategory(loginService.getCurrentUserEntity().getId(), dto);
-        return "redirect:/admin/item";
-    }
-
-    @PostMapping("/admin/category/delete/{categoryId}")
-    public String deleteCategory(@PathVariable("categoryId") Long categoryId) throws IOException {
-        categoryService.deleteCategory(loginService.getCurrentUserEntity().getId(), categoryId);
+    public String updateItem(@PathVariable("itemId") Long itemId, @ModelAttribute ItemDto dto, @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        ItemDto itemInfo = itemService.getItemInfoById(itemId);
+        if (Objects.equals(itemInfo.getItemImageUrl(), dto.getItemImageUrl())) {
+            itemService.updateItem(loginService.getCurrentUserEntity().getId(), itemId, dto);
+        }
+        else {
+            String fileName = s3UploadService.upload(image);
+            itemService.updateItem(loginService.getCurrentUserEntity().getId(), itemId, dto, fileName);
+        }
         return "redirect:/admin/item";
     }
 }
