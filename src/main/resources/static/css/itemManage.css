@@ -14,15 +14,74 @@
 .head-wrapper {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-wrap: wrap;
 }
 
 .button-container {
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 30px 0 30px;
+}
+
+.category-delete-form {
+    margin-top: 1em;
+    margin-left: 1em;
+}
+
+.category-create-form {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 30px 30px 0 30px
+    justify-content: space-between;
+    padding: 40px 30px 0 30px;
+}
+
+.category-create-form input {
+    margin-top: 12px;
+    width: 100%;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+.category-create-form button {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 12px;
+    margin-left: 1rem;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #ff8056;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.button-container .add-item,
+.category-delete-form .delete-category {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #ff8056;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button-container .add-item:hover,
+.category-create-form button:hover,
+.category-delete-form .delete-category:hover {
+    background: #fc9d7a;
 }
 
 .item-button:active {
@@ -100,13 +159,14 @@
     border-radius: 8px;
 }
 
-.select-category {
+.category {
     position: relative;
     padding: 30px 30px 0 30px;
     z-index: 1;
+    display: flex;
 }
 
-.select-category .select-btn {
+.category .select-btn {
     display: flex;
     height: 3rem;
     background: #fff;
@@ -132,15 +192,15 @@
     transition: 0.3s;
 }
 
-.select-category.active .select-btn {
+.category.active .select-btn {
     border: 2px #26489a solid;
     box-shadow: 0 0 0.8em #26489a;
 }
-.select-category.active .select-btn i {
+.category.active .select-btn i {
     transform: rotate(-180deg);
 }
 
-.select-category .options {
+.category .options {
     position: absolute;
     padding: 0.2em 0.5em;
     list-style: none;
@@ -166,7 +226,7 @@
     background: #F2F2F2;
 }
 
-.select-category.active .options {
+.category.active .options {
     display: block;
 }
 
