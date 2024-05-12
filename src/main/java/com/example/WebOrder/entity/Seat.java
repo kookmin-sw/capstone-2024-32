@@ -29,4 +29,8 @@ public class Seat {
 
     // 해당 좌석에서 주문 받은 횟수
     private Long orderedTime;
+
+    public void increaseOrderedTime() {
+        orderedTime += 1;
+    }
 }
