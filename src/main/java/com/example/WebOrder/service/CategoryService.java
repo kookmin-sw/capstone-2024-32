@@ -5,23 +5,26 @@ import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.entity.Category;
 import com.example.WebOrder.entity.CategoryStatus;
 import com.example.WebOrder.entity.Item;
+import com.example.WebOrder.entity.ItemStatus;
 import com.example.WebOrder.repository.CategoryRepository;
+import com.example.WebOrder.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ItemRepository itemRepository;
     private final LoginService loginService;
 
-    public CategoryService(CategoryRepository categoryRepository, LoginService loginService) {
+    public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository, LoginService loginService) {
         this.categoryRepository = categoryRepository;
+        this.itemRepository = itemRepository;
         this.loginService = loginService;
     }
 
@@ -53,6 +56,13 @@ public class CategoryService {
 
         Category category = categoryRepository.findById(categoryId).get();
         category.setStatus(CategoryStatus.INACTIVE);
+        List<Item> items = category.getItems();
+
+        for (Item item : items) {
+            item.setStatus(ItemStatus.INACTIVE);
+            itemRepository.save(item);
+        }
+
         categoryRepository.save(category);
     }
 }

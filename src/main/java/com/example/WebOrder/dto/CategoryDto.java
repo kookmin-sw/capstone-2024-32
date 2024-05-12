@@ -1,7 +1,6 @@
 package com.example.WebOrder.dto;
 
 import com.example.WebOrder.entity.Category;
-import com.example.WebOrder.entity.Review;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +23,7 @@ public class CategoryDto {
         dto.setCategoryId(category.getId());
         dto.setName(category.getName());
         dto.setAdminId(category.getAdminId());
-        dto.setItems(category.getItems());
+        dto.setItems(category.getItemDtos());
         return dto;
     }
 }

@@ -4,22 +4,30 @@ import com.example.WebOrder.dto.ProfileDto;
 import com.example.WebOrder.dto.UserEditFormDto;
 import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.ProfileService;
+import com.example.WebOrder.service.S3UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Objects;
 
 @Controller
 @Slf4j
 public class UserProfileController {
     private final LoginService loginService;
     private final ProfileService profileService;
+    private final S3UploadService s3UploadService;
 
-    public UserProfileController(LoginService loginService, ProfileService profileService) {
+    public UserProfileController(LoginService loginService, ProfileService profileService, S3UploadService s3UploadService) {
         this.loginService = loginService;
         this.profileService = profileService;
+        this.s3UploadService = s3UploadService;
     }
 
 
@@ -34,22 +42,24 @@ public class UserProfileController {
         return "html/profile";
     }
 
-    @GetMapping("/myprofile/edit")
-    public String getEditMyProfileForm(Model model){
-        ProfileDto dto = profileService.getMyProfile();
-        model.addAttribute("profile", dto);
-
-        return "html/profileEdit";
-    }
-
     @PostMapping("/myprofile/edit")
-    public String editMyProfile(UserEditFormDto dto){
+    public String editMyProfile(UserEditFormDto dto, @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        if (!loginService.isPasswordCorrect(dto.getCurrentPassword())) return "redirect:/myprofile?unauthorized=true";
 
-        if (!loginService.isPasswordCorrect(dto.getCurrentPassword())) return "redirect:/myprofile/edit?unauthorized=true";
+        if (!Objects.equals(dto.getChangedPassword(), "")) {
+            if (dto.getChangedPassword().length() < 8 || dto.getChangedPassword().length() > 16)
+                return "redirect:/myprofile?pwderror=true";
+        }
 
-        if (dto.getChangedPassword().length() < 8 || dto.getChangedPassword().length() > 16) return "redirect:/myprofile/edit?pwderror=true";
+        String fileName;
+        if (image == null) {
+            fileName = null;
+        }
+        else {
+            fileName = s3UploadService.upload(image);
+        }
+        profileService.editMyProfile(dto, fileName);
 
-        profileService.editMyProfile(dto);
         return "redirect:/myprofile";
     }
 

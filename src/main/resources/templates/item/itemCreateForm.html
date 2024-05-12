@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+<head>
+    <title>메뉴 관리</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/itemForm.css}">
+    </th:block>
+</head>
+
+<body>
+    <div layout:fragment="content">
+
+        <form class="item-form" action="/admin/item/create" method="post" enctype="multipart/form-data">
+            <div class="content">
+                <div class="left-side">
+                    <div class="wrapper">
+                        <div class="image">
+                            <img src="" alt="" id="item-img" hidden>
+                        </div>
+                        <div class="left-content">
+                            <div class="icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="text">
+                                사진을 추가해주세요!
+                            </div>
+                        </div>
+                        <div id="cancel-btn">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                    <input id="default-btn" type="file" name="image" accept=".jpg, .jpeg, .png " hidden>
+                    <button type="button" onclick="defaultBtnActive()" id="custom-btn">사진 추가</button>
+                </div>
+
+                <div class="right-side">
+                    <div class="item-form-header">메뉴 추가</div>
+                    <select class="categories" name="categoryId" required>
+                        <option value="">==카테고리 선택==</option>
+                        <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.categoryId}"></option>
+                    </select>
+                    <div class="input-box">
+                        <input type="text" name="name" placeholder="메뉴 이름을 입력하세요" required>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" name="price" placeholder="메뉴 가격을 입력하세요" required>
+                    </div>
+                    <div class="input-box message-box">
+                        <textarea name="description" placeholder="메뉴 설명을 입력하세요" required></textarea>
+                    </div>
+                    <button type="submit">저장</button>
+                </div>
+            </div>
+        </form>
+
+        <script>
+            const wrapper = document.querySelector(".wrapper");
+            const defaultBtn = document.querySelector("#default-btn");
+            const customBtn = document.querySelector("#custom-btn");
+            const cancelBtn = document.querySelector("#cancel-btn");
+            const img = document.querySelector("#item-img");
+            function defaultBtnActive() {
+                defaultBtn.click();
+            }
+
+            defaultBtn.addEventListener("change", function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function() {
+                        img.src = reader.result;
+                        img.removeAttribute("hidden");
+                        wrapper.classList.add("active");
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            cancelBtn.addEventListener("click", function() {
+                img.src = "";
+                img.setAttribute("hidden", true);
+                wrapper.classList.remove("active");
+            });
+        </script>
+    </div>
+
+
+</body>
+</html>
