@@ -69,7 +69,7 @@
     align-items: center;
     justify-content: center;
     font-size: 5rem;
-    color: #fc9d7a;
+    color: #779b8b;
 }
 
 .wrapper .text {
@@ -110,7 +110,7 @@
     font-weight: 500;
     letter-spacing: 1px;
     cursor: pointer;
-    background: #fc9d7a;
+    background: #779b8b;
 }
 
 .item-form .content .right-side {
@@ -121,7 +121,7 @@
 .item-form .content .right-side .item-form-header {
     font-size: 23px;
     font-weight: 600;
-    color: #f65b2a;
+    color: #587769;
 }
 
 .right-side .categories {
@@ -169,13 +169,13 @@
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
-    background: #ff8056;
+    background: #587769;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .right-side button:hover {
-    background: #fc9d7a;
+    background: #779b8b;
 }
 
 @media(max-width:820px) {
