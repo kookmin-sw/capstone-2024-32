@@ -27,12 +27,18 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
-    private String name;
+    private String name; // 가게 이름
 
     @OneToMany(mappedBy = "user")
     private List<Seat> seats = new ArrayList<>();
 
     private String entranceCode;
+
+    private String address;
+
+    private String description;
+
+    private String profileImageUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

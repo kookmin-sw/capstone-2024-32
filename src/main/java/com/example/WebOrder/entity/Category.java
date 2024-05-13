@@ -27,7 +27,7 @@ public class Category {
 
     private CategoryStatus status;
 
-    public List<ItemDto> getItems() {
+    public List<ItemDto> getItemDtos() {
         List<ItemDto> dtoList = new ArrayList<>();
 
         for (Item item : items) {

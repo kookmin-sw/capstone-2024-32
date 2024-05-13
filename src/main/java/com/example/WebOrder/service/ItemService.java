@@ -78,7 +78,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    public Long updateItem(Long adminId, Long itemId,ItemDto dto) {
+    public Long updateItem(Long adminId, Long itemId, ItemDto dto) {
         if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
@@ -89,8 +89,28 @@ public class ItemService {
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
         item.setPrice(dto.getPrice());
-        item.setItemImageUrl(dto.getItemImageUrl());
-        item.setAdminId(adminId);
+        Category category = categoryRepository.findById(dto.getCategoryId()).get();
+        item.setCategory(category);
+
+        itemRepository.save(item);
+
+        return itemId;
+    }
+
+    public Long updateItem(Long adminId, Long itemId, ItemDto dto, String fileName) {
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
+
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+
+        if (optionalItem.isEmpty()) throw new RuntimeException("Item Doesn't Exist!");
+        Item item = optionalItem.get();
+
+        item.setName(dto.getName());
+        item.setDescription(dto.getDescription());
+        item.setPrice(dto.getPrice());
+        item.setItemImageUrl(fileName);
+        Category category = categoryRepository.findById(dto.getCategoryId()).get();
+        item.setCategory(category);
 
         itemRepository.save(item);
 

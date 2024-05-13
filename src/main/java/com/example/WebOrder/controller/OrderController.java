@@ -1,6 +1,9 @@
 package com.example.WebOrder.controller;
 
-import com.example.WebOrder.service.*;
+import com.example.WebOrder.service.CategoryService;
+import com.example.WebOrder.service.ItemService;
+import com.example.WebOrder.service.OrderService;
+import com.example.WebOrder.service.ReviewService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,12 +21,12 @@ public class OrderController {
     private final CategoryService categoryService;
     private final ReviewService reviewService;
     private final OrderPasswordService orderPasswordService;
+    private final ProfileService profileService;
     public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService, ReviewService reviewService, OrderPasswordService orderPasswordService) {
         this.itemService = itemService;
         this.orderService = orderService;
         this.categoryService = categoryService;
         this.reviewService = reviewService;
-        this.orderPasswordService = orderPasswordService;
     }
 
 
@@ -34,6 +37,7 @@ public class OrderController {
         if (orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
         model.addAttribute("categories", categoryService.getAllCategory(userId));
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
+        model.addAttribute("profile", profileService.getUserProfileById(userId));
         return "order/orderForm";
     }
 

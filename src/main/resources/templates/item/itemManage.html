@@ -38,31 +38,43 @@
     </div>
 
     <div class="head-wrapper">
-        <div class="select-category">
-            <label for="select-btn">
-                <i class='bx bxs-category-alt' ></i>
-                카테고리
-            </label>
-            <div id="select-btn" class="select-btn">
-                <span class="sBtn-text">카테고리</span>
-                <i class="bx bx-chevron-down"></i>
+        <div class="category">
+            <div class="select-category">
+                <label for="select-btn">
+                    <i class='bx bxs-category-alt' ></i>
+                    카테고리
+                </label>
+                <div id="select-btn" class="select-btn">
+                    <span class="sBtn-text">카테고리</span>
+                    <i class="bx bx-chevron-down"></i>
+                </div>
+
+                <ul class="options">
+                    <li th:each="category : ${categories}" class="option">
+                        <input type="hidden" class="categoryId" th:value="${category.categoryId}">
+                        <span th:text="${category.name}" class="option-text"></span>
+                    </li>
+                </ul>
             </div>
 
-
-            <ul class="options">
-                <li th:each="category : ${categories}" class="option">
-                    <input type="hidden" class="categoryId" th:value="${category.categoryId}">
-                    <span th:text="${category.name}" class="option-text"></span>
-                </li>
-            </ul>
+            <form class="category-delete-form" action="" method="post">
+                <button type="submit" class="delete-category">
+                    삭제
+                </button>
+            </form>
         </div>
+
+        <form class="category-create-form" th:action="@{'/admin/category/create'}" method="post">
+            <input type="text" placeholder="추가할 카테고리를 입력하세요" name="name" required>
+            <button type="submit">카테고리 추가</button>
+        </form>
 
         <div class="button-container">
-            <a class="item-button" th:href="@{/admin/item/create}">
-                <i class='bx bx-duplicate' ></i>
-                메뉴 만들기
+            <a type="button" class="add-item" th:href="@{/admin/item/create}">
+                메뉴 추가
             </a>
         </div>
+
     </div>
 
     <div class="board">
@@ -93,10 +105,12 @@
             }
         });
 
-        const optionCategory = document.querySelector(".select-category"),
+        const optionCategory = document.querySelector(".category"),
               selectBtn = optionCategory.querySelector(".select-btn"),
               options = optionCategory.querySelectorAll(".option"),
               sBtn_text = optionCategory.querySelector(".sBtn-text");
+
+        const categoryDeleteForm = document.querySelector(".category-delete-form");
 
         selectBtn.addEventListener("click", () => optionCategory.classList.toggle("active"));
 
@@ -107,6 +121,7 @@
                 optionCategory.classList.remove("active");
                 let categoryId = option.querySelector(".categoryId").value;
                 console.log(categoryId);
+                categoryDeleteForm.action = "/admin/category/delete/" + categoryId;
                 findCategoryItemList(categoryId);
             })
 
@@ -211,7 +226,6 @@
             var url = '/admin/item/detail/' + itemId;
             window.location.href = url; // 클릭 시 해당 URL로 페이지 이동
         }
-
     </script>
 </div>
 

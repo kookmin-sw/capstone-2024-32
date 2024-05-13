@@ -1,5 +1,12 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .menu-horizontal {
     width: 80%;
+    height: 95%;
     margin-left: 1rem;
     display: flex;
     flex-direction: column;
@@ -110,12 +117,14 @@
 }
 
 .edit-btn {
+    font-size: 1rem;
     color: #ffffff;
     background-color: #ffc107; /* 노란색 */
     border: 1px solid #ffc107;
 }
 
 .delete-btn {
+    font-size: 1rem;
     color: #ffffff;
     background-color: #dc3545; /* 빨간색 */
     border: 1px solid #dc3545;

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 // 프로필 관련 서비스
@@ -58,7 +59,7 @@ public class ProfileService {
     }
 
     // 자신의 프로필을 수정하는 메소드
-    public Long editMyProfile(UserEditFormDto dto){
+    public Long editMyProfile(UserEditFormDto dto, String fileName){
         String username = loginService.getUsernameOfCurrentUser();
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
@@ -67,9 +68,13 @@ public class ProfileService {
 
         if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) throw new RuntimeException("권한없음");
 
-        user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getChangedPassword()));
         user.setName(dto.getName());
+        if (!Objects.equals(dto.getChangedPassword(), "")) {
+            user.setPassword(passwordEncoder.encode(dto.getChangedPassword()));
+        }
+        user.setAddress(dto.getAddress());
+        user.setDescription(dto.getDescription());
+        user.setProfileImageUrl(fileName);
 
         return userRepository.save(user).getId();
     }
