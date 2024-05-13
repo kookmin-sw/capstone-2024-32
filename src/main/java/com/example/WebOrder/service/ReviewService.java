@@ -78,7 +78,6 @@ public class ReviewService {
         for (Cookie requestCookie : request.getCookies()){
             if (requestCookie.getName().equals("orderItemIds")){
                 cookie.setValue(requestCookie.getValue());
-                log.info("현재 가져온 쿠키 value : " + requestCookie.getName() + "/" +  requestCookie.getValue());
             }
         }
 
