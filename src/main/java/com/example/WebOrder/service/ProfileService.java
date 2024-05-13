@@ -3,6 +3,7 @@ package com.example.WebOrder.service;
 import com.example.WebOrder.dto.ProfileDto;
 import com.example.WebOrder.dto.UserEditFormDto;
 import com.example.WebOrder.entity.User;
+import com.example.WebOrder.exception.status4xx.NoEntityException;
 import com.example.WebOrder.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +43,7 @@ public class ProfileService {
     public ProfileDto getUserProfileById(Long userId){
         Optional<User> optionalUser = userRepository.findById(userId);
 
-        if (optionalUser.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalUser.isEmpty()) throw new NoEntityException("해당 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
         return ProfileDto.fromEntity(user);
@@ -52,7 +53,7 @@ public class ProfileService {
     public ProfileDto getUserProfileByUsername(String username){
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
-        if (optionalUser.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalUser.isEmpty()) throw new NoEntityException("해당 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
         return ProfileDto.fromEntity(user);
