@@ -1,9 +1,6 @@
 package com.example.WebOrder.controller;
 
-import com.example.WebOrder.service.CategoryService;
-import com.example.WebOrder.service.ItemService;
-import com.example.WebOrder.service.OrderService;
-import com.example.WebOrder.service.ReviewService;
+import com.example.WebOrder.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,11 +19,13 @@ public class OrderController {
     private final ReviewService reviewService;
     private final OrderPasswordService orderPasswordService;
     private final ProfileService profileService;
-    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService, ReviewService reviewService, OrderPasswordService orderPasswordService) {
+    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService, ReviewService reviewService, OrderPasswordService orderPasswordService, OrderPasswordService orderPasswordService1, ProfileService profileService) {
         this.itemService = itemService;
         this.orderService = orderService;
         this.categoryService = categoryService;
         this.reviewService = reviewService;
+        this.orderPasswordService = orderPasswordService1;
+        this.profileService = profileService;
     }
 
 
@@ -34,7 +33,7 @@ public class OrderController {
     @GetMapping("/order/{userId}/{seatId}")
     public String getShopPageByGuest(HttpServletRequest request, @PathVariable Long userId, @PathVariable Long seatId, Model model){
         // 인증 과정
-        if (orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
+        if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
         model.addAttribute("categories", categoryService.getAllCategory(userId));
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
         model.addAttribute("profile", profileService.getUserProfileById(userId));
@@ -45,7 +44,7 @@ public class OrderController {
     @ResponseBody
     @PostMapping("/order/{userId}/{seatId}")
     public Boolean order(@PathVariable Long userId, @PathVariable Long seatId, @RequestBody String json, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
-        if (orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
+        if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
         Long orderId = orderService.order(seatId, json);
         response.addCookie(reviewService.getCookieOfOrderInfo(request, orderId));
         return true;
