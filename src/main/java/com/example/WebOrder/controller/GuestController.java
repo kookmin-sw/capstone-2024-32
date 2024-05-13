@@ -1,6 +1,7 @@
 package com.example.WebOrder.controller;
 
 import com.example.WebOrder.service.OrderPasswordService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,9 +35,10 @@ public class GuestController {
 
     // 인증번호 비교 페이지
     @PostMapping("/guest/{userId}/{seatId}/checkEntrance")
-    public String checkEntranceCode(@PathVariable Long userId, @PathVariable Long seatId, String entranceCode){
+    public String checkEntranceCode(HttpServletResponse response, @PathVariable Long userId, @PathVariable Long seatId, String entranceCode){
         log.info("인증번호 입력 : " + entranceCode);
          if (orderPasswordService.authenticateByEntranceCode(userId, entranceCode)){
+             response.addCookie(orderPasswordService.getCookieAfterEntranceCode(userId));
              return "redirect:/order/" + userId + "/" + seatId;
          }
          else
