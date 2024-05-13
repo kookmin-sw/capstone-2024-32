@@ -12,9 +12,14 @@ body {
 .login-form {
     position: relative; z-index: 2;
 }
-.login-form h1 {
-    font-size: 32px; color: black;
-    text-align: center;
+
+.login-form .image {
+    display: flex;
+    justify-content: center;
+}
+
+.login-form img {
+    width: 10rem;
     margin-bottom: 60px;
 }
 

@@ -84,6 +84,8 @@ public class SeatService {
         if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티 없음");
 
         Seat seat = optionalSeat.get();
+        seat.increaseOrderedTime();
+        seatRepository.save(seat);
         List<Order> orderList = orderRepository.findOrdersByStatusNotBilledOrCancelAndSeat(seat);
 
         for (Order order : orderList){
@@ -101,7 +103,7 @@ public class SeatService {
         if (optionalTopSeat.isEmpty()) return "테이블 없음";
         Seat topSeat = optionalTopSeat.get();
 
-        return topSeat.getName() + " (" + topSeat.getOrderedTime() + ") ";
+        return topSeat.getName() + " : " + topSeat.getOrderedTime() + "회";
     }
 
     // 현재 유저의 seat 중 가장 적게 주문을 받은 seat를 가져오기
@@ -112,7 +114,7 @@ public class SeatService {
         if (optionalTopSeat.isEmpty()) return "테이블 없음";
         Seat topSeat = optionalTopSeat.get();
 
-        return topSeat.getName() + " (" + topSeat.getOrderedTime() + ") ";
+        return topSeat.getName() + " : " + topSeat.getOrderedTime() + "회";
     }
     
     // userId를 가진 user의 SeatDto 리스트 가져오기 (주문 내역은 볼 수 없음!)

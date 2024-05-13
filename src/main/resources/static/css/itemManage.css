@@ -57,7 +57,7 @@
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
-    background: #ff8056;
+    background: #587769;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -73,7 +73,7 @@
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
-    background: #ff8056;
+    background: #587769;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -81,7 +81,7 @@
 .button-container .add-item:hover,
 .category-create-form button:hover,
 .category-delete-form .delete-category:hover {
-    background: #fc9d7a;
+    background: #779b8b;
 }
 
 .item-button:active {

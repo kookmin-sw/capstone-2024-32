@@ -1,9 +1,6 @@
 package com.example.WebOrder.controller;
 
-import com.example.WebOrder.service.CategoryService;
-import com.example.WebOrder.service.ItemService;
-import com.example.WebOrder.service.OrderService;
-import com.example.WebOrder.service.ReviewService;
+import com.example.WebOrder.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,12 +17,14 @@ public class OrderController {
     private final OrderService orderService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
+    private final ProfileService profileService;
 
-    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService, ReviewService reviewService) {
+    public OrderController(ItemService itemService, OrderService orderService, CategoryService categoryService, ReviewService reviewService, ProfileService profileService) {
         this.itemService = itemService;
         this.orderService = orderService;
         this.categoryService = categoryService;
         this.reviewService = reviewService;
+        this.profileService = profileService;
     }
 
 
@@ -35,6 +34,7 @@ public class OrderController {
         // 인증 과정 했다 치고
         model.addAttribute("categories", categoryService.getAllCategory(userId));
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
+        model.addAttribute("profile", profileService.getUserProfileById(userId));
         return "order/orderForm";
     }
 

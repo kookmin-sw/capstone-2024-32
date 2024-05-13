@@ -1,122 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
 <head>
     <meta charset="UTF-8">
     <title>테이블 현황 표</title>
-    <!-- ===== CSS ===== -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <!-- ==== JS ===== -->
-    <script src="/js/bootstrap.min.js"></script>
-    <style>
-        .card {
-            height: 272px;
-        }
-
-        .fixed-height {
-            height: 100px; /* 원하는 높이로 설정 */
-            overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
-        }
-
-        .multiline {
-            white-space: pre-line;
-        }
-    </style>
+    <!-- ===== Fontawesome CDN Link ===== -->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/seatView.css}" />
 </head>
 <body>
-<div class="container">
-    <nav class="navbar navbar-light bg-light mb-4">
-        <div class="container-fluid">
-            <!-- 새로고침 버튼 -->
-            <button class="btn btn-primary me-3" onclick="refreshPage()">새로고침</button>
-            <!-- 서버 시간 표시 -->
-            <span id="serverTime" class="navbar-text">서버 시간: <span id="currentTime" th:text="${currentTime}"></span></span>
+<div layout:fragment="content">
+    <div class="head-wrapper">
+        <h3 class="i-name">
+            <i class='icon'><img src="/images/table.png"></i>
+            테이블 관리
+        </h3>
+
+        <div class="values">
+            <div class="val-box">
+                <i class='bx bxs-heart'></i>
+                <div>
+                    <h3>인기 많은 테이블</h3>
+                    <span th:text="${mostOrderedSeat}"></span>
+                </div>
+            </div>
+
+            <div class="val-box">
+                <i class='bx bxs-heart'></i>
+                <div>
+                    <h3>인기 없는 테이블</h3>
+                    <span th:text="${leastOrderedSeat}"></span>
+                </div>
+            </div>
         </div>
-    </nav>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="cardContainer">
-        <!-- 카드가 동적으로 생성되는 곳 -->
+
+        <nav class="navbar">
+            <!-- 새로고침 버튼 -->
+            <button class="refresh" onclick="refreshPage()">새로고침</button>
+            <!-- 서버 시간 표시 -->
+            <span id="serverTime" class="serverTime">서버 시간: <span id="currentTime" th:text="${currentTime}"></span></span>
+
+            <form class="table-create-form" th:action="@{'/admin/seat/create'}" method="post">
+                <input type="text" id="seatCreate" name="seatName" placeholder="추가할 테이블 이름" required>
+                <button type="submit" class="add-table">
+                    <i class='bx bxs-plus-square'></i>
+                </button>
+            </form>
+        </nav>
     </div>
 
-    <form hidden="hidden" method="post" id="emptyForm">
-        <input type="text" id="seatId" name="seatId">
-        <button type="submit"></button>
-    </form>
+    <div class="table-status">
+        <div class="cardContainer" id="cardContainer">
+            <!-- 카드가 동적으로 생성되는 곳 -->
+        </div>
 
-    <script th:inline="javascript">
-        var cardNum = [[${seatNum}]];
-        var cardList = [[${seatList}]];
+        <form hidden="hidden" method="post" id="emptyForm">
+            <input type="text" id="seatId" name="seatId">
+            <button type="submit"></button>
+        </form>
 
-        // 카드 동적 생성 함수
-        function createCards() {
-            var cardContainer = document.getElementById('cardContainer');
+        <script th:inline="javascript">
+            var cardNum = [[${seatNum}]];
+            var cardList = [[${seatList}]];
 
-            // cardNum의 배수에 맞게 빈 카드 생성
-            var numEmptyCards = cardNum % 4 === 0 ? 0 : 4 - (cardNum % 4);
-            for (var i = 0; i < cardNum + numEmptyCards; i++) {
-                var card = document.createElement('div');
-                card.className = 'col';
+            // 카드 동적 생성 함수
+            function createCards() {
+                var cardContainer = document.getElementById('cardContainer');
 
-                if (i < cardNum) {
-                    // 카드에 데이터가 있는 경우
-                    var cardContent = cardList[i]; // cardList에서 데이터 가져오기
-                    card.innerHTML = `
-                        <div class="card">
-                            <div class="card-body">
+                // cardNum의 배수에 맞게 빈 카드 생성
+                var numEmptyCards = cardNum % 4 === 0 ? 0 : 4 - (cardNum % 4);
+                for (var i = 0; i < cardNum + numEmptyCards; i++) {
+                    var card = document.createElement('div');
+                    card.className = 'col';
+
+                    if (i < cardNum) {
+                        // 카드에 데이터가 있는 경우
+                        var cardContent = cardList[i]; // cardList에서 데이터 가져오기
+                        card.innerHTML = `
+                            <div class="card" seat-id="${cardContent.seatId}">
                                 <!-- 테이블 이름 -->
-                                <h5 class="card-title">${cardContent.seatName}</h5>
+                                <div class="card-header">
+                                    <input class="table-name" id="table-name" value="${cardContent.seatName}" disabled>
+                                    <div class="table-buttons">
+                                        <form type="hidden" method="post" class="seatUpdateForm" action="/admin/seat/update/${cardContent.seatId}">
+                                        </form>
 
-                                <!-- 주문 내역 -->
-                                <p class="mb-3 fixed-height multiline">${cardContent.orderedItems}</p>
+                                        <form type="hidden" method="post" class="seatDeleteForm" action="/admin/seat/delete/${cardContent.seatId}">
+                                        </form>
 
-                                <!-- 총 가격 -->
-                                <p class="text-end mb-3">${cardContent.totalPrice}원</p>
+                                        <button type="button" onclick="disableInput(this)" class="save-table" hidden>
+                                            <i class='bx bxs-save' ></i>
+                                        </button>
+                                        <a href="/admin/code/qr/${cardContent.seatId}" class="qr-table">
+                                            <i class='bx bx-qr' ></i>
+                                        </a>
+                                        <button type="button" onclick="enableInput(this)" class="edit-table">
+                                            <i class='bx bxs-edit' ></i>
+                                        </button>
+                                        <button type="button" onclick="deleteTable(this)" class="delete-table">
+                                            <i class='bx bxs-trash' ></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- 주문 내역 -->
+                                    <p class="orderedItems">${cardContent.orderedItems}</p>
+                                </div>
 
-                                <!-- 버튼 컨테이너 -->
-                                <div class="d-flex justify-content-end">
-                                    <button class="btn btn-secondary me-2" seat-id="${cardContent.seatId}" onclick="emptyTable(this)">empty</button>
-                                    <button class="btn btn-primary" seat-id="${cardContent.seatId}" onclick="billTable(this)">bill</button>
+                                <div class="bottom">
+                                    <!-- 총 가격 -->
+                                    <p class="totalPrice">총 ${cardContent.totalPrice}원</p>
+                                    <div class="button-container">
+                                        <button seat-id="${cardContent.seatId}" onclick="emptyTable(this)">비우기</button>
+                                        <button seat-id="${cardContent.seatId}" onclick="billTable(this)">결제하기</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                } else {
-                    // 비어있는 카드인 경우
-                    card.classList.add('empty-card');
-                    card.innerHTML = `
-                        <div class="card">
-                            <div class="card-body">
-                                <!-- 비어있는 카드는 내용이 없습니다 -->
+                        `;
+                    } else {
+                        // 비어있는 카드인 경우
+                        card.classList.add('empty-card');
+                        card.innerHTML = `
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- 비어있는 카드는 내용이 없습니다 -->
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
+
+                    cardContainer.appendChild(card);
                 }
-
-                cardContainer.appendChild(card);
             }
-        }
 
-        // 페이지 로드 시 카드 생성
-        window.onload = createCards;
-    </script>
+            // 페이지 로드 시 카드 생성
+            window.onload = createCards;
+        </script>
 
-    <script>
-        function emptyTable(button) {
-            let seatId = button.getAttribute("seat-id");
-            let form = document.getElementById("emptyForm");
-            document.getElementById("seatId").value = seatId;
-            console.log(document.getElementById("seatId").value);
-            form.submit();
-        }
+        <script>
+            function enableInput(target) {
+                let input = target.parentElement.parentElement.querySelector(".table-name");
+                let saveBtn = target.parentElement.querySelector(".save-table");
+                input.removeAttribute("disabled");
+                saveBtn.removeAttribute("hidden");
+            }
 
-        function billTable(button) {
-            let seatId = button.getAttribute("seat-id");
-            window.location.href = "/admin/seat/bill/" + seatId;
-        }
+            function disableInput(target) {
+                let input = target.parentElement.parentElement.querySelector(".table-name");
+                console.log(input.value);
+                let saveBtn = target;
+                input.setAttribute("disabled", true);
+                saveBtn.setAttribute("hidden", true);
 
 
-        function refreshPage(){
-            window.location.reload();
-        }
-    </script>
+                let form = target.parentElement.querySelector(".seatUpdateForm");
+                form.innerHTML += `
+                    <input type="hidden" name="seatName" value="${input.value}">
+                `;
+                form.submit();
+            }
+
+            function deleteTable(target) {
+                let form = target.parentElement.querySelector(".seatDeleteForm");
+                form.submit();
+            }
+
+            function emptyTable(button) {
+                let seatId = button.getAttribute("seat-id");
+                let form = document.getElementById("emptyForm");
+                document.getElementById("seatId").value = seatId;
+                console.log(document.getElementById("seatId").value);
+                form.submit();
+            }
+
+            function billTable(button) {
+                let seatId = button.getAttribute("seat-id");
+                window.location.href = "/admin/seat/bill/" + seatId;
+            }
+
+
+            function refreshPage(){
+                window.location.reload();
+            }
+        </script>
+    </div>
 </div>
 </body>
 </html>

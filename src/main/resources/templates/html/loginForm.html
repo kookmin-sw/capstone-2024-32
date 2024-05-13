@@ -12,7 +12,9 @@
 </head>
 <body>
 <section class="login-form">
-    <h1>로고</h1>
+    <div class="image">
+        <img src="/images/EZOrder.svg" alt="">
+    </div>
 
     <form th:action="@{/login}" th:object="${loginFormDto}" method="post">
         <div class="int-area">
