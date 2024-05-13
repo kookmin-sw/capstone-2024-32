@@ -51,8 +51,9 @@ public class UserProfileController {
                 return "redirect:/myprofile?pwderror=true";
         }
 
+
         String fileName;
-        if (image == null) {
+        if (Objects.equals(image.getOriginalFilename(), "")) {
             fileName = null;
         }
         else {
