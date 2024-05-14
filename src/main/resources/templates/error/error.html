@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>에러 페이지</title>
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- ==== JS ===== -->
+    <script src="/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #c3ffe4; /* 주로 사용하는 배경색 */
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .error-message {
+            font-size: 24px;
+            margin-top: 30px;
+        }
+        .btn-primary {
+            background-color: #aeffdb; /* 주로 사용하는 버튼 색상 */
+            border-color: #aeffdb;
+            color: black;
+        }
+        .btn-primary:hover {
+            background-color: #83ffc7; /* 호버 시 색상 변경 */
+            border-color: #83ffc7;
+        }
+
+        .error-message h1{
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <img src="/images/EZOrder.svg" class="img-fluid mt-5" alt="Logo" width="30%" height="30%">
+            <div class="error-message">
+                <h1>어라?! 문제가 발생했어요!</h1>
+                <p class="mt-5" th:text="${errorMsg}">에러 메시지</p>
+            </div>
+            <a href="#" class="btn btn-primary mt-3" onclick="goBack()">Go Back</a>
+        </div>
+    </div>
+</div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>

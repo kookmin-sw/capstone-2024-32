@@ -6,6 +6,9 @@ import com.example.WebOrder.dto.MenuStatisticsDto;
 import com.example.WebOrder.entity.Category;
 import com.example.WebOrder.entity.Item;
 import com.example.WebOrder.entity.ItemStatus;
+import com.example.WebOrder.exception.status4xx.ForbiddenException;
+import com.example.WebOrder.exception.status4xx.NoEntityException;
+import com.example.WebOrder.exception.status4xx.NotAuthenticatedException;
 import com.example.WebOrder.repository.CategoryRepository;
 import com.example.WebOrder.repository.ItemRepository;
 import jakarta.transaction.Transactional;
@@ -43,13 +46,13 @@ public class ItemService {
 
     public ItemDto getItemInfoById(Long itemId) {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if (optionalItem.isEmpty()) throw new RuntimeException("아이템이 존재하지 않습니다.");
+        if (optionalItem.isEmpty()) throw new NoEntityException("해당 메뉴가 존재하지 않습니다!");
 
         return ItemDto.fromEntity(optionalItem.get());
     }
 
     public Long createItem(Long adminId, ItemDto dto, String fileName) {
-        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
 
         Item item = new Item();
         item.setName(dto.getName());
@@ -72,18 +75,18 @@ public class ItemService {
 
     @Transactional
     public void deleteItem(Long ownerId, Long itemId) throws IOException {
-        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new RuntimeException("권한 없음");
+        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
         Item item = itemRepository.findById(itemId).get();
         item.setStatus(ItemStatus.INACTIVE);
         itemRepository.save(item);
     }
 
     public Long updateItem(Long adminId, Long itemId, ItemDto dto) {
-        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
 
-        if (optionalItem.isEmpty()) throw new RuntimeException("Item Doesn't Exist!");
+        if (optionalItem.isEmpty()) throw new NoEntityException("해당 메뉴가 존재하지 않습니다!");
         Item item = optionalItem.get();
 
         item.setName(dto.getName());
@@ -98,11 +101,11 @@ public class ItemService {
     }
 
     public Long updateItem(Long adminId, Long itemId, ItemDto dto, String fileName) {
-        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new RuntimeException("권한 없음");
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
 
-        if (optionalItem.isEmpty()) throw new RuntimeException("Item Doesn't Exist!");
+        if (optionalItem.isEmpty()) throw new NoEntityException("해당 메뉴가 존재하지 않습니다!");
         Item item = optionalItem.get();
 
         item.setName(dto.getName());
