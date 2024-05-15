@@ -5,8 +5,9 @@ import com.example.WebOrder.dto.OrderItemDto;
 import com.example.WebOrder.dto.ReviewDto;
 import com.example.WebOrder.entity.Item;
 import com.example.WebOrder.entity.Order;
-import com.example.WebOrder.entity.OrderItem;
 import com.example.WebOrder.entity.Review;
+import com.example.WebOrder.exception.status4xx.NoEntityException;
+import com.example.WebOrder.exception.status4xx.TypicalException;
 import com.example.WebOrder.repository.ItemRepository;
 import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.ReviewRepository;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,7 +36,7 @@ public class ReviewService {
 
     public Long createReview(ReviewDto dto){
         Optional<Item> optionalItem = itemRepository.findById(dto.getItemId());
-        if (optionalItem.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalItem.isEmpty()) throw new NoEntityException("해당하는 메뉴가 존재하지 않습니다!");
         Item reviewedItem = optionalItem.get();
 
         Review review = new Review();
@@ -69,7 +69,7 @@ public class ReviewService {
     // 리뷰 서비스에 활용 됨.
     public Cookie getCookieOfOrderInfo(HttpServletRequest request, Long orderId){
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalOrder.isEmpty()) throw new NoEntityException("쿠키에 해당하는 주문 내역이 존재하지 않습니다!");
         Order order = optionalOrder.get();
 
 
@@ -109,7 +109,8 @@ public class ReviewService {
 
         for (Long itemId : itemIdList){
             Optional<Item> optionalItem = itemRepository.findById(itemId);
-            if (optionalItem.isEmpty()) throw new RuntimeException("엔티티없음");
+            if (optionalItem.isEmpty()) throw new NoEntityException("해당하는 메뉴가 존재하지 않습니다!");
+            if (!optionalItem.get().getAdminId().equals(userId)) throw new TypicalException("주문한 테이블의 QR를 다시 찌어주세요!");
 
             itemDtoList.add(ItemDto.fromEntity(optionalItem.get()));
         }
@@ -127,5 +128,17 @@ public class ReviewService {
     // 소수점 아래 1자리만 보이게 한다.
     public Double getAverageRateOfItem(Long itemId){
         return reviewRepository.findAverageRateByItemId(itemId);
+    }
+
+    public Boolean doesOrderRecordsExistsInCookie(String cookieString, Long itemId) {
+        String[] splitCookieString = cookieString.split("-");
+        List<Long> itemIdList = Arrays.stream(splitCookieString)
+                .map(String::trim)  // 각 요소의 앞뒤 공백 제거
+                .filter(s -> !s.isEmpty())  // 빈 문자열 제거
+                .map(Long::parseLong)  // 문자열을 정수로 변환
+                .distinct()  // 중복 제거
+                .toList();
+
+        return itemIdList.contains(itemId);
     }
 }

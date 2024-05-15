@@ -3,6 +3,7 @@ package com.example.WebOrder.service;
 import com.example.WebOrder.dto.LoginFormDto;
 import com.example.WebOrder.dto.UserFormDto;
 import com.example.WebOrder.entity.User;
+import com.example.WebOrder.exception.status4xx.NotAuthenticatedException;
 import com.example.WebOrder.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -43,7 +44,7 @@ public class LoginService implements UserDetailsService {
 
         User user = findUser.get();
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) throw new NotAuthenticatedException("비밀번호가 일치하지 않습니다.");
 
         return true;
     }
@@ -80,7 +81,7 @@ public class LoginService implements UserDetailsService {
     public String getUsernameOfCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!authentication.isAuthenticated()) throw new RuntimeException("로그인 하지 않음");
+        if (!authentication.isAuthenticated()) throw new NotAuthenticatedException("로그인하지 않은 상태입니다!");
         User user = (User) authentication.getPrincipal();
 
         return user.getUsername();
@@ -90,7 +91,7 @@ public class LoginService implements UserDetailsService {
     public Boolean isPasswordCorrect(String password){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!authentication.isAuthenticated()) throw new RuntimeException("로그인 하지 않음");
+        if (!authentication.isAuthenticated()) throw new NotAuthenticatedException("로그인하지 않은 상태입니다!");
         User user = (User) authentication.getPrincipal();
 
         if (!passwordEncoder.matches(password, user.getPassword())) return false;
@@ -101,8 +102,12 @@ public class LoginService implements UserDetailsService {
     public User getCurrentUserEntity(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!authentication.isAuthenticated()) throw new RuntimeException("로그인 하지 않음");
+        if (!authentication.isAuthenticated()) throw new NotAuthenticatedException("로그인하지 않은 상태입니다!");
         return (User) authentication.getPrincipal();
+    }
+
+    public Boolean userExistsByUserId(Long userId){
+        return userRepository.existsById(userId);
     }
 
 

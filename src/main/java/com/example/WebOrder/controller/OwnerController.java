@@ -39,31 +39,6 @@ public class OwnerController {
     }
 
 
-    //마이페이지 (가게 관리 페이지) 보기
-    @GetMapping("/owner/shoppage")
-    public String getShopPageByOwner(){
-        return null;
-    }
-
-    //주문처리하기
-    @PostMapping("/owner/order/{orderId}/check")
-    public String checkOrderByOwner(){
-        return null;
-    }
-
-    //주문삭제하기
-    @DeleteMapping("/owner/order/{orderId}/delete")
-    public String deleteOrderByOwner(){
-        return null;
-    }
-
-
-    //테이블 계산서보기
-    @GetMapping("/owner/bills/{seatId}")
-    public String getBillsOfSeatByOwner(){
-        return null;
-    }
-
     //QR코드 생성하기
     @GetMapping("/admin/code/qr/{seatId}")
     public String getQRCodeOfSeatByOwner(@PathVariable Long seatId, Model model) throws IOException, WriterException {
