@@ -8,9 +8,26 @@
     <script src="/js/stomp.min.js"></script>
     <title>인증번호</title>
 </head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    .entranceCode {
+        font-size: 25rem;
+    }
+</style>
 <body>
-    <h1>Entrance Code</h1>
-    <div id="entranceCode" th:text="${entranceCode}"></div>
+    <h1>인증번호</h1>
+    <div class="entranceCode" id="entranceCode" th:text="${entranceCode}"></div>
 </body>
 <script>
     let stompClient = null;
