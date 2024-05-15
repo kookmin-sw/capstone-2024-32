@@ -294,3 +294,8 @@ body.dark .switch::before {
     left: 88px;
     width: calc(100% - 88px);
 }
+
+.bottom-content {
+    position: absolute;
+    bottom: 2rem;
+}
