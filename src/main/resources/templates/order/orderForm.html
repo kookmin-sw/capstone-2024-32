@@ -145,9 +145,19 @@
                 <button type="button" class="order-btn" onclick="submitOrder()">주문하기</button>
             </div>
         </div>
+
+        <div class="pop-up">
+            <div class="modal-box">
+                <i class="fa-regular fa-circle-check"></i>
+                <h2>주문 완료</h2>
+                <h3>금방 준비해드리겠습니다!</h3>
+
+                <div class="buttons">
+                    <button class="close-btn" onclick="window.location.reload()">확인</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-
 
     <script th:src="@{/js/orderForm.js}"></script>
     <script th:inline="javascript">
@@ -272,8 +282,15 @@
             return items.find(item => item.itemId == id);
         }
 
+
+        const popup = document.querySelector(".pop-up"),
+            closeBtn = document.querySelector(".close-btn");
+
+        closeBtn.addEventListener("click", () =>
+            popup.classList.remove("active")
+        );
+
         async function submitOrder() {
-            alert(JSON.stringify(orderItems));
             let response = await fetch('', {
                 method: 'POST',
                 headers: {
@@ -282,7 +299,6 @@
                 body: JSON.stringify(orderItems),
                 credentials: 'include'
             });
-            alert(response.status);
             if (await response.text() === 'true') {
                 const cookies = response.headers.get('Set-Cookie');
 
@@ -290,8 +306,7 @@
                     document.cookie = cookies;
                     alert('브라우저에 쿠키 적용 완료' + document.cookie);
                 }
-
-                window.location.replace("/order/success");
+                popup.classList.add("active");
             }
             else {
                 alert('주문 오류');
