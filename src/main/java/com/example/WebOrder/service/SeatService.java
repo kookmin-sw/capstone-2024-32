@@ -5,6 +5,8 @@ import com.example.WebOrder.dto.OrderItemDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.dto.SeatOrderDto;
 import com.example.WebOrder.entity.*;
+import com.example.WebOrder.exception.status4xx.NoEntityException;
+import com.example.WebOrder.exception.status4xx.TypicalException;
 import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.SeatRepository;
 import jakarta.transaction.Transactional;
@@ -55,7 +57,7 @@ public class SeatService {
 
     public Long updateSeatName(Long seatId, String seatName){
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
         Seat seat = optionalSeat.get();
 
         seat.setName(seatName);
@@ -66,7 +68,7 @@ public class SeatService {
     // 테이블에 있는 주문들 전부 Cancel로 만든다.
     public void clearSeat(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
         Seat seat = optionalSeat.get();
         List<Order> orderList = orderRepository.findOrdersByStatusNotBilledOrCancelAndSeat(seat);
 
@@ -81,7 +83,7 @@ public class SeatService {
     // 해당 테이블에 걸려 있는 계산 처리 안 된 주문들을 계산한다.
     public void makeSeatBilled(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
 
         Seat seat = optionalSeat.get();
         seat.increaseOrderedTime();
@@ -179,14 +181,14 @@ public class SeatService {
 
     public String getSeatName(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
 
         return optionalSeat.get().getName();
     }
 
     public SeatDto getSeatDto(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
 
         return SeatDto.fromEntity(optionalSeat.get());
     }
@@ -194,8 +196,17 @@ public class SeatService {
 
     public Seat getSeatEntity(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
 
         return optionalSeat.get();
+    }
+
+    public Boolean seatExistsByUserIdAndSeatId(Long userId, Long seatId){
+        Optional<Seat> optionalSeat = seatRepository.findById(seatId);
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
+        Seat seat = optionalSeat.get();
+
+        if (!seat.getUser().getId().equals(userId)) throw new TypicalException("테이블과 가게 정보가 일치하지 않습니다!");
+        return true;
     }
 }

@@ -1,6 +1,9 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.dto.ItemDto;
 import com.example.WebOrder.dto.ReviewDto;
+import com.example.WebOrder.exception.status4xx.ForbiddenException;
+import com.example.WebOrder.exception.status4xx.TypicalException;
 import com.example.WebOrder.service.ItemService;
 import com.example.WebOrder.service.ReviewService;
 import jakarta.servlet.http.Cookie;
@@ -67,8 +70,20 @@ public class ReviewController {
 
     // 리뷰 적는 form을 주는 페이지
     @GetMapping("/review/write/{userId}/{itemId}")
-    public String getReviewWriteForm(@PathVariable("userId") Long userId, @PathVariable("itemId") Long itemId,@RequestParam(name="page", defaultValue = "1") Integer page, Model model){
-        model.addAttribute("item", itemService.getItemInfoById(itemId));
+    public String getReviewWriteForm(HttpServletRequest request, @PathVariable("userId") Long userId, @PathVariable("itemId") Long itemId,@RequestParam(name="page", defaultValue = "1") Integer page, Model model){
+        // 검증 페이지
+        ItemDto itemDto = itemService.getItemInfoById(itemId);
+        if (!userId.equals(itemDto.getAdminId())) throw new TypicalException("잘못된 요청입니다!");
+
+        String orderItemsIdString = new String();
+        for (Cookie cookie : request.getCookies()){
+            if (cookie.getName().equals("orderItemIds")){
+                orderItemsIdString = cookie.getValue();
+            }
+        }
+        if (!reviewService.doesOrderRecordsExistsInCookie(orderItemsIdString, itemId)) throw new ForbiddenException("메뉴를 주문한 적이 없거나 2시간이 지나 기록이 사라졌습니다!");
+        
+        model.addAttribute("item", itemDto);
         Integer totalPages = reviewService.getNumberOfPages(itemId);
         if (totalPages == 0)
             model.addAttribute("totalPage", 1);
@@ -83,7 +98,19 @@ public class ReviewController {
 
     // 리뷰 적는 form을 제출
     @PostMapping("/review/write/{userId}/{itemId}")
-    public String writeReview(@PathVariable("userId") Long userId, @PathVariable("itemId") Long itemId, ReviewDto reviewDto){
+    public String writeReview(HttpServletRequest request, @PathVariable("userId") Long userId, @PathVariable("itemId") Long itemId, ReviewDto reviewDto){
+        // 검증 페이지
+        ItemDto itemDto = itemService.getItemInfoById(itemId);
+        if (!userId.equals(itemDto.getAdminId())) throw new TypicalException("잘못된 요청입니다!");
+
+        String orderItemsIdString = new String();
+        for (Cookie cookie : request.getCookies()){
+            if (cookie.getName().equals("orderItemIds")){
+                orderItemsIdString = cookie.getValue();
+            }
+        }
+        if (!reviewService.doesOrderRecordsExistsInCookie(orderItemsIdString, itemId)) throw new ForbiddenException("메뉴를 주문한 적이 없거나 2시간이 지나 기록이 사라졌습니다!");
+
         reviewService.createReview(reviewDto);
         return "redirect:/review/write/" + userId + "/" + itemId;
     }

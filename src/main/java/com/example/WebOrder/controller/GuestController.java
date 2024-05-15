@@ -1,6 +1,11 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.exception.status4xx.NoEntityException;
+import com.example.WebOrder.exception.status4xx.NotAuthenticatedException;
+import com.example.WebOrder.exception.status4xx.TypicalException;
+import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.OrderPasswordService;
+import com.example.WebOrder.service.SeatService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -13,14 +18,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Slf4j
 public class GuestController {
     private final OrderPasswordService orderPasswordService;
+    private final LoginService loginService;
+    private final SeatService seatService;
 
-    public GuestController(OrderPasswordService orderPasswordService) {
+    public GuestController(OrderPasswordService orderPasswordService, LoginService loginService, SeatService seatService) {
         this.orderPasswordService = orderPasswordService;
+        this.loginService = loginService;
+        this.seatService = seatService;
     }
 
     //QR를 찍었을 때 접근가능한 page
     @GetMapping("/guest/{userId}/{seatId}/login")
     public String getShopPageByGuestNotAuthenticated(@PathVariable("userId") Long userId, Model model, @PathVariable("seatId") Long seatId){
+        if (!loginService.userExistsByUserId(userId)) throw new NoEntityException("잘못된 요청입니다!");
+        if (!seatService.seatExistsByUserIdAndSeatId(userId, seatId)) throw new TypicalException("잘못된 요청입니다!");
         model.addAttribute("userId", userId);
         model.addAttribute("seatId", seatId);
         return "guest/guestWelcome";
@@ -30,6 +41,8 @@ public class GuestController {
     // 주문하기를 눌러서 인증번호를 받아야 할 때 보내야할 페이지
     @GetMapping("/guest/{userId}/{seatId}/checkEntrance")
     public String getCheckEntranceCode(@PathVariable Long userId, @PathVariable Long seatId, Model model){
+        if (!loginService.userExistsByUserId(userId)) throw new NoEntityException("잘못된 요청입니다!");
+        if (!seatService.seatExistsByUserIdAndSeatId(userId, seatId)) throw new TypicalException("잘못된 요청입니다!");
         return "guest/guestCheckEntrance";
     }
 
@@ -42,26 +55,12 @@ public class GuestController {
              return "redirect:/order/" + userId + "/" + seatId;
          }
          else
-             return "redirect:/guest/fail";
+             throw new NotAuthenticatedException("인증에 실패하였습니다!");
     }
 
     @GetMapping("/guest/fail")
     public String notallowed(){
         return "/guest/notAllowed";
-    }
-
-
-    //리뷰하기를 눌렀을 때 접근가능한 page
-    @GetMapping("/guest/review/{encodedUserId}")
-    public String getReviewPageByGuest(@PathVariable String encodedUserId){
-        return null;
-    }
-
-
-    //리뷰 작성하기
-    @PostMapping("/guest/review/{encodedUserId}")
-    public String postReviewByGuest(@PathVariable String encodedUserId){
-        return null;
     }
 
 }

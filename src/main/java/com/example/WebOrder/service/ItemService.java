@@ -52,7 +52,7 @@ public class ItemService {
     }
 
     public Long createItem(Long adminId, ItemDto dto, String fileName) {
-        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다!");
 
         Item item = new Item();
         item.setName(dto.getName());
@@ -75,14 +75,14 @@ public class ItemService {
 
     @Transactional
     public void deleteItem(Long ownerId, Long itemId) throws IOException {
-        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
+        if (!loginService.isCurrentUserAuthenticated(ownerId)) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다!");
         Item item = itemRepository.findById(itemId).get();
         item.setStatus(ItemStatus.INACTIVE);
         itemRepository.save(item);
     }
 
     public Long updateItem(Long adminId, Long itemId, ItemDto dto) {
-        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다!");
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
 
@@ -101,7 +101,7 @@ public class ItemService {
     }
 
     public Long updateItem(Long adminId, Long itemId, ItemDto dto, String fileName) {
-        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new NotAuthenticatedException("해당 작업을 할 권한이 존재하지 않습니다!");
+        if (!loginService.isCurrentUserAuthenticated(adminId)) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다!");
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
 

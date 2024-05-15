@@ -1,6 +1,7 @@
 package com.example.WebOrder.service;
 
 import com.example.WebOrder.entity.User;
+import com.example.WebOrder.exception.status4xx.NoEntityException;
 import com.example.WebOrder.repository.UserRepository;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -59,7 +60,7 @@ public class OrderPasswordService {
     //인증번호 가져오기
     public String getEntranceCode(Long userId){
         Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if(optionalUser.isEmpty()) throw new NoEntityException("해당하는 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
         return user.getEntranceCode();
@@ -68,7 +69,7 @@ public class OrderPasswordService {
     //인증번호 랜덤으로 바꾸기
     public String updateEntranceCode(Long userId){
         Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if(optionalUser.isEmpty()) throw new NoEntityException("해당하는 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
         Random random = new Random(System.nanoTime());
@@ -90,7 +91,7 @@ public class OrderPasswordService {
     //맞으면 true, 틀리면 false
     public Boolean authenticateByEntranceCode(Long userId, String entranceCode){
         Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if(optionalUser.isEmpty()) throw new NoEntityException("해당하는 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
         boolean result = user.getEntranceCode().equals(entranceCode);
@@ -104,7 +105,7 @@ public class OrderPasswordService {
     // 쿠키 발급
     public Cookie getCookieAfterEntranceCode(Long userId){
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalUser.isEmpty()) throw new NoEntityException("해당하는 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
         Cookie cookie = new Cookie("entrancetoken", user.getEntranceCode());
@@ -125,7 +126,7 @@ public class OrderPasswordService {
         if (entranceToken == null) return false;
 
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new RuntimeException("엔티티 없음");
+        if (optionalUser.isEmpty()) return false;
         User user = optionalUser.get();
 
         if (!user.getEntranceCode().equals(entranceToken)) return false;
