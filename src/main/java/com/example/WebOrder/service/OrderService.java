@@ -4,6 +4,8 @@ import com.example.WebOrder.dto.OrderDto;
 import com.example.WebOrder.dto.OrderItemDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.*;
+import com.example.WebOrder.exception.status4xx.NoEntityException;
+import com.example.WebOrder.exception.status4xx.NotAuthenticatedException;
 import com.example.WebOrder.repository.ItemRepository;
 import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.SeatRepository;
@@ -67,7 +69,6 @@ public class OrderService {
     }
 
     public List<OrderDto> getUnfinishedOrder(Long userId){
-//        if (!loginService.isCurrentUserAuthenticated(userId)) throw new RuntimeException("권한없음");
 
         List<Order> orderList = orderRepository.findOrdersByUserIdAndStatusIn(userId, Arrays.asList(OrderStatus.ORDER, OrderStatus.PROGRESS));
 
@@ -76,14 +77,14 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(Long userId, Long orderId){
-        if (!loginService.isCurrentUserAuthenticated(userId)) throw new RuntimeException("권한 없음");
+        if (!loginService.isCurrentUserAuthenticated(userId)) throw new NotAuthenticatedException("권한이 없는 작업입니다!");
 
         orderRepository.deleteById(orderId);
     }
 
     public void changeOrderStatus(Long orderId, String action) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalOrder.isEmpty()) throw new NoEntityException("해당하는 주문 내역이 존재하지 않습니다!");
         Order order = optionalOrder.get();
 
         if (action.equals("완료")){
@@ -104,7 +105,7 @@ public class OrderService {
 
     public List<OrderDto> getUnbilledOrderOfSeat(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
-        if (optionalSeat.isEmpty()) throw new RuntimeException("엔티티없음");
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
         Seat seat = optionalSeat.get();
 
         List<Order> orderList = orderRepository.findOrdersByStatusNotBilledOrCancelAndSeat(seat);

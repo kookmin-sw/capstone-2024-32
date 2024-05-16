@@ -1,5 +1,6 @@
 package com.example.WebOrder.controller;
 
+import com.example.WebOrder.exception.status4xx.NotAuthenticatedException;
 import com.example.WebOrder.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class OrderController {
     @GetMapping("/order/{userId}/{seatId}")
     public String getShopPageByGuest(HttpServletRequest request, @PathVariable Long userId, @PathVariable Long seatId, Model model){
         // 인증 과정
-        if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
+        if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new NotAuthenticatedException("인증이 필요한 작업입니다!");
         model.addAttribute("categories", categoryService.getAllCategory(userId));
         model.addAttribute("items",itemService.getAllItemsOfUser(userId));
         model.addAttribute("profile", profileService.getUserProfileById(userId));
@@ -44,7 +45,7 @@ public class OrderController {
     @ResponseBody
     @PostMapping("/order/{userId}/{seatId}")
     public Boolean order(@PathVariable Long userId, @PathVariable Long seatId, @RequestBody String json, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
-        if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new RuntimeException("인증 안됨");
+        if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new NotAuthenticatedException("인증이 필요한 작업입니다!");
         Long orderId = orderService.order(seatId, json);
         response.addCookie(reviewService.getCookieOfOrderInfo(request, orderId));
         return true;
