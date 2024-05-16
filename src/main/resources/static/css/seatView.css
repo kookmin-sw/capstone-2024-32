@@ -238,6 +238,10 @@ body {
     overflow: hidden;
 }
 
+.cardContainer .card-body p {
+    white-space: pre-wrap;
+}
+
 .card-body::-webkit-scrollbar {
     width: 1rem;
 }
