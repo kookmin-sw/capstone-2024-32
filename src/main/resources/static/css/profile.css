@@ -74,19 +74,19 @@
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
-    background: #ff8056;
+    background: #618d7d;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .form-container button:hover {
-    background: #fc9d7a;
+    background: #8ab7a0;
 }
 
 .form-header {
     font-size: 23px;
     font-weight: 600;
-    color: #f65b2a;
+    color: #618d7d;
 }
 
 .column-right img {

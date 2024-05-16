@@ -62,7 +62,13 @@ public class ItemController {
 
     @PostMapping("/admin/item/create")
     public String createItem(ItemDto dto, @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        String fileName = s3UploadService.upload(image);
+        String fileName;
+        if (Objects.equals(image.getOriginalFilename(), "")) {
+            fileName = "";
+        }
+        else {
+            fileName = s3UploadService.upload(image);
+        }
         log.info("filename = " + fileName);
         itemService.createItem(loginService.getCurrentUserEntity().getId(), dto, fileName);
         return "redirect:/admin/item";
