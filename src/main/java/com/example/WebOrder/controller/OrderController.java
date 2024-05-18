@@ -46,7 +46,7 @@ public class OrderController {
     @PostMapping("/order/{userId}/{seatId}")
     public Boolean order(@PathVariable Long userId, @PathVariable Long seatId, @RequestBody String json, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
         if (!orderPasswordService.isAuthenticatedByRequest(userId,request)) throw new NotAuthenticatedException("인증이 필요한 작업입니다!");
-        Long orderId = orderService.order(seatId, json);
+        Long orderId = orderService.order(userId, seatId, json);
         response.addCookie(reviewService.getCookieOfOrderInfo(request, orderId));
         return true;
     }

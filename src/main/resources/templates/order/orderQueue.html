@@ -72,7 +72,7 @@
 
                 stompClient.connect({}, function(frame) {
                     console.log('Connected: ' + frame);
-                    stompClient.subscribe('/topic/queue', function(message) {
+                    stompClient.subscribe('/user/topic/queue', function(message) {
                         let orders = JSON.parse(message.body);
                         displayOrder(orders);
                     });

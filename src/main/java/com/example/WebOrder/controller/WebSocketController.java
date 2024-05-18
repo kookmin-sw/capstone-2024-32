@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public class WebSocketController {
     //주문 인증번호 관련
     // 웹소켓 내부적으로 통신을 주고 받기 위해 사용함
     @MessageMapping("/entranceCode")
-    @SendTo("/topic/entranceCode")
+    @SendToUser("/topic/entranceCode")
     public String sendEntranceCode(String code){
         return code;
     }
@@ -65,7 +66,7 @@ public class WebSocketController {
     //주문 대기열 관련
     // 웹소켓 내부적으로 통신을 주고 받기 위해 사용함
     @MessageMapping("/queue")
-    @SendTo("/topic/queue")
+    @SendToUser("/topic/queue")
     public List<OrderDto> sendQueue(List<OrderDto> dtoList) {return dtoList;}
 
     //주문 대기열 보기
