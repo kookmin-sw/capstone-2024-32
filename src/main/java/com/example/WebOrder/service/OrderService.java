@@ -2,13 +2,14 @@ package com.example.WebOrder.service;
 
 import com.example.WebOrder.dto.OrderDto;
 import com.example.WebOrder.dto.OrderItemDto;
-import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.entity.*;
+import com.example.WebOrder.exception.status4xx.ForbiddenException;
 import com.example.WebOrder.exception.status4xx.NoEntityException;
 import com.example.WebOrder.exception.status4xx.NotAuthenticatedException;
 import com.example.WebOrder.repository.ItemRepository;
 import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.SeatRepository;
+import com.example.WebOrder.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -29,13 +30,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderService {
+    private final UserRepository userRepository;
     private final LoginService loginService;
     private final OrderRepository orderRepository;
     private final SeatRepository seatRepository;
     private final ItemRepository itemRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public OrderService(LoginService loginService, OrderRepository orderRepository, SeatRepository seatRepository, ItemRepository itemRepository, SimpMessagingTemplate simpMessagingTemplate) {
+    public OrderService(UserRepository userRepository, LoginService loginService, OrderRepository orderRepository, SeatRepository seatRepository, ItemRepository itemRepository, SimpMessagingTemplate simpMessagingTemplate) {
+        this.userRepository = userRepository;
         this.loginService = loginService;
         this.orderRepository = orderRepository;
         this.seatRepository = seatRepository;
@@ -46,14 +49,18 @@ public class OrderService {
     /**
      * 주문
      */
-    public Long order(Long seatId, String json) throws JsonProcessingException {
+    public Long order(Long userId, Long seatId, String json) throws JsonProcessingException {
         Seat seat = seatRepository.findById(seatId).get();
+        // 검증
+        if (!seat.getUser().getId().equals(userId)) throw new ForbiddenException("권한이 없는 요청입니다.");
+
         ObjectMapper objectMapper = new ObjectMapper();
         OrderItemDto[] dtoList = objectMapper.readValue(json, OrderItemDto[].class);
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemDto dto : dtoList) {
             if (dto.getCount() > 0) {
                 Item item = itemRepository.findById(dto.getItemId()).get();
+                if(!item.getAdminId().equals(userId)) throw new ForbiddenException("권한이 없는 요청입니다.");
                 orderItems.add(OrderItem.createOrderItem(item, dto.getCount()));
                 item.setOrderedCount(item.getOrderedCount() + dto.getCount());
             }
@@ -63,7 +70,11 @@ public class OrderService {
         // 주문 저장
         orderRepository.save(order);
 
-        simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(seat.getUser().getId()));
+        //Queue 전송
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new NoEntityException("존재하지 않는 유저입니다!");
+        User user = optionalUser.get();
+        simpMessagingTemplate.convertAndSendToUser(user.getUsername(),"/topic/queue", getUnfinishedOrder(seat.getUser().getId()));
 
         return order.getId();
     }
@@ -87,6 +98,10 @@ public class OrderService {
         if (optionalOrder.isEmpty()) throw new NoEntityException("해당하는 주문 내역이 존재하지 않습니다!");
         Order order = optionalOrder.get();
 
+        Optional<User> optionalUser = userRepository.findById(order.getUserId());
+        if (optionalUser.isEmpty()) throw new NoEntityException("잘못된 요청입니다!");
+        User user = optionalUser.get();
+
         if (action.equals("완료")){
             order.setStatus(OrderStatus.COMPLETE);
             orderRepository.save(order);
@@ -100,7 +115,7 @@ public class OrderService {
             orderRepository.save(order);
         }
 
-        simpMessagingTemplate.convertAndSend("/topic/queue", getUnfinishedOrder(order.getUserId()));
+        simpMessagingTemplate.convertAndSendToUser(user.getUsername(),"/topic/queue", getUnfinishedOrder(order.getUserId()));
     }
 
     public List<OrderDto> getUnbilledOrderOfSeat(Long seatId) {

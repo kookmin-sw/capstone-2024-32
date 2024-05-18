@@ -38,7 +38,7 @@
 
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/entranceCode', function(message) {
+            stompClient.subscribe('/user/topic/entranceCode', function(message) {
                 showEntranceCode(message.body);
             });
         });

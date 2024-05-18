@@ -83,7 +83,7 @@ public class OrderPasswordService {
         user.setEntranceCode(randomNumberString);
         userRepository.save(user);
 
-        simpMessagingTemplate.convertAndSend("/topic/entranceCode", randomNumberString);
+        simpMessagingTemplate.convertAndSendToUser(user.getUsername(),"/topic/entranceCode", randomNumberString);
         return randomNumberString;
     }
 

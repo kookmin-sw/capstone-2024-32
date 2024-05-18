@@ -5,10 +5,12 @@ import com.example.WebOrder.dto.OrderItemDto;
 import com.example.WebOrder.dto.SeatDto;
 import com.example.WebOrder.dto.SeatOrderDto;
 import com.example.WebOrder.entity.*;
+import com.example.WebOrder.exception.status4xx.ForbiddenException;
 import com.example.WebOrder.exception.status4xx.NoEntityException;
 import com.example.WebOrder.exception.status4xx.TypicalException;
 import com.example.WebOrder.repository.OrderRepository;
 import com.example.WebOrder.repository.SeatRepository;
+import com.example.WebOrder.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -30,14 +32,16 @@ public class SeatService {
     private final OrderService orderService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ItemService itemService;
+    private final UserRepository userRepository;
 
-    public SeatService(SeatRepository seatRepository, OrderRepository orderRepository, LoginService loginService, OrderService orderService, SimpMessagingTemplate simpMessagingTemplate, ItemService itemService) {
+    public SeatService(SeatRepository seatRepository, OrderRepository orderRepository, LoginService loginService, OrderService orderService, SimpMessagingTemplate simpMessagingTemplate, ItemService itemService, UserRepository userRepository) {
         this.seatRepository = seatRepository;
         this.orderRepository = orderRepository;
         this.loginService = loginService;
         this.orderService = orderService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.itemService = itemService;
+        this.userRepository = userRepository;
     }
 
     public Long addSeat(String seatName) {
@@ -52,6 +56,13 @@ public class SeatService {
 
     @Transactional
     public void deleteSeat(Long seatId) {
+        Optional<Seat> optionalSeat = seatRepository.findById(seatId);
+        if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
+        Seat seat = optionalSeat.get();
+
+        // 검증하기
+        if (!loginService.isCurrentUserAuthenticated(seat.getUser().getId())) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다.");
+
         seatRepository.deleteById(seatId);
     }
 
@@ -59,6 +70,9 @@ public class SeatService {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
         if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
         Seat seat = optionalSeat.get();
+
+        // 검증하기
+        if (!loginService.getCurrentUserEntity().getId().equals(seat.getUser().getId())) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다.");
 
         seat.setName(seatName);
         return seatRepository.save(seat).getId();
@@ -70,13 +84,20 @@ public class SeatService {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
         if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
         Seat seat = optionalSeat.get();
+
+        // 검증하기
+        if (!loginService.getCurrentUserEntity().getId().equals(seat.getUser().getId())) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다.");
+        Optional<User> optionalUser = userRepository.findById(seat.getUser().getId());
+        if (optionalUser.isEmpty()) throw new NoEntityException("잘못된 요청입니다!");
+        User user = optionalUser.get();
+
         List<Order> orderList = orderRepository.findOrdersByStatusNotBilledOrCancelAndSeat(seat);
 
         for (Order order: orderList){
             order.setStatus(OrderStatus.CANCEL);
             orderRepository.save(order);
         }
-        simpMessagingTemplate.convertAndSend("/topic/queue", orderService.getUnfinishedOrder(seat.getUser().getId()));
+        simpMessagingTemplate.convertAndSendToUser(user.getUsername(),"/topic/queue", orderService.getUnfinishedOrder(seat.getUser().getId()));
     }
 
     // 테이블 계산하기
@@ -84,8 +105,14 @@ public class SeatService {
     public void makeSeatBilled(Long seatId) {
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
         if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
-
         Seat seat = optionalSeat.get();
+
+        // 검증하기
+        if (!loginService.getCurrentUserEntity().getId().equals(seat.getUser().getId())) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다.");
+        Optional<User> optionalUser = userRepository.findById(seat.getUser().getId());
+        if (optionalUser.isEmpty()) throw new NoEntityException("잘못된 요청입니다!");
+        User user = optionalUser.get();
+
         seat.increaseOrderedTime();
         seatRepository.save(seat);
         List<Order> orderList = orderRepository.findOrdersByStatusNotBilledOrCancelAndSeat(seat);
@@ -94,7 +121,7 @@ public class SeatService {
             order.setStatus(OrderStatus.BILLED);
             orderRepository.save(order);
         }
-        simpMessagingTemplate.convertAndSend("/topic/queue", orderService.getUnfinishedOrder(seat.getUser().getId()));
+        simpMessagingTemplate.convertAndSendToUser(user.getUsername(),"/topic/queue", orderService.getUnfinishedOrder(seat.getUser().getId()));
     }
 
     // 현재 유저의 seat 중 가장 많이 주문을 받은 seat를 가져오기
@@ -104,6 +131,9 @@ public class SeatService {
         Optional<Seat> optionalTopSeat = seatRepository.findTopByUserOrderByOrderedTimeDesc(loginService.getCurrentUserEntity());
         if (optionalTopSeat.isEmpty()) return "테이블 없음";
         Seat topSeat = optionalTopSeat.get();
+
+        // 검증하기
+        if (!loginService.getCurrentUserEntity().getId().equals(topSeat.getUser().getId())) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다.");
 
         return topSeat.getName() + " : " + topSeat.getOrderedTime() + "회";
     }
@@ -115,6 +145,9 @@ public class SeatService {
         Optional<Seat> optionalTopSeat = seatRepository.findTopByUserOrderByOrderedTimeAsc(loginService.getCurrentUserEntity());
         if (optionalTopSeat.isEmpty()) return "테이블 없음";
         Seat topSeat = optionalTopSeat.get();
+
+        // 검증하기
+        if (!loginService.getCurrentUserEntity().getId().equals(topSeat.getUser().getId())) throw new ForbiddenException("해당 작업을 할 권한이 존재하지 않습니다.");
 
         return topSeat.getName() + " : " + topSeat.getOrderedTime() + "회";
     }
@@ -130,10 +163,8 @@ public class SeatService {
     // 주문 내역을 String 형태로 포함한다.
     public List<SeatOrderDto> getWholeSeatOrdersOfCurrentUser(){
         User user = loginService.getCurrentUserEntity();
-
         List<Seat> seatList = seatRepository.findAllByUser(user);
         List<SeatOrderDto> dtoList = new ArrayList<>();
-
         for (Seat seat: seatList){
             dtoList.add(getSeatOrdersOfSeat(user.getId(), seat));
         }
@@ -143,6 +174,11 @@ public class SeatService {
 
     // 특정 테이블의 현황을 가져온다.
     public SeatOrderDto getSeatOrdersOfSeat(Long userId, Seat seat){
+        //검증하기
+        User user = loginService.getCurrentUserEntity();
+        if (!seat.getUser().getId().equals(userId)) throw new TypicalException("잘못된 요청입니다.");
+        if (!user.getId().equals(userId)) throw new ForbiddenException("권한이 없는 요청입니다.");
+
         SeatOrderDto dto = new SeatOrderDto();
         dto.setSeatId(seat.getId());
         dto.setSeatName(seat.getName());
@@ -195,8 +231,15 @@ public class SeatService {
 
 
     public Seat getSeatEntity(Long seatId) {
+
         Optional<Seat> optionalSeat = seatRepository.findById(seatId);
         if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
+
+        Seat seat = optionalSeat.get();
+        //검증하기
+        User user = loginService.getCurrentUserEntity();
+        if (!seat.getUser().getId().equals(user.getId())) throw new TypicalException("잘못된 요청입니다.");
+
 
         return optionalSeat.get();
     }
@@ -206,6 +249,7 @@ public class SeatService {
         if (optionalSeat.isEmpty()) throw new NoEntityException("해당하는 테이블이 존재하지 않습니다!");
         Seat seat = optionalSeat.get();
 
+        // 검증하기
         if (!seat.getUser().getId().equals(userId)) throw new TypicalException("테이블과 가게 정보가 일치하지 않습니다!");
         return true;
     }
