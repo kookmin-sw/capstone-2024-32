@@ -66,6 +66,7 @@
                                             <input type="hidden" th:value="${item.itemId}" class="itemId">
                                             <h1 th:text="${item.name}">아이템 이름</h1>
                                             <p th:text="${item.price} + '원'">아이템 가격</p>
+                                            <p th:text="${item.avgRate} + ' / 5.0'">아이템 별점</p>
                                         </div>
                                         <div class="buttons">
                                             <button class="addCart" th:attr="itemId=${item.itemId}" onclick="addToCart(this)">담기</button>
