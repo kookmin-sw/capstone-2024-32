@@ -3,9 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>리뷰 작성 페이지</title>
+    <!-- Google Fonts Noto Sans Korean -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #cbffe9;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-form-container{
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-review {
+            margin-left: 0.5rem !important;
+            width: 90% !important;
+        }
+
+        .star_rating_input {
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            margin: 1rem;
+        }
+
         .star_rating {
-            font-size: 24px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: flex-start; /* 왼쪽 정렬 */
         }
 
         .star,
@@ -18,29 +60,87 @@
         .fixed-star.active {
             color: orange;
         }
+
+        .reviews-container {
+            min-height: 30vh;
+            max-height: 50vh;
+            overflow-y: auto;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .review {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .review:last-child {
+            border-bottom: none;
+        }
+
+        .review-comment {
+            margin-top: 0.5rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        .page-item {
+            list-style: none;
+            margin: 0 0.5rem;
+        }
+
+        .page-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #007bff;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-review-submit {
+            margin-left: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #79f3bb; /* 녹색 */
+            color: black;
+            font-weight: bold;
+        }
     </style>
-    <!-- ===== CSS ===== -->
+    <!-- Google Fonts Noto Sans Korean -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <!-- ==== JS ===== -->
-    <script src="/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="star_rating">
-        <span class="star active" value="1">★</span>
-        <span class="star" value="2">★</span>
-        <span class="star" value="3">★</span>
-        <span class="star" value="4">★</span>
-        <span class="star" value="5">★</span>
-    </div>
-    <form method="post">
-        <input type="hidden" id="rate" name="rate" value="1">
-        <div class="form-group">
-            <label for="comment">리뷰</label>
-            <input type="text" class="form-control" id="comment" name="comment" placeholder="간단한 리뷰를 적어주세요">
-            <button class="btn">제출</button>
+<div class="container">
+    <div class="review-form-container">
+        <div class="star_rating_input">
+            <span class="star active" value="1">★</span>
+            <span class="star" value="2">★</span>
+            <span class="star" value="3">★</span>
+            <span class="star" value="4">★</span>
+            <span class="star" value="5">★</span>
         </div>
-    </form>
+        <form method="post">
+            <input type="hidden" id="rate" name="rate" value="1">
+            <div class="form-group">
+                <input type="text" class="form-control input-review" id="comment" name="comment" placeholder="간단한 리뷰를 적어주세요">
+                <button type="submit" class="btn btn-review-submit mt-3">제출</button>
+            </div>
+        </form>
+    </div>
 
 
     <div class="reviews-container">
@@ -60,13 +160,12 @@
                 <p th:text="${review.getComment}">리뷰 내용</p>
             </div>
         </div>
-
-        <ui class="pagination">
-            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPage)}">
-                <a class="page-link" th:href="@{'?page=' + ${pageNumber}}" th:text="${pageNumber}"></a>
-            </li>
-        </ui>
     </div>
+    <ui class="pagination">
+        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPage)}">
+            <a class="page-link" th:href="@{'?page=' + ${pageNumber}}" th:text="${pageNumber}"></a>
+        </li>
+    </ui>
 </div>
 
 <script>

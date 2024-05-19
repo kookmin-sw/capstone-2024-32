@@ -6,6 +6,7 @@ import com.example.WebOrder.exception.status4xx.TypicalException;
 import com.example.WebOrder.service.LoginService;
 import com.example.WebOrder.service.OrderPasswordService;
 import com.example.WebOrder.service.SeatService;
+import com.example.WebOrder.service.UrlEncodeService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -28,34 +29,45 @@ public class GuestController {
     }
 
     //QR를 찍었을 때 접근가능한 page
-    @GetMapping("/guest/{userId}/{seatId}/login")
-    public String getShopPageByGuestNotAuthenticated(@PathVariable("userId") Long userId, Model model, @PathVariable("seatId") Long seatId){
+    @GetMapping("/guest/{encodedUserId}/{encodedSeatId}/login")
+    public String getShopPageByGuestNotAuthenticated(@PathVariable("encodedUserId") String encodedUserId, @PathVariable("encodedSeatId") String encodedSeatId, Model model){
+        Long userId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedUserId));
+        Long seatId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedSeatId));
+
         if (!loginService.userExistsByUserId(userId)) throw new NoEntityException("잘못된 요청입니다!");
         if (!seatService.seatExistsByUserIdAndSeatId(userId, seatId)) throw new TypicalException("잘못된 요청입니다!");
-        model.addAttribute("userId", userId);
-        model.addAttribute("seatId", seatId);
+
+        model.addAttribute("userId", encodedUserId);
+        model.addAttribute("seatId", encodedSeatId);
         return "guest/guestWelcome";
     }
 
 
     // 주문하기를 눌러서 인증번호를 받아야 할 때 보내야할 페이지
-    @GetMapping("/guest/{userId}/{seatId}/checkEntrance")
-    public String getCheckEntranceCode(@PathVariable Long userId, @PathVariable Long seatId, Model model){
+    @GetMapping("/guest/{encodedUserId}/{encodedSeatId}/checkEntrance")
+    public String getCheckEntranceCode(@PathVariable("encodedUserId") String encodedUserId, @PathVariable("encodedSeatId") String encodedSeatId, Model model){
+        Long userId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedUserId));
+        Long seatId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedSeatId));
+
         if (!loginService.userExistsByUserId(userId)) throw new NoEntityException("잘못된 요청입니다!");
         if (!seatService.seatExistsByUserIdAndSeatId(userId, seatId)) throw new TypicalException("잘못된 요청입니다!");
+
         return "guest/guestCheckEntrance";
     }
 
     // 인증번호 비교 페이지
-    @PostMapping("/guest/{userId}/{seatId}/checkEntrance")
-    public String checkEntranceCode(HttpServletResponse response, @PathVariable Long userId, @PathVariable Long seatId, String entranceCode){
+    @PostMapping("/guest/{encodedUserId}/{encodedSeatId}/checkEntrance")
+    public String checkEntranceCode(HttpServletResponse response, @PathVariable("encodedUserId") String encodedUserId, @PathVariable("encodedSeatId") String encodedSeatId, String entranceCode){
+        Long userId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedUserId));
+        Long seatId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedSeatId));
+
         log.info("인증번호 입력 : " + entranceCode);
-         if (orderPasswordService.authenticateByEntranceCode(userId, entranceCode)){
-             response.addCookie(orderPasswordService.getCookieAfterEntranceCode(userId));
-             return "redirect:/order/" + userId + "/" + seatId;
-         }
-         else
-             throw new NotAuthenticatedException("인증에 실패하였습니다!");
+        if (orderPasswordService.authenticateByEntranceCode(userId, entranceCode)){
+            response.addCookie(orderPasswordService.getCookieAfterEntranceCode(userId, seatId));
+            return "redirect:/order/" + userId + "/" + seatId;
+        }
+        else
+            throw new NotAuthenticatedException("인증에 실패하였습니다!");
     }
 
     @GetMapping("/guest/fail")

@@ -240,6 +240,8 @@ body {
 
 .cardContainer .card-body p {
     white-space: pre-wrap;
+    overflow-y: auto;
+    max-height: 8.5rem;
 }
 
 .card-body::-webkit-scrollbar {

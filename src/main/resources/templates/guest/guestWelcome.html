@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <!-- ==== JS ===== -->
     <script src="/js/bootstrap.min.js"></script>
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <title>Welcome!</title>
     <style>
         /* 버튼 컨테이너 스타일 */
@@ -14,12 +16,38 @@
             justify-content: center;
             align-items: center;
             height: 100vh; /* 화면 전체 높이를 차지 */
+            flex-direction: column;
+            font-family: 'Noto Sans KR', sans-serif;
         }
-        /* 버튼 스타일 */
-        .btn-custom {
-            width: 200px;
-            margin-bottom: 20px;
+        /* 기본 버튼 스타일 */
+        .btn-order {
+            background-color: #79f3bb; /* 녹색 */
+            color: black;
+            padding: 15px 25px !important; /* 크기 조정 */
+            font-size: 1.25rem !important; /* 글꼴 크기 조정 */
+            font-weight: bold;
         }
+
+        .btn-order:hover {
+            background-color: #4CAF50; /* 조금 더 어두운 녹색 */
+            color: #ffffff;
+        }
+
+        /* 리뷰 작성 버튼 스타일 */
+        .btn-review {
+            background-color: #FF9800; /* 주황색 */
+            color: #ffffff;
+            padding: 15px 25px !important; /* 크기 조정 */
+            font-size: 1.25rem !important; /* 글꼴 크기 조정 */
+            font-weight: bold;
+        }
+
+        .btn-review:hover {
+            background-color: #e68a00; /* 조금 더 어두운 주황색 */
+            color: #ffffff;
+        }
+
+
     </style>
 </head>
 <body>
@@ -27,9 +55,9 @@
     <div class="row">
         <div class="col-md-6 mx-auto btn-container text-center">
             <!-- 주문하기 버튼 -->
-            <a th:href="@{'/guest/' + ${userId} + '/' + ${seatId} + '/checkEntrance'}" class="btn btn-primary btn-lg btn-custom">주문하기</a>
+            <a th:href="@{'/guest/' + ${userId} + '/' + ${seatId} + '/checkEntrance'}" class="btn mt-3 btn-order btn-lg">주문하기</a>
             <!-- 리뷰 작성 버튼 -->
-            <a th:href="@{'/review/menu/' + ${userId}}" class="btn btn-success btn-lg btn-custom">리뷰 작성</a>
+            <a th:href="@{'/review/menu/' + ${userId}}" class="btn mt-3 btn-review btn-lg">리뷰 작성</a>
         </div>
     </div>
 </div>
