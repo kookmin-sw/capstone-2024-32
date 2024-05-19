@@ -37,16 +37,8 @@ public class OrderPasswordService {
     }
 
     public String generateQRCode(Long userId, Long seatId) throws WriterException, IOException {
-        /*
-        //url encoding
-        String encodedUserId = Base64.getUrlEncoder().encodeToString(String.valueOf(userId).getBytes());
-        String encodedURL = url + "/guest/" + encodedUserId + "/" + seatId;
-         */
 
-        /*
-        //URL 인코딩하지 않는 버전
-         */
-        String encodedURL = url + "/guest/" + userId + "/" + seatId + "/login";
+        String encodedURL = url + "/guest/" + UrlEncodeService.encodeBase64UrlSafe(userId.toString()) + "/" + UrlEncodeService.encodeBase64UrlSafe(seatId.toString()) + "/login";
 
         //QR 코드 생성.
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -103,19 +95,19 @@ public class OrderPasswordService {
 
     // url만 바꿔서 다른 user의 주문 페이지에 접근하는 것을 막기 위한 메소드 2개
     // 쿠키 발급
-    public Cookie getCookieAfterEntranceCode(Long userId){
+    public Cookie getCookieAfterEntranceCode(Long userId, Long seatId){
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new NoEntityException("해당하는 유저가 존재하지 않습니다!");
         User user = optionalUser.get();
 
-        Cookie cookie = new Cookie("entrancetoken", user.getEntranceCode());
+        Cookie cookie = new Cookie("entrancetoken", user.getEntranceCode() + "/" + seatId);
         cookie.setPath("/");
         cookie.setMaxAge(300); //5분 지속.
         return cookie;
     }
     // 쿠키 검사
     // Cookie에 담긴 "entrancetoken"을 확인하여 현재 인증번호와 일치하면 true, 아니라면 false.
-    public Boolean isAuthenticatedByRequest(Long userId, HttpServletRequest request){
+    public Boolean isAuthenticatedByRequest(Long userId, Long seatId,HttpServletRequest request){
         String entranceToken = null;
         if (request.getCookies() == null) return false;
         for (Cookie cookie : request.getCookies()){
@@ -129,7 +121,10 @@ public class OrderPasswordService {
         if (optionalUser.isEmpty()) return false;
         User user = optionalUser.get();
 
-        if (!user.getEntranceCode().equals(entranceToken)) return false;
+        String[] splitToken = entranceToken.split("/");
+
+        if (!user.getEntranceCode().equals(splitToken[0])) return false;
+        if (!seatId.toString().equals(splitToken[1])) return false;
         return true;
     }
 }

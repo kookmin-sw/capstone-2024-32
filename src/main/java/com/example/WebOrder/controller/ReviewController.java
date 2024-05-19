@@ -6,6 +6,7 @@ import com.example.WebOrder.exception.status4xx.ForbiddenException;
 import com.example.WebOrder.exception.status4xx.TypicalException;
 import com.example.WebOrder.service.ItemService;
 import com.example.WebOrder.service.ReviewService;
+import com.example.WebOrder.service.UrlEncodeService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +54,9 @@ public class ReviewController {
     }
 
     // 쿠키를 분석해서 주문한 메뉴의 리스트를 보여주는 페이지
-    @GetMapping("/review/menu/{userId}")
-    public String getReviewMenuPage(HttpServletRequest request, Model model, @PathVariable("userId") Long userId){
+    @GetMapping("/review/menu/{encodedUserId}")
+    public String getReviewMenuPage(HttpServletRequest request, Model model, @PathVariable("encodedUserId") String encodedUserId){
+        Long userId = Long.parseLong(UrlEncodeService.decodeBase64UrlSafe(encodedUserId));
         String orderItemsIdString = new String();
 
         for (Cookie cookie : request.getCookies()){
