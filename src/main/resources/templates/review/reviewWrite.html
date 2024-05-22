@@ -109,8 +109,10 @@
         .pagination {
             display: flex;
             justify-content: center;
+            list-style: none;
             padding: 1rem 0;
         }
+
 
         .page-item {
             list-style: none;
@@ -118,13 +120,13 @@
         }
 
         .page-link {
-            display: block;
+            display: inline-block;
             padding: 0.5rem 1rem;
-            color: #007bff;
+            color: #030302; /* 기본 색상 설정 */
             text-decoration: none;
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
+            border: 1px solid #f9ea85; /* 테두리 설정 */
+            border-radius: 3px;
+            cursor: pointer;
         }
 
         .page-link:hover {
@@ -184,6 +186,9 @@
                 padding: 0.5rem;
             }
         }
+        #pagedown, #pageup {
+            margin-right: 5px; /* 좌우 마진 설정 */
+        }
     </style>
 </head>
 <body>
@@ -224,8 +229,9 @@
         </div>
     </div>
     <ul class="pagination">
-        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPage)}">
-            <a class="page-link" th:href="@{'?page=' + ${pageNumber}}" th:text="${pageNumber}"></a>
+        <li class="page-item">
+            <a class="page-link" id="pagedown" th:attr="itemId=${itemId}" onclick="pageDown(this)"><</a>
+            <a class="page-link" id="pageup" th:attr="itemId=${itemId}" onclick="pageUp(this)">></a>
         </li>
     </ul>
 </div>
@@ -248,6 +254,41 @@
             });
         });
     });
+</script>
+
+<script>
+    let currentPage = 1;
+    let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("page")){
+        currentPage = parseInt(urlParams.get('page'));
+        if (isNaN(currentPage) || currentPage <= 0) {
+            currentPage = 1; // 파라미터가 숫자가 아니거나 1 이하일 경우 기본값으로 설정
+        }
+    }
+    let userId = [[${item.adminId}]];
+    let totalPage = [[${totalPage}]];
+
+    function pageDown(element){
+        if (currentPage == 1){
+            return;
+        }
+        else {
+            currentPage -= 1;
+        }
+        let itemId = element.getAttribute("itemId");
+        window.location.href = '/review/write/' + userId.toString() + '/' + itemId.toString() + '?page=' + currentPage;
+    }
+
+    function pageUp(element){
+        if (currentPage == totalPage ){
+            return;
+        }
+        else  {
+            currentPage += 1;
+        }
+        let itemId = element.getAttribute('itemId');
+        window.location.href = '/review/write/' + userId.toString() + '/' + itemId.toString() + '?page=' + currentPage;
+    }
 </script>
 </body>
 </html>
