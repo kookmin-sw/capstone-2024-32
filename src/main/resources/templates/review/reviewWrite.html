@@ -5,6 +5,7 @@
     <title>리뷰 작성 페이지</title>
     <!-- Google Fonts Noto Sans Korean -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
@@ -27,27 +28,47 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .review-form-container{
+        .review-form-container {
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
         }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
         .input-review {
-            margin-left: 0.5rem !important;
-            width: 90% !important;
+            width: 95%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-review:focus {
+            background-color: white;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
         }
 
         .star_rating_input {
             font-size: 1.5rem;
             display: flex;
-            justify-content: flex-start; /* 왼쪽 정렬 */
-            margin: 1rem;
+            justify-content: flex-start;
+            margin-bottom: 1rem;
         }
 
         .star_rating {
             font-size: 1rem;
             display: flex;
-            justify-content: flex-start; /* 왼쪽 정렬 */
+            justify-content: flex-start;
         }
 
         .star,
@@ -111,17 +132,59 @@
         }
 
         .btn-review-submit {
-            margin-left: 0.5rem;
-            margin-bottom: 0.5rem;
             background-color: #79f3bb; /* 녹색 */
             color: black;
             font-weight: bold;
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-review-submit:hover {
+            background-color: #66e3a7;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 600px) {
+            body {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
+
+            .star_rating_input {
+                font-size: 1.2rem;
+            }
+
+            .reviews-container {
+                max-height: 40vh;
+                padding: 0.5rem;
+                margin-top: 1rem;
+            }
+
+            .input-review {
+                padding: 0.5rem;
+            }
+
+            .review {
+                padding: 0.5rem;
+            }
+
+            .pagination {
+                padding: 0.5rem 0;
+            }
+
+            .page-link {
+                padding: 0.3rem 0.6rem;
+            }
+
+            .container {
+                padding: 0.5rem;
+            }
         }
     </style>
-    <!-- Google Fonts Noto Sans Korean -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
@@ -136,12 +199,11 @@
         <form method="post">
             <input type="hidden" id="rate" name="rate" value="1">
             <div class="form-group">
-                <input type="text" class="form-control input-review" id="comment" name="comment" placeholder="간단한 리뷰를 적어주세요">
+                <input type="text" class="input-review" id="comment" name="comment" placeholder="간단한 리뷰를 적어주세요">
                 <button type="submit" class="btn btn-review-submit mt-3">제출</button>
             </div>
         </form>
     </div>
-
 
     <div class="reviews-container">
         <div th:each="review: ${reviews}" class="review">
@@ -161,32 +223,25 @@
             </div>
         </div>
     </div>
-    <ui class="pagination">
+    <ul class="pagination">
         <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPage)}">
             <a class="page-link" th:href="@{'?page=' + ${pageNumber}}" th:text="${pageNumber}"></a>
         </li>
-    </ui>
+    </ul>
 </div>
 
 <script>
-    // star는 기본적으로 회색
-    // star를 클릭할 시 해당 star가 노란색으로 변경
-    // 상위 value의 star를 클릭할 시, 하위 value의 star들도 노란색으로 변경.
-    // star를 클릭할 시 해당하는 value가 form에 rate에 반영.
     document.addEventListener("DOMContentLoaded", function() {
         const stars = document.querySelectorAll(".star");
         const rateInput = document.getElementById("rate");
 
-        // 별 클릭 시 이벤트 처리
         stars.forEach(star => {
             star.addEventListener("click", () => {
                 const value = parseInt(star.getAttribute("value"));
-                rateInput.value = value; // 별점 값 입력
+                rateInput.value = value;
 
-                // 모든 별 초기화 (회색)
                 stars.forEach(s => s.classList.remove("active"));
 
-                // 클릭된 별을 포함하여 그 이하 별들을 노란색으로 변경
                 for (let i = 0; i < value; i++) {
                     stars[i].classList.add("active");
                 }
