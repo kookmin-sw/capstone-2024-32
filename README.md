@@ -11,7 +11,7 @@
   - [🚀 프로젝트 구조](#-프로젝트-구조)
   - [✅ 기대 효과](#-기대-효과)
   - [✨ 기술 스택](#-기술-스택)
-  - [🔧 사용법](#-사용법)
+  - [🔧 배포 가이드](#-배포-가이드)
   - [🗃️ 관련 자료](#-관련-자료)
 
 <br/>
@@ -56,9 +56,10 @@
  <br/>
 
  가게 운영자 입장에서 주문 대기열, 테이블 별 주문 현황을 파악할 수 있어 탄력적인 관리가 가능합니다.
-
+ 
  <br/><br/>
 
+<img src="docs/images/poster.JPG" width="500px">
 
 <br/><br/>
 
@@ -99,14 +100,14 @@
 
 <code> 시나리오 </code>  
 
-<img src="docs/images/scenario.png">
+<img src="docs/images/scenario_final.svg">
 
 <br/>
 
 
 <code> 시스템 구조도 </code>  
 
-<img src="docs/images/system.png">
+<img src="docs/images/system_final.svg">
 
 
 <br/><br/>
@@ -160,45 +161,58 @@ EZOrder를 통해 이러한 비용을 혁신적으로 줄일 수 있습니다.
 <br/>
 <br/>
 
-## 🔧 사용법
+## 🔧 배포 가이드
 
-```
-1. application.yaml에 DB 설정을 마친다. (spring.datasource 부분)
-2. MySQL에서 yaml에 적은 DB 설정을 토대로 schema를 만든다.
-3. 만약 로컬이 아닌 ec2에서 가동한다면 해당 서버의 기본 주소를 qrcode.url에 적는다. 로컬이라면 그대로 둔다.
-4. 그 후에 코드를 가동하면 작동한다.
-```
-<br/>
-<br/>
+**1) AWS ec2 서버 인스턴스를 실행 후, ssh 터미널로 접속한다.**
 
-application.yaml 예시
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/web-order-db?characterEncoding=UTF-8&serverTimezone=Asia/Seoul #이곳에 DB의 url을 적으면 된다.
-    username: root #DB 설정상 username을 작성할 것.
-    password: #DB 설정상 password를 작성할 것
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    show-sql : true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: false
-  web:
-    resources:
-      static-locations: file:media/,classpath:/static
-  mvc:
-    hiddenmethod:
-      filter:
-        enabled: true
-jwt:
-  secret: xIjvWyzFNiIL16uC7Z4vtoY6nkCKk+wjN/ruzg8lkX6t09fC+qHWMRG+4RtoYakCOQWq1bmyYH34oab36pf8Tw==
+-> 본 가이드는 ubuntu를 기준으로 작성되었다.
 
-qrcode:
-  url: localhost:8080 #서버가 qr코드를 생성할 때 사용하는 기본 주소를 작성할 것
+**2) Amazon S3 버킷을 생성한다.**
+
+S3 버킷을 생성할 때, ACL을 활성화하고 퍼블릭 엑세스를 허용한다.
+S3 버킷 사용자를 생성하고, 해당 사용자의 access-key와 secret-key를 기록한다.
+
+**3) 해당 git repository의 master 브랜치를 Clone한다.**
+
+```shell
+$ git clone https://github.com/kookmin-sw/capstone-2024-32.git
 ```
+
+**4) 해당 디렉토리에 접근하여 setup.sh 쉘 스크립트를 실행한다.**
+
+```shell
+$ chmod +x setup.sh
+$ ./setup.sh
+```
+
+-> 도중에 뜨는 do you want to continue와 같은 부분에서는 모두 승인한다.
+
+**5) docker-compose.yaml 파일을 수정한다.**
+
+services.mysql.environment에서
+MYSQL_ROOT_PASSWORD에 루트 비밀번호를 작성한다.
+그 후에 services.spring-app.environment에 .
+SPRING_DATASOURCE_PASSWORD에 위에 작성한 루트 비밀번호를 작성한다.
+
+**6) src/main/resources/application.yaml을 수정한다.**
+
+spring.datasources.password에 위에 작성한 루트 비밀번호를 작성한다.
+그 후에 qrcode.url에 현재 ec2 인스턴스의 퍼블릭 IPv4 DNS 주소:8080을 작성한다.
+그 후에 버킷명과 액세스키, 시크릿키를 cloud.aws.s3.bucket과 credentials.access-key, credentials.secret-key에 입력한다.
+
+**7) 이후에 docker compose와 gradlew을 통해 빌드한 후 실행한다.**
+
+```shell
+$ sudo docker compose up -d mysql     # MySQL 컨테이너 실행
+$ chmod 755 ./gradlew   # gradle 활용하여 빌드
+$ ./gradlew clean build
+$ sudo docker compose build spring-app   # Spring 애플리케이션 빌드
+$ sudo docker compose up -d # 빌드된 파일 전부 실행
+```
+
+**8) 확인**
+
+퍼블릭 IPv4 DNS 주소에 8080 포트로 접속하면 해당 application이 작동하는지 확인할 수 있다.
 
 <br/>
 <br/>
