@@ -39,3 +39,8 @@ cloud:
       auto: false
     stack:
       auto: false
+
+server:
+  servlet:
+    session:
+      timeout: 360m
